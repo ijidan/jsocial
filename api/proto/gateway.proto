@@ -1,0 +1,88 @@
+syntax = "proto3";
+package gateway;
+option go_package = "proto_build/;proto_build";
+
+import "google/api/annotations.proto";
+//import "github.com/mwitkow/go-proto-validators@v0.3.2/validator.proto";
+import "github.com/envoyproxy/protoc-gen-validate@v0.6.3/validate/validate.proto";
+
+
+message RegisterRequest{
+  string gateway_id = 1 [(validate.rules).string = {min_len:1}];
+  string client_id = 2 [(validate.rules).string = {min_len:1}];
+
+}
+
+message RegisterResponse{
+}
+
+message UnRegisterRequest{
+  string gateway_id = 1 [(validate.rules).string = {min_len:1}];
+  string client_id = 2 [(validate.rules).string = {min_len:1}];
+}
+
+message UnRegisterResponse{
+
+}
+
+message SendMessageRequest{
+  string gateway_id = 1 [(validate.rules).string = {min_len:1}];
+  string cmd = 2 [(validate.rules).string = {min_len:1}];
+  uint32 request_id =3[(validate.rules).uint32.gte = 0];
+  bytes data = 4 [(validate.rules).bytes = {min_len:1}];
+  string sender_id = 5 [(validate.rules).string = {min_len:1}];
+
+}
+
+message SendMessageResponse{
+  string gateway_id = 1 [(validate.rules).string = {min_len:1}];
+  string cmd = 2 [(validate.rules).string = {min_len:1}];
+  uint32 request_id =3[(validate.rules).uint32.gte = 0];
+  bytes data = 4 [(validate.rules).bytes = {min_len:1}];
+  string receiver_id = 5 [(validate.rules).string = {min_len:1}];
+
+}
+
+message SendToAllRequest{
+  bytes data = 1 [(validate.rules).bytes = {min_len:1}];
+  string sender_id = 2 [(validate.rules).string = {min_len:1}];
+}
+
+message SendToAllResponse{
+
+}
+
+
+service GatewayService {
+
+  rpc Register(RegisterRequest) returns(RegisterResponse){
+    option (google.api.http) = {
+      post: "/v1/api/gateway/register",
+      body:"*"
+    };
+  }
+
+  rpc UnRegister(UnRegisterRequest) returns(UnRegisterResponse){
+    option (google.api.http) = {
+      post: "/v1/api/gateway/unRegister",
+      body:"*"
+    };
+  }
+
+  rpc SendMessage(stream SendMessageRequest) returns(stream SendMessageResponse){
+    option (google.api.http) = {
+      post: "/v1/api/gateway/send",
+      body:"*"
+    };
+  }
+
+  rpc SendToAll(SendToAllRequest) returns(SendToAllResponse){
+    option (google.api.http)={
+      post:"/v1/api/gateway/sendToAll",
+      body:"*"
+    };
+  }
+
+
+}
+

@@ -1,0 +1,78 @@
+syntax = "proto3";
+package common;
+option go_package = "proto_build/;proto_build";
+
+import "google/api/annotations.proto";
+//import "github.com/mwitkow/go-proto-validators@v0.3.2/validator.proto";
+import "github.com/envoyproxy/protoc-gen-validate@v0.6.3/validate/validate.proto";
+
+enum Gender{
+  Unknown = 0; //未知
+  Male = 1; //男
+  Female = 2;// 女
+}
+enum IsEnable{
+  NotEnable = 0; //未启用
+  Enable = 1; //启用
+}
+
+enum ReviewStatus{
+  ReviewInit = 0; //未提交审核
+  ReviewTo = 1; //已提交，待审核
+  ReviewPass = 2; //审核通过
+  ReviewFail = 3; //审核未通过
+}
+
+message ImageInfo{
+  string name = 1  [(validate.rules).string = {min_len :1}];
+  string type = 2;
+  string url = 3;
+  uint64 width = 4  [(validate.rules).uint64 = {gt: 0}];
+  uint64 height = 5  [(validate.rules).uint64 = {gt: 0}];
+}
+
+message Pager{
+  uint64  page = 1;
+  uint64  page_zie = 2;
+  uint64  total_rows = 3;
+  uint64  total_pages = 4;
+}
+
+message CommonResponse{
+  uint64   error_code = 1; //错误码
+  uint64   business_code = 2; //业务码
+  string   message = 3; //信息
+}
+
+message UploadImageRequest{
+  bytes content = 1 [(validate.rules).bytes = {min_len:1}];
+}
+
+message UploadImageResponse{
+  string url = 1;
+}
+message SendEmailRequest{
+  map<string, string> receiver = 1 [(validate.rules).map = {min_pairs: 1, max_pairs: 500}, (validate.rules).map.values.string = {email:true}];
+  map<string, string> cc = 2 [(validate.rules).map = {min_pairs: 0, max_pairs: 500}, (validate.rules).map.values.string = {email:true}];
+  string subject = 3 [(validate.rules).string = {min_len :1,max_len:50}];
+  string content = 4 [(validate.rules).string = {min_len:1,max_len:2000}];
+}
+message SendEmailResponse{
+
+}
+
+service CommonService{
+
+  rpc UploadImage(stream UploadImageRequest) returns(UploadImageResponse){
+    option(google.api.http) = {
+      post:"/v1/api/common/image",
+      body:"*"
+    };
+  }
+  rpc SendEmail(SendEmailRequest) returns(SendEmailResponse){
+    option(google.api.http) = {
+      post:"/v1/api/common/email",
+      body:"*"
+    };
+  }
+}

@@ -1,0 +1,77 @@
+app:
+  name: service_group
+  ver: 1.0.1
+  env: local
+
+pprof:
+  host: 127.0.0.1
+  port: 9094
+
+rpc:
+  host: 127.0.0.1 #0.0.0.0
+  port: 9093
+  ttl: 5
+  log: log/rpc.log
+
+ps:
+  host: 127.0.0.1
+  port: 9095
+
+http:
+  host: 127.0.0.1
+  port: 9096
+  log: log/http.log
+
+mysql:
+  host: 127.0.0.1 #172.17.0.1
+  port: 3306
+  user: root
+  password: root
+  charset: utf8mb4
+  database: jim
+
+redis:
+  host: 127.0.0.1 #172.17.0.1
+  port: 6379
+  user: ""
+  password: ""
+  db: 0
+
+jaeger:
+  host: 127.0.0.1 #172.17.0.1
+  port: 6831
+
+jwt:
+  secret: __jim__
+  default_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Mzk4MTUwMDQsInVpZCI6MX0.wT2xLgwOTLoJV5v-TRLFXl-f1HGyd04Vx2TPm5mzNW8
+
+pager:
+  page_size: 10
+
+etcd:
+  host:
+    - 127.0.0.1:2379 #172.17.0.1:2379
+  timeout: 6831
+
+smms:
+  user: jidan
+  password: zhuan1234
+
+email:
+  smtp: smtp.qq.com
+  port: 465
+  ssl: true
+  account: 394777474@qq.com
+  password: "urykyncxlahtbijf"
+
+pubsub:
+  brokers:
+    - "127.0.0.1:9092"
+
+manager:
+  email:
+    "jidan" : "394777474@qq.com"
+
+gateway:
+  id: [g1]
+

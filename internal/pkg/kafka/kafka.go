@@ -1,0 +1,95 @@
+package kafka
+
+import (
+	"github.com/Shopify/sarama"
+	"github.com/google/wire"
+	"time"
+)
+
+type Kafka struct {
+	Address []string
+}
+
+func (k *Kafka) Publish(topic string, md interface{}, content []byte) error {
+	config := sarama.NewConfig()
+	config.Producer.Return.Successes = true
+	config.Producer.Return.Errors = true
+	config.Producer.RequiredAcks = sarama.WaitForAll
+	producer, err := sarama.NewAsyncProducer(k.Address, config)
+	if err != nil {
+		return err
+	}
+	defer func(producer sarama.AsyncProducer) {
+		producer.AsyncClose()
+	}(producer)
+	m := &sarama.ProducerMessage{
+		Topic:     topic,
+		Metadata:  md,
+		Value:     sarama.ByteEncoder(content),
+		Timestamp: time.Time{},
+	}
+	go func() {
+		for _ = range producer.Errors() {
+		}
+	}()
+	producer.Input() <- m
+	return nil
+}
+
+func (k *Kafka) Subscribe(topic string, groupId string, f func(*sarama.ConsumerMessage) error) (sarama.Client,error) {
+	config := sarama.NewConfig()
+	config.Consumer.Return.Errors = true
+	config.Consumer.Offsets.AutoCommit.Enable = true
+	config.Consumer.Offsets.AutoCommit.Interval = 1 * time.Second
+
+	client, err := sarama.NewClient(k.Address, config)
+	if err != nil {
+		return nil,err
+	}
+
+	offsetManager, err1 := sarama.NewOffsetManagerFromClient(groupId, client)
+	if err1 != nil {
+		return nil,err1
+	}
+	defer func(offsetManager sarama.OffsetManager) {
+		err := offsetManager.Close()
+		if err != nil {
+		}
+	}(offsetManager)
+	partitionOffsetManager, err2 := offsetManager.ManagePartition(topic, 0)
+	if err2 != nil {
+		return nil,err2
+	}
+	defer func(partitionOffsetManager sarama.PartitionOffsetManager) {
+		err := partitionOffsetManager.Close()
+		if err != nil {
+		}
+	}(partitionOffsetManager)
+	defer offsetManager.Commit()
+	consumer, err3 := sarama.NewConsumerFromClient(client)
+	if err3 != nil {
+		return nil,err3
+	}
+	nextOffset, _ := partitionOffsetManager.NextOffset()
+	pc, _ := consumer.ConsumePartition(topic, 0, nextOffset)
+	defer func(pc sarama.PartitionConsumer) {
+		err := pc.Close()
+		if err != nil {
+		}
+	}(pc)
+	message := pc.Messages()
+	for msg := range message {
+		err5 := f(msg)
+		if err5 != nil {
+			partitionOffsetManager.MarkOffset(nextOffset+1, "")
+		}
+	}
+	return client,nil
+}
+
+func NewKafka(address []string) *Kafka {
+	k := &Kafka{Address: address}
+	return k
+}
+
+var Provider=wire.NewSet(NewKafka)

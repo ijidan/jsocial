@@ -1,0 +1,119 @@
+syntax = "proto3";
+package user;
+option go_package = "proto_build/;proto_build";
+
+import "google/protobuf/timestamp.proto";
+import "common.proto";
+import "google/api/annotations.proto";
+//import "github.com/mwitkow/go-proto-validators@v0.3.2/validator.proto";
+import "github.com/envoyproxy/protoc-gen-validate@v0.6.3/validate/validate.proto";
+
+message User{
+  uint64 id = 1;
+  string nickname = 2;
+  common.Gender gender = 3;
+  string avatar_url = 4;
+  string extra = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  google.protobuf.Timestamp deleted_at = 8;
+}
+
+message UserCreateRequest{
+  string nickname = 1 [(validate.rules).string = {pattern: ".{2,30}"}];
+  common.Gender gender = 2 [(validate.rules).enum= {defined_only :true}];
+  string avatar_url = 3 [(validate.rules).string = {uri: true,pattern:"(jpg|jpeg|png)$"}];
+  string password = 4 [(validate.rules).string = {pattern:"^[a-z][a-z0-9]{1,17}$"}];
+  string password_rpt = 5 [(validate.rules).string = {pattern:"^[a-z][a-z0-9]{1,17}$"}];
+}
+
+message UserCreateResponse{
+  User user = 1;
+}
+
+message UserGetRequest{
+  uint64 id = 1 [(validate.rules).uint64 = {gt:0}];
+}
+
+message UserGetResponse{
+  User user = 1;
+}
+
+message UserQueryRequest{
+  string keyword = 1 [(validate.rules).string = {ignore_empty:true,pattern: "^\\s{1,10}$"}];
+  uint64 page = 2 [(validate.rules).uint64 = {gt:0}];
+  uint64 page_size = 3 [(validate.rules).uint64 = {gt:0}];
+}
+
+message UserQueryResponse{
+  common.Pager pager = 1;
+  repeated User user = 2;
+}
+
+message UserLoginRequest{
+  string nickname = 1  [(validate.rules).string = {pattern: ".{2,30}"}];
+  string password = 2  [(validate.rules).string = {pattern:"^[a-z][a-z0-9]{1,17}$"}];
+}
+
+message UserLoginResponse{
+  string token = 1;
+}
+
+message UpdateAvatarRequest{
+  string url = 1  [(validate.rules).string = {uri: true,pattern:"(jpg|jpeg|png)$"}];
+}
+
+message UpdateAvatarResponse{
+}
+
+message UpdatePasswordRequest{
+  string password = 1  [(validate.rules).string = {pattern:"^[a-z][a-z0-9]{1,17}$"}];
+  string password_rpt = 2  [(validate.rules).string = {pattern:"^[a-z][a-z0-9]{1,17}$"}];
+}
+message UpdatePasswordResponse{
+
+}
+
+service UserService{
+
+  rpc CreateUser(UserCreateRequest) returns(UserCreateResponse){
+    option (google.api.http) = {
+      post: "/v1/api/user",
+      body:"*"
+    };
+  }
+
+  rpc UserLogin(UserLoginRequest) returns(UserLoginResponse){
+    option(google.api.http) = {
+      post:"/v1/api/user/login",
+      body:"*"
+    };
+  }
+
+  rpc GetUser(UserGetRequest) returns(UserGetResponse){
+    option(google.api.http) = {
+      get:"/v1/api/user/{id}"
+    };
+  }
+
+  rpc QueryUser(UserQueryRequest)returns(UserQueryResponse){
+    option(google.api.http) = {
+      get:"/v1/api/user"
+    };
+  }
+
+  rpc UpdatePassword(UpdatePasswordRequest)returns(UpdatePasswordResponse){
+    option(google.api.http) = {
+      post:"/v1/api/user/password"
+    };
+  }
+
+  rpc UpdateAvatar(UpdateAvatarRequest) returns(UpdateAvatarResponse){
+    option(google.api.http) = {
+      post:"/v1/api/user/avatar",
+      body:"*"
+    };
+  }
+
+}
+

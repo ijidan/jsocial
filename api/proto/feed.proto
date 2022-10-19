@@ -1,0 +1,218 @@
+syntax = "proto3";
+package user;
+option go_package = "proto_build/;proto_build";
+
+import "google/protobuf/timestamp.proto";
+import "common.proto";
+import "google/api/annotations.proto";
+//import "github.com/mwitkow/go-proto-validators@v0.3.2/validator.proto";
+import "github.com/envoyproxy/protoc-gen-validate@v0.6.3/validate/validate.proto";
+
+
+enum FeedType{
+  Txt = 0; //文本
+  Image = 1; //图片
+  Video = 2; //视频
+}
+
+message Feed{
+  uint64 id = 1;
+  uint64 user_id = 2;
+  string content = 3;
+  FeedType type = 4;
+  uint64 like_count = 5;
+  uint64 view_count = 6;
+  uint64 comment_count = 7;
+  uint64 operator = 8;
+  string remark = 9;
+  uint64 hot = 10;
+  common.IsEnable is_enable = 11;
+  common.ReviewStatus review_status = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
+  google.protobuf.Timestamp deleted_at = 15;
+}
+message FeedImage{
+  uint64 id = 1;
+  uint64 feed_id = 2;
+  string img_url = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+  google.protobuf.Timestamp deleted_at = 6;
+}
+
+message FeedVideo{
+  uint64 id = 1;
+  uint64 feed_id = 2;
+  string video_url = 3;
+  string cover_url = 4;
+  uint64  width = 5;
+  uint64 height = 6;
+  double duration = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Timestamp deleted_at = 10;
+}
+
+message FeedLike{
+  uint64 id = 1;
+  uint64 feed_id = 2;
+  uint64 user_id = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+  google.protobuf.Timestamp deleted_at = 6;
+}
+
+
+message FeedCreateRequest{
+  FeedType type = 1 [(validate.rules).enum= {defined_only :true}];
+  string content = 2 [(validate.rules).string = {ignore_empty:true,pattern: "^\\s{2,500}$"}];
+  repeated string resource = 3 [(validate.rules).repeated.items.string = {uri: true,pattern:"(jpg|jpeg|png|avi|mov|rmvb|rm|flv|mp4|3gp)$"}];
+}
+
+message FeedCreateResponse{
+  Feed feed = 1;
+}
+
+message FeedEditRequest{
+  uint64 id = 1 [(validate.rules).uint64 = {gt:0}];
+  FeedType type = 2  [(validate.rules).enum= {defined_only :true}];
+  string content = 3 [(validate.rules).string = {ignore_empty:true,pattern: "^\\s{2,500}$"}];
+  repeated string resource = 4 [(validate.rules).repeated.items.string = {uri: true,pattern:"(jpg|jpeg|png|avi|mov|rmvb|rm|flv|mp4|3gp)$"}];
+}
+
+message FeedEditResponse{
+  uint64 id = 1 [(validate.rules).uint64 = {gt:0}];
+}
+
+message FeedLikeRequest{
+  uint64 id = 1 [(validate.rules).uint64 = {gt:0}];
+}
+
+message FeedLikeResponse{
+}
+
+message FeedUnLikeRequest{
+  uint64 id = 1 [(validate.rules).uint64 = {gt:0}];
+}
+
+message FeedUnLikeResponse{
+}
+
+message FeedGetRequest{
+  uint64 id = 1 [(validate.rules).uint64 = {gt:0}];
+}
+
+message FeedGetResponse{
+  Feed feed = 1;
+}
+
+message FeedDeleteRequest{
+  uint64 id = 1 [(validate.rules).uint64 = {gt:0}];
+}
+
+message FeedDeleteResponse{
+}
+
+message FeedOwnRequest{
+  string keyword = 1 [(validate.rules).string = {ignore_empty:true,pattern: "^\\s{1,10}$"}];
+  common.ReviewStatus review_status = 2;
+  uint64  last_id = 3 [(validate.rules).uint64 = {gte:0}];
+  uint64 num = 4 [(validate.rules).uint64 = {gt:0}];
+}
+
+message FeedOwnResponse{
+  common.Pager pager = 1;
+  repeated Feed feed = 2;
+}
+
+message FeedQueryRequest{
+  string keyword = 1 [(validate.rules).string = {ignore_empty:true,pattern: "^\\s{1,10}$"}];
+  uint64  last_id = 2 [(validate.rules).uint64 = {gte:0}];
+  uint64 num = 3 [(validate.rules).uint64 = {gt:0}];
+}
+
+message FeedQueryResponse{
+  common.Pager pager = 1;
+  repeated Feed feed = 2;
+}
+
+message FeedRecommendRequest{
+  uint64 num = 1 [(validate.rules).uint64 = {gt:0}];
+}
+
+message FeedRecommendResponse{
+  common.Pager pager = 1;
+  repeated Feed feed = 2;
+}
+
+message FeedFollowRequest{
+  uint64 num = 1 [(validate.rules).uint64 = {gt:0}];
+}
+
+message FeedFollowResponse{
+  common.Pager pager = 1;
+  repeated Feed feed = 2;
+}
+
+service FeedService{
+
+  rpc FeedCreate(FeedCreateRequest) returns(FeedCreateResponse){
+    option (google.api.http) = {
+      post: "/v1/api/feed",
+      body:"*"
+    };
+  }
+
+  rpc FeedEdit(FeedEditRequest) returns(FeedEditResponse){
+    option (google.api.http) = {
+      post: "/v1/api/feed/{id}",
+      body:"*"
+    };
+  }
+
+  rpc FeedLike(FeedLikeRequest) returns(FeedLikeResponse){
+    option (google.api.http) = {
+      post: "/v1/api/feed/{id}/like",
+      body:"*"
+    };
+  }
+
+  rpc FeedUnLike(FeedUnLikeRequest) returns(FeedUnLikeResponse){
+    option (google.api.http) = {
+      post: "/v1/api/feed/{id}/unlike",
+      body:"*"
+    };
+  }
+
+  rpc FeedGet(FeedGetRequest) returns(FeedGetResponse){
+    option(google.api.http) = {
+      get:"/v1/api/feed/{id}"
+    };
+  }
+
+  rpc FeedDelete(FeedDeleteRequest) returns(FeedDeleteResponse){
+    option(google.api.http) = {
+      delete:"/v1/api/feed/{id}"
+    };
+  }
+
+  rpc FeedOwn(FeedOwnRequest)returns(FeedOwnResponse){
+    option(google.api.http) = {
+      get:"/v1/api/feed/own"
+    };
+  }
+
+  rpc FeedQuery(FeedQueryRequest)returns(FeedQueryResponse){
+    option(google.api.http) = {
+      get:"/v1/api/feed/query"
+    };
+  }
+
+  rpc FeedFollow(FeedFollowRequest)returns(FeedFollowResponse){
+    option(google.api.http) = {
+      get:"/v1/api/feed/follow"
+    };
+  }
+}
+

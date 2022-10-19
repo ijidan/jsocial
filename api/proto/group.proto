@@ -1,0 +1,149 @@
+syntax = "proto3";
+package group;
+option go_package = "proto_build/;proto_build";
+
+import "common.proto";
+import "user.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+//import "github.com/mwitkow/go-proto-validators@v0.3.2/validator.proto";
+import "github.com/envoyproxy/protoc-gen-validate@v0.6.3/validate/validate.proto";
+
+message Group{
+  uint64 id = 1;
+  string name = 2;
+  string introduction = 3;
+  string avatar_url = 4;
+  string extra = 5;
+  uint64 user_id = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  google.protobuf.Timestamp deleted_at = 9;
+}
+
+message CreateGroupRequest{
+  string name = 1 [(validate.rules).string = {pattern: "^[a-z0-9]{2,30}$"}];
+  string introduction = 2 [(validate.rules).string = {ignore_empty:true,pattern: "^\\s{2,30}$"}];
+  string avatar_url = 3 [(validate.rules).string = {uri: true,pattern:"(jpg|jpeg|png)$"}];
+}
+
+message CreateGroupResponse{
+  Group group = 1;
+}
+
+message UpdateGroupRequest{
+  uint64 id = 1 [(validate.rules).uint64 = {gt:0}];
+  string name = 2 [(validate.rules).string = {ignore_empty:true,pattern: "^[a-z0-9]{2,30}$"}];
+  string introduction = 3 [(validate.rules).string = {ignore_empty:true,pattern: "^\\s{2,30}$"}];
+  string avatar_url = 4 [(validate.rules).string = {ignore_empty:true,uri: true,pattern:"(jpg|jpeg|png)$"}];
+}
+
+message UpdateGroupResponse{
+}
+
+message DeleteGroupRequest{
+  uint64 id=1 [(validate.rules).uint64={gt:0}];
+}
+
+message DeleteGroupResponse{
+
+}
+
+message JoinGroupRequest{
+  uint64 id = 1 [(validate.rules).uint64 = {gt:0}];
+  uint64 user_id = 2 [(validate.rules).uint64 = {gt:0}];
+}
+
+message JoinGroupResponse{
+
+}
+
+message QuitGroupRequest{
+  uint64 id = 1 [(validate.rules).uint64 = {gt:0}];
+  uint64 user_id = 2 [(validate.rules).uint64 = {gt:0}];
+}
+
+message QuitGroupResponse{
+
+}
+
+message GetGroupRequest{
+  uint64 id = 1 [(validate.rules).uint64 = {gt:0}];
+}
+
+message GetGroupResponse{
+  Group group=1;
+}
+
+message QueryGroupRequest{
+  string keyword = 1;
+  uint64 page = 2 [(validate.rules).uint64 = {gt:0}];
+  uint64 page_size = 3 [(validate.rules).uint64 = {gt:0}];
+}
+
+message QueryGroupResponse{
+  common.Pager pager = 1;
+  repeated Group group = 2;
+}
+
+message GetGroupUserRequest{
+  uint64 id = 1 [(validate.rules).uint64 = {gt:0}];
+  uint64 page = 2 [(validate.rules).uint64 = {gt:0}];
+  uint64 page_size = 3 [(validate.rules).uint64 = {gt:0}];
+}
+
+message GetGroupUserResponse{
+  common.Pager pager = 1;
+  repeated user.User user = 2;
+}
+
+service GroupService{
+
+  rpc CreateGroup(CreateGroupRequest) returns(CreateGroupResponse){
+    option (google.api.http) = {
+      post: "/v1/api/group/create",
+      body:"*"
+    };
+  }
+
+  rpc UpdateGroup(UpdateGroupRequest) returns(UpdateGroupResponse){
+    option (google.api.http) = {
+      post: "/v1/api/group/update",
+      body:"*"
+    };
+  }
+
+  rpc GetGroup(GetGroupRequest) returns(GetGroupResponse){
+    option(google.api.http) = {
+      get:"/v1/api/group/{id}"
+    };
+  }
+
+  rpc QueryGroup(QueryGroupRequest) returns(QueryGroupResponse){
+    option(google.api.http)={
+      get:"/v1/api/group"
+    };
+  }
+
+  rpc DeleteGroup(DeleteGroupRequest) returns (DeleteGroupResponse){
+    option(google.api.http)={
+      post:"/v1/api/group/delete"
+    };
+  }
+
+  rpc JoinGroup(JoinGroupRequest) returns (JoinGroupResponse){
+    option(google.api.http)={
+      post:"/v1/api/group/join"
+    };
+  }
+
+  rpc QuitGroup(QuitGroupRequest) returns (QuitGroupResponse){
+    option(google.api.http)={
+      post:"/v1/api/group/quit"
+    };
+  }
+
+}
+
+
+
