@@ -20,7 +20,7 @@ func GroupUserMgr(db *gorm.DB) *_GroupUserMgr {
 	return &_GroupUserMgr{_BaseMgr: &_BaseMgr{DB: db.Table("group_user"), isRelated: globalIsRelated, ctx: ctx, cancel: cancel, timeout: -1}}
 }
 
-// GetTableName get sql table name.获取数据库名字
+// GetTableName get sql info name.获取数据库名字
 func (obj *_GroupUserMgr) GetTableName() string {
 	return "group_user"
 }

@@ -1,11 +1,17 @@
+APP     			= jsocial
+PACKAGE 			=
+OUTPUT_BUILD_DIR 	= /data
+PROJECT_DIR			=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+API_DIR				=$(PROJECT_DIR)api
+BUILD_DIR			=$(PROJECT_DIR)build
+CMD_DIR				=$(PROJECT_DIR)cmd
+CONFIGS_DIR			=$(PROJECT_DIR)configs
+INTERNAL_DIR		=$(PROJECT_DIR)internal
 
-APP = jsocial
-PACKAGE =
-OUTPUT_BUILD_DIR = /data
-
-.PHONY :a help proto tidy dl build run compose clean gormt gen token test
+.PHONY :all help dl build run compose clean gormt test grpcurl start status stop proto_update command compose_up compose_down docker_stop docker_rm
 
 help:
+	@echo "make check -  查看相关信息"
 	@echo "make proto -  grpc编译"
 	@echo "make tidy -  Go Mod tidy"
 	@echo "make dl -  Go Mod下载"
@@ -21,7 +27,15 @@ help:
 	@echo "make stop - goreman run stop"
 	@echo "make proto_update -proto 更新"
 	@echo "make command -显示所有bin目录命令"
+	@echo "make compose_up  -启动docker-compose"
+	@echo "make compose_down  -关闭docker-compose"
+	@echo "make docker_stop -停止所有docker容器"
+	@echo "make docker_rm -- 删除所有docker容器"
+	@echo "make start_api -- 运行API"
+	@echo "make wire_api --执行API的wire"
 
+check:
+	@echo $(API_DIR)
 proto: dl
 	@protoc -I=internal/jim_proto/proto \
     		-I=$(GOPATH)/pkg/mod \
@@ -79,6 +93,18 @@ db_up:
 	@migrate -path migrate -database "mysql://root:root@tcp(127.0.0.1:3306)/jim" -verbose up
 db_down:
 	@migrate -path migrate -database "mysql://root:root@tcp(127.0.0.1:3306)/jim" -verbose down
+compose_up:
+	@docker-compose -f ./deployments/docker-compose.yaml  up -d
+compose_down:
+	@docker-compose -f ./deployments/docker-compose.yaml  down
+docker_stop:
+	@docker stop $(docker ps -a -q)
+docker_rm: docker_stop
+	@docker rm $(docker ps -a -q)
+start_api:
+	@go run $(CMD_DIR)/api/main.go -f $(CONFIGS_DIR)/api.yaml
+wire_api:
+	@cd $(CMD_DIR)/api && wire
 command:
 	@echo "goreman  gormt  grpcui  grpcurl  protoc-gen-doc  protoc-gen-go  protoc-gen-go-grpc  protoc-gen-govalidators  protoc-gen-grpc-gateway  protoc-gen-openapiv2  protoc-gen-validate"
 

@@ -8,7 +8,7 @@ import "time"
 
 const TableNameDeviceAck = "device_ack"
 
-// DeviceAck mapped from table <device_ack>
+// DeviceAck mapped from info <device_ack>
 type DeviceAck struct {
 	ID         uint64    `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`                        // 自增主键
 	DeviceID   int64     `gorm:"column:device_id;not null" json:"device_id"`                               // 设备id
@@ -18,7 +18,7 @@ type DeviceAck struct {
 	Device     Device    `gorm:"" json:"device"`
 }
 
-// TableName DeviceAck's table name
+// TableName DeviceAck's info name
 func (*DeviceAck) TableName() string {
 	return TableNameDeviceAck
 }

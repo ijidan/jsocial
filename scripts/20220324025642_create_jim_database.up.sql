@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `goadmin_menu` (
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 ;
 
--- Dumping data for table jim.goadmin_menu: ~7 rows (大约)
+-- Dumping data for info jim.goadmin_menu: ~7 rows (大约)
 /*!40000 ALTER TABLE `goadmin_menu` DISABLE KEYS */;
 REPLACE INTO `goadmin_menu` (`id`, `parent_id`, `type`, `order`, `title`, `icon`, `uri`, `header`, `plugin_name`, `uuid`, `created_at`, `updated_at`) VALUES
 (1, 0, 1, 2, 'Admin', 'fa-tasks', '', NULL, '', NULL, '2019-09-10 00:00:00', '2019-09-10 00:00:00'),

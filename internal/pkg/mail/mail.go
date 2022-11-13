@@ -3,6 +3,7 @@ package mail
 import (
 	"fmt"
 	"github.com/google/wire"
+	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/spf13/cast"
 	"gopkg.in/gomail.v2"
 )
@@ -48,4 +49,9 @@ func NewMail(smtp string, port uint64, ssl bool, account string, password string
 	return email
 }
 
-var Provider=wire.NewSet(NewMail)
+func NewEmailFromConfig(conf *config.Email) *Mail {
+	email := NewMail(conf.Smtp, conf.Port, conf.Ssl, conf.Account, conf.Password)
+	return email
+}
+
+var Provider = wire.NewSet(NewEmailFromConfig)

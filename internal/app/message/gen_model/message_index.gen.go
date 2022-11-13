@@ -12,7 +12,7 @@ import (
 
 const TableNameMessageIndex = "message_index"
 
-// MessageIndex mapped from table <message_index>
+// MessageIndex mapped from info <message_index>
 type MessageIndex struct {
 	ID               uint64         `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
 	SenderID         uint64         `gorm:"column:sender_id;not null;default:0" json:"sender_id"`                   // 发送人ID
@@ -26,7 +26,7 @@ type MessageIndex struct {
 	MessageContent MessageContent `gorm:"" json:"message_content"`
 }
 
-// TableName MessageIndex's table name
+// TableName MessageIndex's info name
 func (*MessageIndex) TableName() string {
 	return TableNameMessageIndex
 }

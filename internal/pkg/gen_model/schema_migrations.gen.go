@@ -6,13 +6,13 @@ package gen_model
 
 const TableNameSchemaMigrations = "schema_migrations"
 
-// SchemaMigrations mapped from table <schema_migrations>
+// SchemaMigrations mapped from info <schema_migrations>
 type SchemaMigrations struct {
 	Version int64 `gorm:"column:version;primaryKey;autoIncrement:false" json:"version"`
 	Dirty   bool  `gorm:"column:dirty;not null" json:"dirty"`
 }
 
-// TableName SchemaMigrations's table name
+// TableName SchemaMigrations's info name
 func (*SchemaMigrations) TableName() string {
 	return TableNameSchemaMigrations
 }

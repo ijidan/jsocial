@@ -12,7 +12,7 @@ import (
 
 const TableNameGroupUser = "group_user"
 
-// GroupUser mapped from table <group_user>
+// GroupUser mapped from info <group_user>
 type GroupUser struct {
 	ID           uint64         `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`    // 自增主键
 	GroupID      uint64         `gorm:"column:group_id;not null" json:"group_id"`             // 组id
@@ -24,7 +24,7 @@ type GroupUser struct {
 	DeletedAt    gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`                  // 删除时间
 }
 
-// TableName GroupUser's table name
+// TableName GroupUser's info name
 func (*GroupUser) TableName() string {
 	return TableNameGroupUser
 }

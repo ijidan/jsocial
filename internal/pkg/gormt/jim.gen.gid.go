@@ -20,7 +20,7 @@ func GidMgr(db *gorm.DB) *_GidMgr {
 	return &_GidMgr{_BaseMgr: &_BaseMgr{DB: db.Table("gid"), isRelated: globalIsRelated, ctx: ctx, cancel: cancel, timeout: -1}}
 }
 
-// GetTableName get sql table name.获取数据库名字
+// GetTableName get sql info name.获取数据库名字
 func (obj *_GidMgr) GetTableName() string {
 	return "gid"
 }

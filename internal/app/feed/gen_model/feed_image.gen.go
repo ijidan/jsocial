@@ -12,7 +12,7 @@ import (
 
 const TableNameFeedImage = "feed_image"
 
-// FeedImage mapped from table <feed_image>
+// FeedImage mapped from info <feed_image>
 type FeedImage struct {
 	ID        uint64         `gorm:"column:id;primaryKey;autoIncrement:false;default:0" json:"id"` // ID
 	FeedID    uint64         `gorm:"column:feed_id;not null;default:0" json:"feed_id"`             // 动态ID
@@ -22,7 +22,7 @@ type FeedImage struct {
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
-// TableName FeedImage's table name
+// TableName FeedImage's info name
 func (*FeedImage) TableName() string {
 	return TableNameFeedImage
 }

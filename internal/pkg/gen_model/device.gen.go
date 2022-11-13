@@ -8,7 +8,7 @@ import "time"
 
 const TableNameDevice = "device"
 
-// Device mapped from table <device>
+// Device mapped from info <device>
 type Device struct {
 	ID            uint64    `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`                        // 自增主键
 	DeviceID      int64     `gorm:"column:device_id;not null" json:"device_id"`                               // 设备id
@@ -26,7 +26,7 @@ type Device struct {
 	UpdateTime    time.Time `gorm:"column:update_time;not null;default:CURRENT_TIMESTAMP" json:"update_time"` // 更新时间
 }
 
-// TableName Device's table name
+// TableName Device's info name
 func (*Device) TableName() string {
 	return TableNameDevice
 }

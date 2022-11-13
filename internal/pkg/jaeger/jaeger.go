@@ -2,6 +2,7 @@ package jaeger
 
 import (
 	"fmt"
+	"github.com/google/wire"
 	PkgConf "github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
@@ -9,10 +10,17 @@ import (
 	"io"
 )
 
-func NewJaeger(cf PkgConf.Jaeger, serviceName string) (opentracing.Tracer, io.Closer, error) {
-	localAgentHostPort := fmt.Sprintf("%s:%d", cf.Host, cf.Port)
+type ServiceName string
+
+type Jaeger struct {
+	Tracer opentracing.Tracer
+	Closer io.Closer
+}
+
+func NewJaeger(conf *PkgConf.Jaeger, app *PkgConf.App) (*Jaeger, error) {
+	localAgentHostPort := fmt.Sprintf("%s:%d", conf.Host, conf.Port)
 	cfg := &config.Configuration{
-		ServiceName: serviceName,
+		ServiceName: app.Name,
 		Sampler: &config.SamplerConfig{
 			Type:  "const",
 			Param: 1,
@@ -24,8 +32,14 @@ func NewJaeger(cf PkgConf.Jaeger, serviceName string) (opentracing.Tracer, io.Cl
 	}
 	tracer, closer, err := cfg.NewTracer(config.Logger(jaeger.StdLogger))
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	opentracing.SetGlobalTracer(tracer)
-	return tracer, closer, nil
+	instance := &Jaeger{
+		Tracer: tracer,
+		Closer: closer,
+	}
+	return instance, nil
 }
+
+var Provider = wire.NewSet(NewJaeger)

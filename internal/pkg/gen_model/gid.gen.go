@@ -8,7 +8,7 @@ import "time"
 
 const TableNameGid = "gid"
 
-// Gid mapped from table <gid>
+// Gid mapped from info <gid>
 type Gid struct {
 	ID          int64     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`                        // 自增主键
 	BusinessID  string    `gorm:"column:business_id;not null" json:"business_id"`                           // 业务id
@@ -19,7 +19,7 @@ type Gid struct {
 	UpdateTime  time.Time `gorm:"column:update_time;not null;default:CURRENT_TIMESTAMP" json:"update_time"` // 更新时间
 }
 
-// TableName Gid's table name
+// TableName Gid's info name
 func (*Gid) TableName() string {
 	return TableNameGid
 }

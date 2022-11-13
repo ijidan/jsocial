@@ -12,7 +12,7 @@ import (
 
 const TableNameFeedVideo = "feed_video"
 
-// FeedVideo mapped from table <feed_video>
+// FeedVideo mapped from info <feed_video>
 type FeedVideo struct {
 	ID        uint64         `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
 	FeedID    uint64         `gorm:"column:feed_id;not null;default:0" json:"feed_id"`   // 所属动态id
@@ -26,7 +26,7 @@ type FeedVideo struct {
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
-// TableName FeedVideo's table name
+// TableName FeedVideo's info name
 func (*FeedVideo) TableName() string {
 	return TableNameFeedVideo
 }

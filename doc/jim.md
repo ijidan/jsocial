@@ -5,34 +5,34 @@
 ### `device`
 设备
 
-|     COLUMN     |    DATA TYPE    | NULLABLE | KEY |      DEFAULT      | CHARACTER SET |  COLLATION  |                 COMMENT                 |
-|----------------|-----------------|----------|-----|-------------------|---------------|-------------|-----------------------------------------|
-| app_id         | bigint unsigned | NO       | MUL |                   |               |             | app_id                                  |
-| brand          | varchar(20)     | NO       |     |                   | utf8mb4       | utf8mb4_bin | 手机厂商                                |
+| COLUMN         | DATA TYPE       | NULLABLE | KEY | DEFAULT           | CHARACTER SET | COLLATION   | COMMENT                         |
+|----------------|-----------------|----------|-----|-------------------|---------------|-------------|---------------------------------|
+| app_id         | bigint unsigned | NO       | MUL |                   |               |             | app_id                          |
+| brand          | varchar(20)     | NO       |     |                   | utf8mb4       | utf8mb4_bin | 手机厂商                            |
 | conn_addr      | varchar(25)     | NO       |     |                   | utf8mb4       | utf8mb4_bin | 连接层服务器地址                        |
-| conn_fd        | bigint          | NO       |     |                   |               |             | TCP连接对应的文件描述符                 |
-| create_time    | datetime        | NO       |     | CURRENT_TIMESTAMP |               |             | 创建时间                                |
-| device_id      | bigint          | NO       | UNI |                   |               |             | 设备id                                  |
-| id             | bigint unsigned | NO       | PRI |                   |               |             | 自增主键                                |
-| model          | varchar(20)     | NO       |     |                   | utf8mb4       | utf8mb4_bin | 机型                                    |
-| sdk_version    | varchar(10)     | NO       |     |                   | utf8mb4       | utf8mb4_bin | app版本                                 |
-| status         | tinyint         | NO       |     |                 0 |               |             | 在线状态，0：离线；1：在线              |
-| system_version | varchar(10)     | NO       |     |                   | utf8mb4       | utf8mb4_bin | 系统版本                                |
+| conn_fd        | bigint          | NO       |     |                   |               |             | TCP连接对应的文件描述符                   |
+| create_time    | datetime        | NO       |     | CURRENT_TIMESTAMP |               |             | 创建时间                            |
+| device_id      | bigint          | NO       | UNI |                   |               |             | 设备id                            |
+| id             | bigint unsigned | NO       | PRI |                   |               |             | 自增主键                            |
+| model          | varchar(20)     | NO       |     |                   | utf8mb4       | utf8mb4_bin | 机型                              |
+| sdk_version    | varchar(10)     | NO       |     |                   | utf8mb4       | utf8mb4_bin | app版本                           |
+| status         | tinyint         | NO       |     | 0                 |               |             | 在线状态，0：离线；1：在线                  |
+| system_version | varchar(10)     | NO       |     |                   | utf8mb4       | utf8mb4_bin | 系统版本                            |
 | type           | tinyint         | NO       |     |                   |               |             | 设备类型,1:Android；2：IOS；3：Windows; |
-|                |                 |          |     |                   |               |             | 4：MacOS；5：Web                        |
-| update_time    | datetime        | NO       |     | CURRENT_TIMESTAMP |               |             | 更新时间                                |
-| user_id        | bigint unsigned | NO       |     |                 0 |               |             | 账户id                                  |
+|                |                 |          |     |                   |               |             | 4：MacOS；5：Web                   |
+| update_time    | datetime        | NO       |     | CURRENT_TIMESTAMP |               |             | 更新时间                            |
+| user_id        | bigint unsigned | NO       |     | 0                 |               |             | 账户id                            |
 
 ### `device_ack`
 设备消息同步序列号
 
-|   COLUMN    |    DATA TYPE    | NULLABLE | KEY |      DEFAULT      | CHARACTER SET | COLLATION |    COMMENT     |
-|-------------|-----------------|----------|-----|-------------------|---------------|-----------|----------------|
-| ack         | bigint unsigned | NO       |     |                 0 |               |           | 收到消息确认号 |
-| create_time | datetime        | NO       |     | CURRENT_TIMESTAMP |               |           | 创建时间       |
-| device_id   | bigint unsigned | NO       | UNI |                   |               |           | 设备id         |
-| id          | bigint unsigned | NO       | PRI |                   |               |           | 自增主键       |
-| update_time | datetime        | NO       |     | CURRENT_TIMESTAMP |               |           | 更新时间       |
+| COLUMN      | DATA TYPE       | NULLABLE | KEY | DEFAULT           | CHARACTER SET | COLLATION | COMMENT |
+|-------------|-----------------|----------|-----|-------------------|---------------|-----------|---------|
+| ack         | bigint unsigned | NO       |     | 0                 |               |           | 收到消息确认号 |
+| create_time | datetime        | NO       |     | CURRENT_TIMESTAMP |               |           | 创建时间    |
+| device_id   | bigint unsigned | NO       | UNI |                   |               |           | 设备id    |
+| id          | bigint unsigned | NO       | PRI |                   |               |           | 自增主键    |
+| update_time | datetime        | NO       |     | CURRENT_TIMESTAMP |               |           | 更新时间    |
 
 ### `emp`
 
@@ -47,24 +47,24 @@
 ### `feed`
 动态
 
-|    COLUMN     |    DATA TYPE     | NULLABLE | KEY | DEFAULT | CHARACTER SET |     COLLATION      |            COMMENT             |
-|---------------|------------------|----------|-----|---------|---------------|--------------------|--------------------------------|
-| comment_count | int unsigned     | NO       |     |       0 |               |                    | 动态评论数                     |
-| content       | text             | NO       |     |         | utf8mb4       | utf8mb4_unicode_ci | 动态内容                       |
-| created_at    | datetime         | YES      |     |         |               |                    |                                |
-| deleted_at    | datetime         | YES      |     |         |               |                    |                                |
-| hot           | bigint unsigned  | NO       |     |       0 |               |                    | 热门排序值                     |
-| id            | bigint unsigned  | NO       | PRI |       0 |               |                    | 动态 ID                        |
-| is_enable     | tinyint unsigned | NO       |     |       1 |               |                    | 是否启用                       |
-| like_count    | int unsigned     | NO       |     |       0 |               |                    | 动态点赞数                     |
-| operator      | bigint unsigned  | NO       |     |       0 |               |                    | 审核人                         |
-| remark        | varchar(500)     | NO       |     |         | utf8mb4       | utf8mb4_unicode_ci | 备注                           |
-| review_status | tinyint unsigned | NO       |     |       0 |               |                    | 审核状态 0-未审核 1-已审核     |
-|               |                  |          |     |         |               |                    | 2-未通过                       |
-| type          | tinyint          | NO       |     |       0 |               |                    | 动态类型                       |
-| updated_at    | datetime         | YES      |     |         |               |                    |                                |
-| user_id       | bigint unsigned  | NO       | MUL |       0 |               |                    | 用户ID                         |
-| view_count    | int unsigned     | NO       |     |       0 |               |                    | 动态阅读数                     |
+| COLUMN        | DATA TYPE        | NULLABLE | KEY | DEFAULT | CHARACTER SET | COLLATION          | COMMENT          |
+|---------------|------------------|----------|-----|---------|---------------|--------------------|------------------|
+| comment_count | int unsigned     | NO       |     | 0       |               |                    | 动态评论数            |
+| content       | text             | NO       |     |         | utf8mb4       | utf8mb4_unicode_ci | 动态内容             |
+| created_at    | datetime         | YES      |     |         |               |                    |                  |
+| deleted_at    | datetime         | YES      |     |         |               |                    |                  |
+| hot           | bigint unsigned  | NO       |     | 0       |               |                    | 热门排序值            |
+| id            | bigint unsigned  | NO       | PRI | 0       |               |                    | 动态 ID            |
+| is_enable     | tinyint unsigned | NO       |     | 1       |               |                    | 是否启用             |
+| like_count    | int unsigned     | NO       |     | 0       |               |                    | 动态点赞数            |
+| operator      | bigint unsigned  | NO       |     | 0       |               |                    | 审核人              |
+| remark        | varchar(500)     | NO       |     |         | utf8mb4       | utf8mb4_unicode_ci | 备注               |
+| review_status | tinyint unsigned | NO       |     | 0       |               |                    | 审核状态 0-未审核 1-已审核 |
+|               |                  |          |     |         |               |                    | 2-未通过            |
+| type          | tinyint          | NO       |     | 0       |               |                    | 动态类型             |
+| updated_at    | datetime         | YES      |     |         |               |                    |                  |
+| user_id       | bigint unsigned  | NO       | MUL | 0       |               |                    | 用户ID             |
+| view_count    | int unsigned     | NO       |     | 0       |               |                    | 动态阅读数            |
 
 ### `feed_image`
 动态图片

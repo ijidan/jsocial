@@ -12,7 +12,7 @@ import (
 
 const TableNameMessageContent = "message_content"
 
-// MessageContent mapped from table <message_content>
+// MessageContent mapped from info <message_content>
 type MessageContent struct {
 	ID        int64          `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
 	Type      int32          `gorm:"column:type;not null;default:0" json:"type"` // 消息类型
@@ -23,7 +23,7 @@ type MessageContent struct {
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`        // 删除时间
 }
 
-// TableName MessageContent's table name
+// TableName MessageContent's info name
 func (*MessageContent) TableName() string {
 	return TableNameMessageContent
 }

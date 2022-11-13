@@ -12,7 +12,7 @@ import (
 
 const TableNameFeedLike = "feed_like"
 
-// FeedLike mapped from table <feed_like>
+// FeedLike mapped from info <feed_like>
 type FeedLike struct {
 	ID        uint64         `gorm:"column:id;primaryKey;autoIncrement:false;default:0" json:"id"` // ID
 	FeedID    uint64         `gorm:"column:feed_id;not null;default:0" json:"feed_id"`             // 动态ID
@@ -22,7 +22,7 @@ type FeedLike struct {
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
-// TableName FeedLike's table name
+// TableName FeedLike's info name
 func (*FeedLike) TableName() string {
 	return TableNameFeedLike
 }

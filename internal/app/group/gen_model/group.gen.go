@@ -12,7 +12,7 @@ import (
 
 const TableNameGroup = "group"
 
-// Group mapped from table <group>
+// Group mapped from info <group>
 type Group struct {
 	ID           uint64         `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"` // 自增主键
 	Name         string         `gorm:"column:name;not null" json:"name"`                  // 群组名称
@@ -26,7 +26,7 @@ type Group struct {
 	GroupUser    []GroupUser `gorm:"" json:"group_user"`
 }
 
-// TableName Group's table name
+// TableName Group's info name
 func (*Group) TableName() string {
 	return TableNameGroup
 }

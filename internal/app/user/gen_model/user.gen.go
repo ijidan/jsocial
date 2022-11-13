@@ -13,7 +13,7 @@ import (
 
 const TableNameUser = "user"
 
-// User mapped from table <user>
+// User mapped from info <user>
 type User struct {
 	ID        uint64         `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"` // 自增主键
 	Nickname  string         `gorm:"column:nickname;not null" json:"nickname"`          // 昵称
@@ -30,7 +30,7 @@ type User struct {
 	Feed      []Feed         `gorm:"" json:"feed"`
 }
 
-// TableName User's table name
+// TableName User's info name
 func (*User) TableName() string {
 	return TableNameUser
 }

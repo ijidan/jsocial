@@ -20,7 +20,7 @@ func DeviceAckMgr(db *gorm.DB) *_DeviceAckMgr {
 	return &_DeviceAckMgr{_BaseMgr: &_BaseMgr{DB: db.Table("device_ack"), isRelated: globalIsRelated, ctx: ctx, cancel: cancel, timeout: -1}}
 }
 
-// GetTableName get sql table name.获取数据库名字
+// GetTableName get sql info name.获取数据库名字
 func (obj *_DeviceAckMgr) GetTableName() string {
 	return "device_ack"
 }

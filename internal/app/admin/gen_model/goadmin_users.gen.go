@@ -8,7 +8,7 @@ import "time"
 
 const TableNameGoadminUsers = "goadmin_users"
 
-// GoadminUsers mapped from table <goadmin_users>
+// GoadminUsers mapped from info <goadmin_users>
 type GoadminUsers struct {
 	ID            int32     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
 	Username      string    `gorm:"column:username;not null" json:"username"`
@@ -20,7 +20,7 @@ type GoadminUsers struct {
 	UpdatedAt     time.Time `gorm:"column:updated_at;default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
-// TableName GoadminUsers's table name
+// TableName GoadminUsers's info name
 func (*GoadminUsers) TableName() string {
 	return TableNameGoadminUsers
 }

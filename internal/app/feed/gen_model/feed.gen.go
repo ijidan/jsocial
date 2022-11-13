@@ -12,7 +12,7 @@ import (
 
 const TableNameFeed = "feed"
 
-// Feed mapped from table <feed>
+// Feed mapped from info <feed>
 type Feed struct {
 	ID           uint64         `gorm:"column:id;primaryKey;autoIncrement:false;default:0" json:"id"` // 动态 ID
 	UserID       uint64         `gorm:"column:user_id;not null;default:0" json:"user_id"`             // 用户ID
@@ -34,7 +34,7 @@ type Feed struct {
 	FeedLike  []FeedLike     `gorm:"" json:"feed_like"`
 }
 
-// TableName Feed's table name
+// TableName Feed's info name
 func (*Feed) TableName() string {
 	return TableNameFeed
 }

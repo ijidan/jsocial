@@ -21,6 +21,14 @@ const (
 	Enable    = 1 //启用
 )
 
+const (
+	ImageFormatOfJpg  = "jpg"
+	ImageFormatOfJpeg = "jpeg"
+	ImageFormatOfGif  = "gif"
+	ImageFormatOfPng  = "png"
+	ImageFormatOfBmp  = "bmp"
+)
+
 var ReviewStatusDbToProto = map[int32]proto_build.ReviewStatus{
 	ReviewInit: proto_build.ReviewStatus_ReviewInit,
 	ReviewTo:   proto_build.ReviewStatus_ReviewTo,

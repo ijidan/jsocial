@@ -20,7 +20,7 @@ func MessageMgr(db *gorm.DB) *_MessageMgr {
 	return &_MessageMgr{_BaseMgr: &_BaseMgr{DB: db.Table("message"), isRelated: globalIsRelated, ctx: ctx, cancel: cancel, timeout: -1}}
 }
 
-// GetTableName get sql table name.获取数据库名字
+// GetTableName get sql info name.获取数据库名字
 func (obj *_MessageMgr) GetTableName() string {
 	return "message"
 }
