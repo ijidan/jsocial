@@ -11,8 +11,8 @@ import (
 )
 
 func NewDb(conf *config.Mysql) *gorm.DB {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True&loc=Local", conf.User, conf.Password, conf.Host, conf.Port, conf.Database, conf.Charset)
 
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True&loc=Local", conf.User, conf.Password, conf.Host, conf.Port, conf.Database, conf.Charset)
 	instanceDb, _ := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,

@@ -3,9 +3,9 @@ package repository
 import (
 	"github.com/ijidan/jsocial/api/proto_build"
 	model2 "github.com/ijidan/jsocial/internal/app/user/model"
-	"github.com/ijidan/jsocial/internal/pkg/model"
+	"github.com/ijidan/jsocial/internal/model"
 	"github.com/ijidan/jsocial/internal/pkg/passwd"
-	"github.com/ijidan/jsocial/internal/pkg/repository"
+	"github.com/ijidan/jsocial/internal/repository"
 	"github.com/spf13/cast"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

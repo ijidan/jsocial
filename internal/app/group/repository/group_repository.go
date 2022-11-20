@@ -5,13 +5,12 @@ import (
 	"github.com/ijidan/jsocial/api/proto_build"
 	model3 "github.com/ijidan/jsocial/internal/app/group/model"
 	model2 "github.com/ijidan/jsocial/internal/app/user/model"
-	"github.com/ijidan/jsocial/internal/pkg/model"
-	"github.com/ijidan/jsocial/internal/pkg/repository"
+	"github.com/ijidan/jsocial/internal/model"
+	"github.com/ijidan/jsocial/internal/repository"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
-
 )
 
 func ConvertGroupToProtoGroup(group model3.Group) *proto_build.Group {
@@ -101,15 +100,15 @@ func QueryProtoGroup(db *gorm.DB, keyword string, page uint64, pageSize uint64) 
 }
 
 func DeleteGroup(db *gorm.DB, id uint64) error {
-	err:=db.Transaction(func(tx *gorm.DB) error {
+	err := db.Transaction(func(tx *gorm.DB) error {
 		var group model3.Group
 		err1 := db.Where("id=?", id).Delete(&group).Error
 		if err1 != nil {
 			return repository.ConvertModelQueryErrorToGrpcStatusError(err1)
 		}
 		var groupUser model3.GroupUser
-		err2:=db.Where("group_id=?",id).Delete(&groupUser).Error
-		if err2!=nil{
+		err2 := db.Where("group_id=?", id).Delete(&groupUser).Error
+		if err2 != nil {
 			return repository.ConvertModelQueryErrorToGrpcStatusError(err2)
 		}
 		return nil

@@ -4,7 +4,7 @@ import (
 	mapset "github.com/deckarep/golang-set"
 	"github.com/ijidan/jsocial/api/proto_build"
 	model2 "github.com/ijidan/jsocial/internal/app/feed/model"
-	"github.com/ijidan/jsocial/internal/pkg/model"
+	"github.com/ijidan/jsocial/internal/model"
 	"github.com/ijidan/jsocial/internal/pkg/repository"
 	"github.com/spf13/cast"
 	"google.golang.org/grpc/codes"
@@ -64,7 +64,7 @@ func CreateTextFeed(db *gorm.DB, userId uint64, content string) (*proto_build.Fe
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-	protoFeed:= ConvertFeedToProtoFeed(*feed)
+	protoFeed := ConvertFeedToProtoFeed(*feed)
 	return protoFeed, nil
 }
 
@@ -104,7 +104,7 @@ func CreateImageFeed(db *gorm.DB, userId uint64, content string, resource []stri
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-	protoFeed:= ConvertFeedToProtoFeed(*feed)
+	protoFeed := ConvertFeedToProtoFeed(*feed)
 	return protoFeed, nil
 }
 
@@ -144,7 +144,7 @@ func CreateVideoFeed(db *gorm.DB, userId uint64, content string, resource []stri
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-	protoFeed:= ConvertFeedToProtoFeed(*feed)
+	protoFeed := ConvertFeedToProtoFeed(*feed)
 	return protoFeed, nil
 }
 
@@ -220,15 +220,15 @@ func QueryFeed(db *gorm.DB, keyword string, lastId uint64, num uint64) ([]*proto
 	return protoFeedList, protoPager, nil
 }
 
-func OwnFeed(db *gorm.DB, userId uint64,reviewStatus int32,keyword string, lastId uint64, num uint64) ([]*proto_build.Feed, *proto_build.Pager, error) {
+func OwnFeed(db *gorm.DB, userId uint64, reviewStatus int32, keyword string, lastId uint64, num uint64) ([]*proto_build.Feed, *proto_build.Pager, error) {
 	imageFormatSlice := []interface{}{repository.ReviewInit, repository.ReviewTo, repository.ReviewPass, repository.ReviewFail}
 	imageFormatSet := mapset.NewSetFromSlice(imageFormatSlice)
 	var where string
 	var whereValue []interface{}
-	if imageFormatSet.Contains(reviewStatus){
+	if imageFormatSet.Contains(reviewStatus) {
 		where = "user_id = ? and review_status=? and id>? "
-		whereValue = []interface{}{"%" + keyword + "%", reviewStatus,lastId}
-	}else{
+		whereValue = []interface{}{"%" + keyword + "%", reviewStatus, lastId}
+	} else {
 		where = "user_id = ? and id>? "
 		whereValue = []interface{}{"%" + keyword + "%", lastId}
 	}

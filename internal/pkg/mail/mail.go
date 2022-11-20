@@ -49,9 +49,9 @@ func NewMail(smtp string, port uint64, ssl bool, account string, password string
 	return email
 }
 
-func NewEmailFromConfig(conf *config.Email) *Mail {
+func NewMailFromConfig(conf *config.Email) *Mail {
 	email := NewMail(conf.Smtp, conf.Port, conf.Ssl, conf.Account, conf.Password)
 	return email
 }
 
-var Provider = wire.NewSet(NewEmailFromConfig)
+var Provider = wire.NewSet(NewMailFromConfig)

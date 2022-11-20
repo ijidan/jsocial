@@ -5,7 +5,7 @@
 package gen_model
 
 import (
-	"github.com/ijidan/jsocial/internal/pkg/gen_model"
+	"github.com/ijidan/jsocial/internal/gen_model"
 	"time"
 
 	"gorm.io/gorm"
@@ -24,9 +24,9 @@ type User struct {
 	CreatedAt time.Time      `gorm:"column:created_at" json:"created_at"`               // 创建时间
 	UpdatedAt time.Time      `gorm:"column:updated_at" json:"updated_at"`               // 更新时间
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`               // 删除时间
-	Device    []gen_model.Device       `gorm:"" json:"device"`
-	Message   []gen_model.Device       `gorm:"" json:"message"`
-	GroupUser []GroupUser    `gorm:"" json:"group_user"`
+	Device    []gen_model.Device `gorm:"" json:"device"`
+	Message   []gen_model.Device `gorm:"" json:"message"`
+	GroupUser []GroupUser        `gorm:"" json:"group_user"`
 	Feed      []Feed         `gorm:"" json:"feed"`
 }
 

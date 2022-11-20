@@ -3,7 +3,7 @@ package validate
 import (
 	mapset "github.com/deckarep/golang-set"
 	"github.com/go-playground/validator/v10"
-	"github.com/ijidan/jsocial/internal/pkg/repository"
+	"github.com/ijidan/jsocial/internal/constant"
 	"regexp"
 )
 
@@ -20,7 +20,7 @@ func MobileValidator(f validator.FieldLevel) bool {
 
 func ImageValidator(f validator.FieldLevel) bool {
 	value := f.Field().String()
-	imageFormatSlice := []interface{}{repository.ImageFormatOfJpg, repository.ImageFormatOfJpeg, repository.ImageFormatOfGif, repository.ImageFormatOfPng, repository.ImageFormatOfBmp}
+	imageFormatSlice := []interface{}{constant.ImageFormatOfJpg, constant.ImageFormatOfJpeg, constant.ImageFormatOfGif, constant.ImageFormatOfPng, constant.ImageFormatOfBmp}
 	imageFormatSet := mapset.NewSetFromSlice(imageFormatSlice)
 	return imageFormatSet.Contains(value)
 

@@ -3,8 +3,9 @@ package config
 import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/google/wire"
-	"github.com/spf13/cast"
 	"github.com/spf13/viper"
+	"path/filepath"
+	"strings"
 	"sync"
 )
 
@@ -119,13 +120,18 @@ var (
 	instanceConfig *Config
 )
 
-func GetConfigInstance(configPath string) *Config {
+func GetConfigInstance(param CmdParam) *Config {
 	onceConfig.Do(func() {
 		instanceConfig = &Config{}
+		dir := filepath.Dir(param.ConfigFile)
+		lastBase := filepath.Base(param.ConfigFile)
+		ext := filepath.Ext(param.ConfigFile)
+		configName := strings.Replace(lastBase, ext, "", -1)
+		configType := strings.Replace(ext, ".", "", -1)
 		v := viper.New()
-		v.AddConfigPath(cast.ToString(configPath))
-		v.SetConfigName("config")
-		v.SetConfigType("yaml")
+		v.AddConfigPath(dir)
+		v.SetConfigName(configName)
+		v.SetConfigType(configType)
 		v.WatchConfig()
 		v.OnConfigChange(func(in fsnotify.Event) {
 		})
@@ -174,7 +180,7 @@ func NewPager(conf *Config) *Pager {
 func NewEtcd(conf *Config) *Etcd {
 	return &conf.Etcd
 }
-func NewSmms(conf *Config) *Smms {
+func NewSmMs(conf *Config) *Smms {
 	return &conf.Smms
 }
 func NewEmail(conf *Config) *Email {
@@ -202,8 +208,22 @@ var JaegerProvider = wire.NewSet(NewJaeger)
 var JwtProvider = wire.NewSet(NewJwt)
 var PagerProvider = wire.NewSet(NewPager)
 var EtcdProvider = wire.NewSet(NewEtcd)
-var SmMsProvider = wire.NewSet(NewSmms)
+var SmMsProvider = wire.NewSet(NewSmMs)
 var EmailProvider = wire.NewSet(NewEmail)
 var PubSubProvider = wire.NewSet(NewPubSub)
 var ManagerProvider = wire.NewSet(NewManager)
-var gatewayProvider = wire.NewSet(NewGateway)
+var GatewayProvider = wire.NewSet(NewGateway)
+var Provider = wire.NewSet(GetConfigInstance)
+
+type CmdParam struct {
+	RootPath   string
+	ConfigFile string
+}
+
+func NewCmdParam(rootPath string, configFile string) *CmdParam {
+	param := &CmdParam{
+		RootPath:   rootPath,
+		ConfigFile: configFile,
+	}
+	return param
+}

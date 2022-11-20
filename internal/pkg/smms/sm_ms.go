@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/google/wire"
+	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/pkg/errors"
 )
 
@@ -61,9 +62,12 @@ type UploadImageRsp struct {
 }
 
 type SmMs struct {
+	smMsConf *config.Smms
 }
 
-func (s *SmMs) GetToken(userName string, password string) (string, error) {
+func (s *SmMs) GetToken() (string, error) {
+	userName := s.smMsConf.User
+	password := s.smMsConf.Password
 	client := resty.New()
 	url := fmt.Sprintf("%s%s", path, "token")
 	tokenRsp := &TokenRsp{}
@@ -101,11 +105,15 @@ func (s *SmMs) GetUserProfile(token string) (UserProfile, error) {
 	return userProfileRsp.Data, nil
 }
 
-func (s *SmMs) UploadImage(token string, filePath string) (Image, error) {
+func (s *SmMs) UploadImage(filePath string) (Image, error) {
+	token, err := s.GetToken()
+	if err != nil {
+		return Image{}, err
+	}
 	client := resty.New()
 	url := fmt.Sprintf("%s%s", path, "upload")
 	uploadImageRsp := &UploadImageRsp{}
-	_, err := client.R().
+	_, err = client.R().
 		SetHeaders(map[string]string{"Accept": "application/json", "Content-Type": "multipart/form-data"}).
 		ForceContentType("application/json").
 		SetAuthScheme("Basic").
@@ -122,27 +130,11 @@ func (s *SmMs) UploadImage(token string, filePath string) (Image, error) {
 	return uploadImageRsp.Data, nil
 }
 
-func NewSmMs() *SmMs {
-	smMs := &SmMs{}
+func NewSmMs(smMsConf *config.Smms) *SmMs {
+	smMs := &SmMs{
+		smMsConf: smMsConf,
+	}
 	return smMs
 }
 
-func SmMsUploadImage(userName string, password string, filePath string) (Image, error) {
-	smMs := NewSmMs()
-	token, err := smMs.GetToken(userName, password)
-	if err != nil {
-		return Image{}, err
-	}
-	img, err1 := smMs.UploadImage(token, filePath)
-	if err1 != nil {
-		//if strings.Contains(err1.Error(),"exists") && strings.Contains(err1.Error(),"https"){
-		//	url:="https://"+strings.Split(err1.Error(),"//")[1]
-		//	return Image{Url:       url,},nil
-		//}
-		return Image{}, err1
-	}
-	return img, nil
-}
-
-
-var Provider=wire.NewSet(NewSmMs)
+var Provider = wire.NewSet(NewSmMs)

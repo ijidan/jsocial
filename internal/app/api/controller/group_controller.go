@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ijidan/jsocial/api/proto_build"
 	"github.com/ijidan/jsocial/internal/app/api/request"
-	"github.com/ijidan/jsocial/internal/pkg/service"
+	"github.com/ijidan/jsocial/internal/service"
 	"github.com/spf13/cast"
 	"net/http"
 )

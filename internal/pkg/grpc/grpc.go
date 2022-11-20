@@ -49,13 +49,13 @@ func WithLogger(logger *logrus.Logger) Option {
 	}
 }
 
-func NewApplication(opts ...Option)(*Application,error)  {
-	app:=&Application{}
-	for _,opt:=range opts{
+func NewApplication(opts ...Option) (*Application, error) {
+	app := &Application{}
+	for _, opt := range opts {
 		err := opt(app)
 		if err != nil {
 			return nil, err
 		}
 	}
-	return app,nil
+	return app, nil
 }

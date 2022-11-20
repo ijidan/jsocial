@@ -69,55 +69,55 @@
 ### `feed_image`
 动态图片
 
-|   COLUMN   |    DATA TYPE    | NULLABLE | KEY | DEFAULT | CHARACTER SET |     COLLATION      | COMMENT |
+| COLUMN     | DATA TYPE       | NULLABLE | KEY | DEFAULT | CHARACTER SET | COLLATION          | COMMENT |
 |------------|-----------------|----------|-----|---------|---------------|--------------------|---------|
 | created_at | datetime        | YES      |     |         |               |                    |         |
 | deleted_at | datetime        | YES      |     |         |               |                    |         |
-| feed_id    | bigint unsigned | NO       | MUL |       0 |               |                    | 动态ID  |
-| id         | bigint unsigned | NO       | PRI |       0 |               |                    | ID      |
-| img_url    | varchar(2000)   | NO       |     |         | utf8mb4       | utf8mb4_unicode_ci | 图片URL |
+| feed_id    | bigint unsigned | NO       | MUL | 0       |               |                    | 动态ID    |
+| id         | bigint unsigned | NO       | PRI | 0       |               |                    | ID      |
+| img_url    | varchar(2000)   | NO       |     |         | utf8mb4       | utf8mb4_unicode_ci | 图片URL   |
 | updated_at | datetime        | YES      |     |         |               |                    |         |
 
 ### `feed_like`
 动态点赞
 
-|   COLUMN   |    DATA TYPE    | NULLABLE | KEY | DEFAULT | CHARACTER SET | COLLATION | COMMENT |
+| COLUMN     | DATA TYPE       | NULLABLE | KEY | DEFAULT | CHARACTER SET | COLLATION | COMMENT |
 |------------|-----------------|----------|-----|---------|---------------|-----------|---------|
 | created_at | datetime        | YES      |     |         |               |           |         |
 | deleted_at | datetime        | YES      |     |         |               |           |         |
-| feed_id    | bigint unsigned | NO       | MUL |       0 |               |           | 动态ID  |
-| id         | bigint unsigned | NO       | PRI |       0 |               |           | ID      |
+| feed_id    | bigint unsigned | NO       | MUL | 0       |               |           | 动态ID    |
+| id         | bigint unsigned | NO       | PRI | 0       |               |           | ID      |
 | updated_at | datetime        | YES      |     |         |               |           |         |
-| user_id    | bigint unsigned | NO       |     |       0 |               |           | 用户ID  |
+| user_id    | bigint unsigned | NO       |     | 0       |               |           | 用户ID    |
 
 ### `feed_video`
 动态视频
 
-|   COLUMN   |   DATA TYPE    | NULLABLE | KEY | DEFAULT | CHARACTER SET |     COLLATION      |   COMMENT   |
-|------------|----------------|----------|-----|---------|---------------|--------------------|-------------|
+| COLUMN     | DATA TYPE      | NULLABLE | KEY | DEFAULT | CHARACTER SET | COLLATION          | COMMENT |
+|------------|----------------|----------|-----|---------|---------------|--------------------|---------|
 | cover_url  | varchar(2048)  | NO       |     |         | utf8mb4       | utf8mb4_unicode_ci | 视频封面URL |
-| created_at | datetime       | YES      |     |         |               |                    |             |
-| deleted_at | datetime       | YES      |     |         |               |                    |             |
-| duration   | float unsigned | NO       |     |       0 |               |                    | 视频时长    |
-| feed_id    | int unsigned   | NO       | MUL |       0 |               |                    | 所属动态id  |
-| height     | int unsigned   | NO       |     |       0 |               |                    | 视频高度    |
-| id         | int unsigned   | NO       | PRI |         |               |                    |             |
-| updated_at | datetime       | YES      |     |         |               |                    |             |
-| video_url  | varchar(2048)  | NO       |     |         | utf8mb4       | utf8mb4_unicode_ci | 视频URL     |
-| width      | int unsigned   | NO       |     |       0 |               |                    | 视频宽度    |
+| created_at | datetime       | YES      |     |         |               |                    |         |
+| deleted_at | datetime       | YES      |     |         |               |                    |         |
+| duration   | float unsigned | NO       |     | 0       |               |                    | 视频时长    |
+| feed_id    | int unsigned   | NO       | MUL | 0       |               |                    | 所属动态id  |
+| height     | int unsigned   | NO       |     | 0       |               |                    | 视频高度    |
+| id         | int unsigned   | NO       | PRI |         |               |                    |         |
+| updated_at | datetime       | YES      |     |         |               |                    |         |
+| video_url  | varchar(2048)  | NO       |     |         | utf8mb4       | utf8mb4_unicode_ci | 视频URL   |
+| width      | int unsigned   | NO       |     | 0       |               |                    | 视频宽度    |
 
 ### `gid`
 分布式自增主键
 
-|   COLUMN    |    DATA TYPE    | NULLABLE | KEY |      DEFAULT      | CHARACTER SET |  COLLATION  | COMMENT  |
-|-------------|-----------------|----------|-----|-------------------|---------------|-------------|----------|
-| business_id | varchar(128)    | NO       | UNI |                   | utf8mb4       | utf8mb4_bin | 业务id   |
-| create_time | datetime        | NO       |     | CURRENT_TIMESTAMP |               |             | 创建时间 |
-| description | varchar(255)    | NO       |     |                   | utf8mb4       | utf8mb4_bin | 描述     |
-| id          | bigint unsigned | NO       | PRI |                   |               |             | 自增主键 |
-| max_id      | bigint unsigned | NO       |     |                 0 |               |             | 最大id   |
-| step        | int unsigned    | NO       |     |              1000 |               |             | 步长     |
-| update_time | datetime        | NO       |     | CURRENT_TIMESTAMP |               |             | 更新时间 |
+| COLUMN      | DATA TYPE       | NULLABLE | KEY | DEFAULT           | CHARACTER SET | COLLATION   | COMMENT |
+|-------------|-----------------|----------|-----|-------------------|---------------|-------------|---------|
+| business_id | varchar(128)    | NO       | UNI |                   | utf8mb4       | utf8mb4_bin | 业务id    |
+| create_time | datetime        | NO       |     | CURRENT_TIMESTAMP |               |             | 创建时间    |
+| description | varchar(255)    | NO       |     |                   | utf8mb4       | utf8mb4_bin | 描述      |
+| id          | bigint unsigned | NO       | PRI |                   |               |             | 自增主键    |
+| max_id      | bigint unsigned | NO       |     | 0                 |               |             | 最大id    |
+| step        | int unsigned    | NO       |     | 1000              |               |             | 步长      |
+| update_time | datetime        | NO       |     | CURRENT_TIMESTAMP |               |             | 更新时间    |
 
 ### `goadmin_menu`
 
@@ -256,49 +256,49 @@
 ### `group`
 群组
 
-|    COLUMN    |    DATA TYPE    | NULLABLE | KEY | DEFAULT | CHARACTER SET |      COLLATION      | COMMENT  |
-|--------------|-----------------|----------|-----|---------|---------------|---------------------|----------|
-| atavar_url   | varchar(1024)   | NO       |     |         | utf8mb4       | utf8mb4_croatian_ci | 头像     |
-| created_at   | datetime        | YES      |     |         |               |                     | 创建时间 |
-| deleted_at   | datetime        | YES      |     |         |               |                     | 删除时间 |
-| extra        | varchar(1024)   | NO       |     |         | utf8mb4       | utf8mb4_croatian_ci | 附加属性 |
-| id           | bigint unsigned | NO       | PRI |         |               |                     | 自增主键 |
-| introduction | varchar(255)    | NO       |     |         | utf8mb4       | utf8mb4_croatian_ci | 群组简介 |
-| name         | varchar(50)     | NO       |     |         | utf8mb4       | utf8mb4_croatian_ci | 群组名称 |
-| updated_at   | datetime        | YES      |     |         |               |                     | 更新时间 |
-| user_id      | bigint          | NO       | MUL |       0 |               |                     | 群主ID   |
+| COLUMN       | DATA TYPE       | NULLABLE | KEY | DEFAULT | CHARACTER SET | COLLATION           | COMMENT |
+|--------------|-----------------|----------|-----|---------|---------------|---------------------|---------|
+| atavar_url   | varchar(1024)   | NO       |     |         | utf8mb4       | utf8mb4_croatian_ci | 头像      |
+| created_at   | datetime        | YES      |     |         |               |                     | 创建时间    |
+| deleted_at   | datetime        | YES      |     |         |               |                     | 删除时间    |
+| extra        | varchar(1024)   | NO       |     |         | utf8mb4       | utf8mb4_croatian_ci | 附加属性    |
+| id           | bigint unsigned | NO       | PRI |         |               |                     | 自增主键    |
+| introduction | varchar(255)    | NO       |     |         | utf8mb4       | utf8mb4_croatian_ci | 群组简介    |
+| name         | varchar(50)     | NO       |     |         | utf8mb4       | utf8mb4_croatian_ci | 群组名称    |
+| updated_at   | datetime        | YES      |     |         |               |                     | 更新时间    |
+| user_id      | bigint          | NO       | MUL | 0       |               |                     | 群主ID    |
 
 ### `group_user`
 群组成员关系
 
-|     COLUMN     |    DATA TYPE    | NULLABLE | KEY | DEFAULT | CHARACTER SET |  COLLATION  |     COMMENT      |
-|----------------|-----------------|----------|-----|---------|---------------|-------------|------------------|
-| created_at     | datetime        | YES      |     |         |               |             | 创建时间         |
-| deleted_at     | datetime        | YES      | MUL |         |               |             | 删除时间         |
-| extra          | varchar(1024)   | NO       |     |         | utf8mb4       | utf8mb4_bin | 附加属性         |
-| group_id       | bigint unsigned | NO       | MUL |         |               |             | 组id             |
-| id             | bigint unsigned | NO       | PRI |         |               |             | 自增主键         |
-| updated_at     | datetime        | YES      |     |         |               |             | 更新时间         |
-| user_id        | bigint unsigned | NO       | MUL |         |               |             | 用户id           |
+| COLUMN         | DATA TYPE       | NULLABLE | KEY | DEFAULT | CHARACTER SET | COLLATION   | COMMENT  |
+|----------------|-----------------|----------|-----|---------|---------------|-------------|----------|
+| created_at     | datetime        | YES      |     |         |               |             | 创建时间     |
+| deleted_at     | datetime        | YES      | MUL |         |               |             | 删除时间     |
+| extra          | varchar(1024)   | NO       |     |         | utf8mb4       | utf8mb4_bin | 附加属性     |
+| group_id       | bigint unsigned | NO       | MUL |         |               |             | 组id      |
+| id             | bigint unsigned | NO       | PRI |         |               |             | 自增主键     |
+| updated_at     | datetime        | YES      |     |         |               |             | 更新时间     |
+| user_id        | bigint unsigned | NO       | MUL |         |               |             | 用户id     |
 | user_show_name | varchar(20)     | NO       |     |         | utf8mb4       | utf8mb4_bin | 用户在群组的昵称 |
 
 ### `message`
 消息
 
-|    COLUMN     |    DATA TYPE    | NULLABLE | KEY | DEFAULT | CHARACTER SET |     COLLATION      |                   COMMENT                    |
-|---------------|-----------------|----------|-----|---------|---------------|--------------------|----------------------------------------------|
-| at_user_id    | varchar(255)    | NO       |     |         | utf8mb4       | utf8mb4_0900_ai_ci | 需要@的用户，多个用,分割                     |
-| created_at    | datetime        | YES      |     |         |               |                    | 创建时间                                     |
-| data          | text            | NO       |     |         | utf8mb4       | utf8mb4_0900_ai_ci | 内容                                         |
-| deleted_at    | datetime        | YES      |     |         |               |                    | 删除时间                                     |
-| id            | bigint unsigned | NO       | PRI |         |               |                    |                                              |
-| message_type  | int             | NO       |     |       0 |               |                    | 消息类型                                     |
-| receiver_id   | bigint unsigned | NO       |     |       0 |               |                    | 接收人ID，单聊则为user_id,群聊则为group_id   |
-| receiver_type | tinyint         | NO       |     |       0 |               |                    | 接收人类型                                   |
-| sender_id     | bigint unsigned | NO       |     |       0 |               |                    | 发送人ID                                     |
-| sender_type   | tinyint         | NO       |     |       0 |               |                    | 发送人类型                                   |
-| status        | tinyint         | NO       |     |       1 |               |                    | 状态：1-待送达，2-已送到，3-已确认，0-已删除 |
-| updated_at    | datetime        | YES      |     |         |               |                    | 更新时间                                     |
+| COLUMN        | DATA TYPE       | NULLABLE | KEY | DEFAULT | CHARACTER SET | COLLATION          | COMMENT                        |
+|---------------|-----------------|----------|-----|---------|---------------|--------------------|--------------------------------|
+| at_user_id    | varchar(255)    | NO       |     |         | utf8mb4       | utf8mb4_0900_ai_ci | 需要@的用户，多个用,分割                  |
+| created_at    | datetime        | YES      |     |         |               |                    | 创建时间                           |
+| data          | text            | NO       |     |         | utf8mb4       | utf8mb4_0900_ai_ci | 内容                             |
+| deleted_at    | datetime        | YES      |     |         |               |                    | 删除时间                           |
+| id            | bigint unsigned | NO       | PRI |         |               |                    |                                |
+| message_type  | int             | NO       |     | 0       |               |                    | 消息类型                           |
+| receiver_id   | bigint unsigned | NO       |     | 0       |               |                    | 接收人ID，单聊则为user_id,群聊则为group_id |
+| receiver_type | tinyint         | NO       |     | 0       |               |                    | 接收人类型                          |
+| sender_id     | bigint unsigned | NO       |     | 0       |               |                    | 发送人ID                          |
+| sender_type   | tinyint         | NO       |     | 0       |               |                    | 发送人类型                          |
+| status        | tinyint         | NO       |     | 1       |               |                    | 状态：1-待送达，2-已送到，3-已确认，0-已删除     |
+| updated_at    | datetime        | YES      |     |         |               |                    | 更新时间                           |
 
 ### `students`
 
@@ -326,17 +326,17 @@
 ### `user`
 用户
 
-|   COLUMN   |    DATA TYPE    | NULLABLE | KEY | DEFAULT | CHARACTER SET |  COLLATION  |         COMMENT          |
-|------------|-----------------|----------|-----|---------|---------------|-------------|--------------------------|
-| avatar_url | varchar(1024)   | NO       |     |         | utf8mb4       | utf8mb4_bin | 用户头像链接             |
-| created_at | datetime        | YES      | MUL |         |               |             | 创建时间                 |
-| deleted_at | datetime        | YES      | MUL |         |               |             | 删除时间                 |
-| extra      | varchar(1024)   | NO       |     |         | utf8mb4       | utf8mb4_bin | 附加属性                 |
+| COLUMN     | DATA TYPE       | NULLABLE | KEY | DEFAULT | CHARACTER SET | COLLATION   | COMMENT         |
+|------------|-----------------|----------|-----|---------|---------------|-------------|-----------------|
+| avatar_url | varchar(1024)   | NO       |     |         | utf8mb4       | utf8mb4_bin | 用户头像链接          |
+| created_at | datetime        | YES      | MUL |         |               |             | 创建时间            |
+| deleted_at | datetime        | YES      | MUL |         |               |             | 删除时间            |
+| extra      | varchar(1024)   | NO       |     |         | utf8mb4       | utf8mb4_bin | 附加属性            |
 | gender     | enum('1','2')   | NO       |     |         | utf8mb4       | utf8mb4_bin | 性别，0:未知；1:男；2:女 |
-| id         | bigint unsigned | NO       | PRI |         |               |             | 自增主键                 |
-| nickname   | varchar(50)     | NO       |     |         | utf8mb4       | utf8mb4_bin | 昵称                     |
-| password   | varchar(100)    | NO       |     |         | utf8mb4       | utf8mb4_bin | 密码                     |
-| updated_at | datetime        | YES      |     |         |               |             | 更新时间                 |
+| id         | bigint unsigned | NO       | PRI |         |               |             | 自增主键            |
+| nickname   | varchar(50)     | NO       |     |         | utf8mb4       | utf8mb4_bin | 昵称              |
+| password   | varchar(100)    | NO       |     |         | utf8mb4       | utf8mb4_bin | 密码              |
+| updated_at | datetime        | YES      |     |         |               |             | 更新时间            |
 
 ### `users`
 

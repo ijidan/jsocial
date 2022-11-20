@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ijidan/jsocial/internal/pkg/erro"
+	"github.com/ijidan/jsocial/internal/constant"
 	"github.com/ijidan/jsocial/internal/pkg/response"
 	"net/http"
 )
@@ -12,7 +12,7 @@ func JwtVerify() gin.HandlerFunc {
 		token := context.Request.Header.Get("Authorization")
 		ins, _ := response.GetResponseInstance()
 		if token == "" {
-			rsp := ins.JsonFail(erro.Unauthorized, erro.OK, "token required", nil, "")
+			rsp := ins.JsonFail(constant.Unauthorized, constant.OK, "token required", nil, "")
 			context.JSON(http.StatusOK, rsp)
 		}
 		//claim, err := jwt.ParseJwtToken(token, jwt.Secret)

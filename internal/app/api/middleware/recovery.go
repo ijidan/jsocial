@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ijidan/jsocial/internal/pkg/global"
+	"github.com/ijidan/jsocial/internal/constant"
 	"github.com/ijidan/jsocial/internal/pkg/response"
 	"net/http"
 	"runtime/debug"
@@ -16,9 +16,9 @@ func Recovery() gin.HandlerFunc {
 				if gin.IsDebugging() {
 					debug.PrintStack()
 				}
-				global.Logger.Fatal(r)
+				//global.Logger.Fatal(r)
 				ins, _ := response.GetResponseInstance()
-				rsp := ins.JsonFail(erro.ServerError, erro.OK, message, nil, "")
+				rsp := ins.JsonFail(constant.ServerError, constant.OK, message, nil, "")
 				context.JSON(http.StatusOK, rsp)
 				context.Abort()
 			}

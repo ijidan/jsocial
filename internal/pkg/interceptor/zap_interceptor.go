@@ -2,24 +2,24 @@ package interceptor
 
 import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	"github.com/ijidan/jsocial/internal/global"
+	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"jim_service/config"
-	"jim_service/pkg"
 )
 
 func ZapInterceptor() *zap.Logger {
-	if pkg.Conf.App.Env==config.EnvLocal || pkg.Conf.App.Env==config.EnvTest{
+	if global.GR.Conf.App.Env == config.EnvLocal || global.GR.Conf.App.Env == config.EnvTest {
 		return notProductionZap()
 	}
 	return productionZap()
 }
 
-func productionZap() *zap.Logger  {
+func productionZap() *zap.Logger {
 	w := zapcore.AddSync(&lumberjack.Logger{
-		Filename:  pkg.Conf.Rpc.Log,
+		Filename:  global.GR.Conf.Rpc.Log,
 		MaxSize:   1024, //MB
 		LocalTime: true,
 	})

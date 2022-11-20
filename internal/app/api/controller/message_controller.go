@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ijidan/jsocial/api/proto_build"
 	"github.com/ijidan/jsocial/internal/app/api/request"
-	"github.com/ijidan/jsocial/internal/pkg/service"
+	service2 "github.com/ijidan/jsocial/internal/service"
 	"net/http"
 )
 
@@ -17,7 +17,7 @@ func (c *MessageController) SendUserTextMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -40,7 +40,7 @@ func (c *MessageController) SendUserLocationMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -67,7 +67,7 @@ func (c *MessageController) SendUserFaceMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -90,7 +90,7 @@ func (c *MessageController) SendUserSoundMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -115,7 +115,7 @@ func (c *MessageController) SendUserVideoMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -130,7 +130,7 @@ func (c *MessageController) SendUserVideoMessage(ctx *gin.Context) {
 			ThumbSize:   req.ThumbSize,
 			ThumbWidth:  req.ThumbWidth,
 			ThumbHeight: req.ThumbHeight,
-			ThumbFormat: service.FormatMap[req.ThumbFormat],
+			ThumbFormat: service2.FormatMap[req.ThumbFormat],
 		},
 	}
 	serviceRsp, serviceErr := serviceClient.SendUserVideoMessage(ctx, serviceReq)
@@ -146,7 +146,7 @@ func (c *MessageController) SendUserImageMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -154,8 +154,8 @@ func (c *MessageController) SendUserImageMessage(ctx *gin.Context) {
 	serviceReq := &proto_build.SendUserImageMessageRequest{
 		ToUserId: req.ToUserId,
 		Image: &proto_build.ImageMessageItem{
-			Type:   service.TypeMap[req.Type],
-			Format: service.FormatMap[req.Format],
+			Type:   service2.TypeMap[req.Type],
+			Format: service2.FormatMap[req.Format],
 			Size:   req.Size,
 			Width:  req.Width,
 			Height: req.Height,
@@ -175,7 +175,7 @@ func (c *MessageController) SendUserFileMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -200,7 +200,7 @@ func (c *MessageController) SendGroupTextMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -224,7 +224,7 @@ func (c *MessageController) SendGroupLocationMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -251,7 +251,7 @@ func (c *MessageController) SendGroupFaceMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -274,7 +274,7 @@ func (c *MessageController) SendGroupSoundMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -299,7 +299,7 @@ func (c *MessageController) SendGroupVideoMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -314,7 +314,7 @@ func (c *MessageController) SendGroupVideoMessage(ctx *gin.Context) {
 			ThumbSize:   req.ThumbSize,
 			ThumbWidth:  req.ThumbWidth,
 			ThumbHeight: req.ThumbHeight,
-			ThumbFormat: service.FormatMap[req.ThumbFormat],
+			ThumbFormat: service2.FormatMap[req.ThumbFormat],
 		},
 	}
 	serviceRsp, serviceErr := serviceClient.SendUserVideoMessage(ctx, serviceReq)
@@ -330,7 +330,7 @@ func (c *MessageController) SendGroupImageMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}
@@ -339,8 +339,8 @@ func (c *MessageController) SendGroupImageMessage(ctx *gin.Context) {
 		ToGroupId: req.ToGroupId,
 		AtUserId:  req.AtUserId,
 		Image: &proto_build.ImageMessageItem{
-			Type:   service.TypeMap[req.Type],
-			Format: service.FormatMap[req.Format],
+			Type:   service2.TypeMap[req.Type],
+			Format: service2.FormatMap[req.Format],
 			Size:   req.Size,
 			Width:  req.Width,
 			Height: req.Height,
@@ -360,7 +360,7 @@ func (c *MessageController) SendGroupFileMessage(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.JsonFail(ctx, http.StatusBadRequest, 0, err.Error(), nil, "")
 	}
-	serviceClient, err := service.GetServiceMessageClient()
+	serviceClient, err := service2.GetServiceMessageClient()
 	if err != nil {
 		c.JsonFail(ctx, http.StatusInternalServerError, 0, err.Error(), nil, "")
 	}

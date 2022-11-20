@@ -4,12 +4,11 @@ import (
 	"context"
 	"github.com/ijidan/jsocial/api/proto_build"
 	repository2 "github.com/ijidan/jsocial/internal/app/user/repository"
+	"github.com/ijidan/jsocial/internal/global"
 	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/ijidan/jsocial/internal/pkg/funct"
-	"github.com/ijidan/jsocial/internal/pkg/global"
 	"github.com/ijidan/jsocial/internal/pkg/jwt"
-	"github.com/ijidan/jsocial/internal/pkg/repository"
-	"github.com/ijidan/jsocial/internal/pkg/service"
+	"github.com/ijidan/jsocial/internal/service"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -24,12 +23,12 @@ func (s *UserService) CreateUser(c context.Context, req *proto_build.UserCreateR
 		return nil, status.Error(codes.Internal, "password ,password_rpt not the same")
 	}
 	gender := repository2.GenderProtoToDb[req.Gender]
-	user, err := repository2.CreateUser(global.Db, req.Nickname, req.Password, gender, req.AvatarUrl, "")
+	user, err := repository2.CreateUser(global.GR.Db, req.Nickname, req.Password, gender, req.AvatarUrl, "")
 	if err != nil {
 		return nil, err
 	}
-	go repository.PublishNewUser(user.ID)
-	protoUser, err1 := repository2.GetProtoUserByUserId(global.Db, user.ID)
+	//go repository.PublishNewUser(user.ID)
+	protoUser, err1 := repository2.GetProtoUserByUserId(global.GR.Db, user.ID)
 	if err != nil {
 		return nil, err1
 	}
@@ -40,7 +39,7 @@ func (s *UserService) CreateUser(c context.Context, req *proto_build.UserCreateR
 
 func (s *UserService) GetUser(c context.Context, req *proto_build.UserGetRequest) (*proto_build.UserGetResponse, error) {
 	id := req.GetId()
-	protoUser, err := repository2.GetProtoUserByUserId(global.Db, id)
+	protoUser, err := repository2.GetProtoUserByUserId(global.GR.Db, id)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +51,7 @@ func (s *UserService) GetUser(c context.Context, req *proto_build.UserGetRequest
 }
 
 func (s *UserService) QueryUser(c context.Context, req *proto_build.UserQueryRequest) (*proto_build.UserQueryResponse, error) {
-	protoUserList, pager, err := repository2.QueryProtoUser(global.Db, req.GetKeyword(), req.GetPage(), req.GetPageSize())
+	protoUserList, pager, err := repository2.QueryProtoUser(global.GR.Db, req.GetKeyword(), req.GetPage(), req.GetPageSize())
 	if err != nil {
 		return nil, err
 	}
@@ -64,12 +63,12 @@ func (s *UserService) QueryUser(c context.Context, req *proto_build.UserQueryReq
 }
 
 func (s *UserService) UserLogin(c context.Context, req *proto_build.UserLoginRequest) (*proto_build.UserLoginResponse, error) {
-	protoUser, err := repository2.GetProtoUser(global.Db, req.GetNickname(), req.GetPassword())
+	protoUser, err := repository2.GetProtoUser(global.GR.Db, req.GetNickname(), req.GetPassword())
 	if err != nil {
 		return nil, err
 	}
 	userId := protoUser.Id
-	token, _ := jwt.GenJwtToken(userId, global.Conf.Jwt.Secret)
+	token, _ := jwt.GenJwtToken(userId, global.GR.Conf.Jwt.Secret)
 	rsp := &proto_build.UserLoginResponse{Token: token}
 	return rsp, nil
 }
@@ -79,7 +78,7 @@ func (s *UserService) UpdatePassword(c context.Context, req *proto_build.UpdateP
 		return nil, status.Error(codes.Internal, "password ,password_rpt not the same")
 	}
 	userId := s.GetLoginUserId()
-	err := repository2.UpdateUserPassword(global.Db, userId, req.Password)
+	err := repository2.UpdateUserPassword(global.GR.Db, userId, req.Password)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -90,7 +89,7 @@ func (s *UserService) UpdatePassword(c context.Context, req *proto_build.UpdateP
 func (s *UserService) UpdateAvatar(c context.Context, req *proto_build.UpdateAvatarRequest) (*proto_build.UpdateAvatarResponse, error) {
 	url := req.GetUrl()
 	userId := s.GetLoginUserId()
-	err := repository2.UpdateUserAvatar(global.Db, userId, url)
+	err := repository2.UpdateUserAvatar(global.GR.Db, userId, url)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

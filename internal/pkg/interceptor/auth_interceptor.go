@@ -4,12 +4,12 @@ import (
 	"context"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
+	"github.com/ijidan/jsocial/internal/global"
+	"github.com/ijidan/jsocial/internal/pkg/config"
+	"github.com/ijidan/jsocial/internal/pkg/jwt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"jim_service/config"
-	"jim_service/pkg"
 	"strings"
-
 )
 
 func AuthInterceptor(ctx context.Context) (context.Context, error) {
@@ -19,11 +19,11 @@ func AuthInterceptor(ctx context.Context) (context.Context, error) {
 		if !strings.Contains(contentType, "grpcurl") && !strings.Contains(contentType, "grpc-go") {
 			return nil, err
 		}
-		if len(token) == 0 && pkg.Conf.App.Env != config.EnvProduction {
+		if len(token) == 0 && global.GR.Conf.App.Env != config.EnvProduction {
 			return context.WithValue(ctx, "tokenUid", 0), nil
 		}
 	}
-	claim, err1 := pkg.ParseJwtToken(token, pkg.Conf.Jwt.Secret)
+	claim, err1 := jwt.ParseJwtToken(token, global.GR.Conf.Jwt.Secret)
 	if err1 != nil {
 		return nil, status.Errorf(codes.Unauthenticated, "invalid auth token: %v", err1)
 	}

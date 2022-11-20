@@ -4,10 +4,10 @@ import (
 	"context"
 	"github.com/ijidan/jsocial/api/proto_build"
 	"github.com/ijidan/jsocial/internal/app/group/repository"
+	"github.com/ijidan/jsocial/internal/global"
 	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/ijidan/jsocial/internal/pkg/funct"
-	"github.com/ijidan/jsocial/internal/pkg/global"
-	"github.com/ijidan/jsocial/internal/pkg/service"
+	"github.com/ijidan/jsocial/internal/service"
 )
 
 type GroupService struct {
@@ -17,11 +17,11 @@ type GroupService struct {
 
 func (s *GroupService) CreateGroup(c context.Context, req *proto_build.CreateGroupRequest) (*proto_build.CreateGroupResponse, error) {
 	userId := s.GetLoginUserId()
-	group, err := repository.CreateGroup(global.Db, userId, req.Name, req.Introduction, req.AvatarUrl)
+	group, err := repository.CreateGroup(global.GR.Db, userId, req.Name, req.Introduction, req.AvatarUrl)
 	if err != nil {
 		return nil, err
 	}
-	protoGroup, err1 := repository.GetProtoGroupByGroupId(global.Db, group.ID)
+	protoGroup, err1 := repository.GetProtoGroupByGroupId(global.GR.Db, group.ID)
 	if err != nil {
 		return nil, err1
 	}
@@ -31,7 +31,7 @@ func (s *GroupService) CreateGroup(c context.Context, req *proto_build.CreateGro
 }
 
 func (s *GroupService) UpdateGroup(c context.Context, req *proto_build.UpdateGroupRequest) (*proto_build.UpdateGroupResponse, error) {
-	err := repository.UpdateGroup(global.Db, req.Id, req.Name, req.Introduction, req.AvatarUrl)
+	err := repository.UpdateGroup(global.GR.Db, req.Id, req.Name, req.Introduction, req.AvatarUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (s *GroupService) UpdateGroup(c context.Context, req *proto_build.UpdateGro
 }
 
 func (s *GroupService) GetGroup(c context.Context, req *proto_build.GetGroupRequest) (*proto_build.GetGroupResponse, error) {
-	group, err := repository.GetProtoGroup(global.Db, req.Id)
+	group, err := repository.GetProtoGroup(global.GR.Db, req.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (s *GroupService) GetGroup(c context.Context, req *proto_build.GetGroupRequ
 }
 
 func (s *GroupService) QueryGroup(c context.Context, req *proto_build.QueryGroupRequest) (*proto_build.QueryGroupResponse, error) {
-	protoGroupList, pager, err := repository.QueryProtoGroup(global.Db, req.GetKeyword(), req.GetPage(), req.GetPageSize())
+	protoGroupList, pager, err := repository.QueryProtoGroup(global.GR.Db, req.GetKeyword(), req.GetPage(), req.GetPageSize())
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (s *GroupService) QueryGroup(c context.Context, req *proto_build.QueryGroup
 }
 
 func (s *GroupService) DeleteGroup(c context.Context, req *proto_build.DeleteGroupRequest) (*proto_build.DeleteGroupResponse, error) {
-	err := repository.DeleteGroup(global.Db, req.Id)
+	err := repository.DeleteGroup(global.GR.Db, req.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func (s *GroupService) DeleteGroup(c context.Context, req *proto_build.DeleteGro
 }
 
 func (s *GroupService) JoinGroup(c context.Context, req *proto_build.JoinGroupRequest) (*proto_build.JoinGroupResponse, error) {
-	err := repository.JoinGroup(global.Db, req.Id, req.UserId)
+	err := repository.JoinGroup(global.GR.Db, req.Id, req.UserId)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (s *GroupService) JoinGroup(c context.Context, req *proto_build.JoinGroupRe
 }
 
 func (s *GroupService) QuitGroup(c context.Context, req *proto_build.QuitGroupRequest) (*proto_build.QuitGroupResponse, error) {
-	err := repository.QuitGroup(global.Db, req.Id, req.UserId)
+	err := repository.QuitGroup(global.GR.Db, req.Id, req.UserId)
 	if err != nil {
 		return nil, err
 	}
