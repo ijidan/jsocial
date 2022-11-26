@@ -49,16 +49,19 @@ proto_build: dl
     		-I=third_party/googleapis \
     		-I=third_party/protoc-gen-validate \
     		-I=third_party/protobuf/src \
-          --doc_out=api/proto_build/ --doc_opt=html,docs.html  api/proto/*.proto
+            --doc_out=api --doc_opt=html,docs.html  api/proto/*.proto
 
 	protoc -I=api/proto \
 		-I=$(GOPATH)/pkg/mod \
 		-I=third_party/googleapis \
 		-I=third_party/protoc-gen-validate \
 		-I=third_party/protobuf/src \
-      --go_out=api/proto_build/ --go-grpc_out=api/proto_build/ --grpc-gateway_out=api/proto_build/ --validate_out="lang=go:api/proto_build/" \
-      --doc_out=api/proto_build/ --doc_opt=markdown,docs.md  \
-      --grpc-gateway_opt logtostderr=true api/proto/*.proto
+        --go_out=api \
+        --go-grpc_out=api \
+        --grpc-gateway_out=api  \
+        --validate_out="lang=go:api" \
+        --doc_out=api --doc_opt=markdown,docs.md  \
+        --grpc-gateway_opt logtostderr=true api/proto/*.proto
 tidy:
 	go mod tidy
 dl:
