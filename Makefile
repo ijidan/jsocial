@@ -31,8 +31,12 @@ help:
 	echo "make compose_down  -关闭docker-compose"
 	echo "make docker_stop -停止所有docker容器"
 	echo "make docker_rm -- 删除所有docker容器"
-	echo "make start_api -- 运行API"
+	echo "make test_api -- 运行API"
+	echo "make build_api -- 构建API"
+	echo "make start_api -- 启动API"
+	echo "make ping_api -- ping API"
 	echo "make wire --执行wire"
+
 
 check:
 	echo $(API_DIR)
@@ -100,8 +104,14 @@ docker_stop:
 	docker stop $(docker ps -a -q)
 docker_rm: docker_stop
 	docker rm $(docker ps -a -q)
-start_api:
-	go run $(CMD_DIR)/api/main.go -f $(CONFIGS_DIR)/api.yaml -r $(PROJECT_DIR)
+test_api:
+	go run $(CMD_DIR)/api/main.go -c $(CONFIGS_DIR)/api.yaml -d $(PROJECT_DIR)
+build_api:
+	go build -o $(CMD_DIR)/api/api $(CMD_DIR)/api/main.go
+start_api:build_api
+	nohup $(CMD_DIR)/api/api &
+ping_api:
+	curl 127.0.0.1:9096/api/v1/ping
 wire:
 	cd $(INTERNAL_DIR)/injector && wire
 command:
