@@ -2,10 +2,9 @@ syntax = "proto3";
 package message;
 option go_package = "proto_build/;proto_build";
 
-
 import "google/api/annotations.proto";
 //import "github.com/mwitkow/go-proto-validators@v0.3.2/validator.proto";
-import "github.com/envoyproxy/protoc-gen-validate@v0.6.3/validate/validate.proto";
+import "validate/validate.proto";
 
 //消息类型
 enum MESSAGE_TYPE {

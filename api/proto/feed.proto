@@ -4,10 +4,10 @@ option go_package = "proto_build/;proto_build";
 
 import "google/protobuf/timestamp.proto";
 import "common.proto";
+
 import "google/api/annotations.proto";
 //import "github.com/mwitkow/go-proto-validators@v0.3.2/validator.proto";
-import "github.com/envoyproxy/protoc-gen-validate@v0.6.3/validate/validate.proto";
-
+import "validate/validate.proto";
 
 enum FeedType{
   Txt = 0; //文本
@@ -66,7 +66,7 @@ message FeedLike{
 
 message FeedCreateRequest{
   FeedType type = 1 [(validate.rules).enum= {defined_only :true}];
-  string content = 2 [(validate.rules).string = {ignore_empty:true,pattern: "^\\s{2,500}$"}];
+  string content = 2 [(validate.rules).string = {ignore_empty: true,pattern: "^\\s{2,500}$"}];
   repeated string resource = 3 [(validate.rules).repeated.items.string = {uri: true,pattern:"(jpg|jpeg|png|avi|mov|rmvb|rm|flv|mp4|3gp)$"}];
 }
 

@@ -8,11 +8,14 @@ CMD_DIR				=$(PROJECT_DIR)cmd
 CONFIGS_DIR			=$(PROJECT_DIR)configs
 INTERNAL_DIR		=$(PROJECT_DIR)internal
 
-.PHONY :all help dl build run compose clean gormt test grpcurl start status stop proto_update command compose_up compose_down docker_stop docker_rm
+GO_ENV_PATH=`go env GOPATH`
+GOPATH=/home/jidan/go
+
+.PHONY :all help check proto_build tidy dl build run compose clean gormt test grpcurl start status stop  command compose_up compose_down docker_stop docker_rm
 
 help:
 	echo "make check -  查看相关信息"
-	echo "make proto -  grpc编译"
+	echo "make proto_build -  grpc编译"
 	echo "make tidy -  Go Mod tidy"
 	echo "make dl -  Go Mod下载"
 	echo "make build - 编译 Go 代码, 生成二进制文件"
@@ -25,7 +28,6 @@ help:
 	echo "make start - goreman start"
 	echo "make status - goreman run status"
 	echo "make stop - goreman run stop"
-	echo "make proto_update -proto 更新"
 	echo "make command -显示所有bin目录命令"
 	echo "make compose_up  -启动docker-compose"
 	echo "make compose_down  -关闭docker-compose"
@@ -39,21 +41,24 @@ help:
 
 
 check:
-	echo $(API_DIR)
-proto: dl
-	protoc -I=internal/jim_proto/proto \
+	@echo $(API_DIR)
+	@echo $(GOPATH)
+proto_build: dl
+	protoc -I=api/proto \
     		-I=$(GOPATH)/pkg/mod \
-    		-I=$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gatewayv1.16.0/third_party/googleapis \
-    		-I=$(GOPATH)/pkg/mod/github.com/envoyproxy/protoc-gen-validatev0.6.3 \
-          --doc_out=internal/jim_proto/ --doc_opt=html,docs.html  internal/jim_proto/proto/*.proto
+    		-I=third_party/googleapis \
+    		-I=third_party/protoc-gen-validate \
+    		-I=third_party/protobuf/src \
+          --doc_out=api/proto_build/ --doc_opt=html,docs.html  api/proto/*.proto
 
-	protoc -I=internal/jim_proto/proto \
+	protoc -I=api/proto \
 		-I=$(GOPATH)/pkg/mod \
-		-I=$(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gatewayv1.16.0/third_party/googleapis \
-		-I=$(GOPATH)/pkg/mod/github.com/envoyproxy/protoc-gen-validatev0.6.3 \
-      --go_out=internal/jim_proto/ --go-grpc_out=internal/jim_proto/ --grpc-gateway_out=internal/jim_proto/ --validate_out="lang=go:internal/jim_proto/" \
-      --doc_out=internal/jim_proto/ --doc_opt=markdown,docs.md  \
-      --grpc-gateway_opt logtostderr=true internal/jim_proto/proto/*.proto
+		-I=third_party/googleapis \
+		-I=third_party/protoc-gen-validate \
+		-I=third_party/protobuf/src \
+      --go_out=api/proto_build/ --go-grpc_out=api/proto_build/ --grpc-gateway_out=api/proto_build/ --validate_out="lang=go:api/proto_build/" \
+      --doc_out=api/proto_build/ --doc_opt=markdown,docs.md  \
+      --grpc-gateway_opt logtostderr=true api/proto/*.proto
 tidy:
 	go mod tidy
 dl:
@@ -89,9 +94,6 @@ status:
 	goreman run status
 stop:
 	goreman run stop
-check:
-proto_update:
-	cd internal/jim_proto && git pull origin master
 db_up:
 	migrate -path migrate -database "mysql://root:roottcp(127.0.0.1:3306)/jim" -verbose up
 db_down:
