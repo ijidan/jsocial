@@ -82,7 +82,7 @@ clean:
 gormt:
 	gormt
 gen:
-	go run cmd/main/main.go gen_gorm
+	go run scripts/main/main.go gen:gorm
 token:
 	go run cmd/main/main.go gen_token
 test:
