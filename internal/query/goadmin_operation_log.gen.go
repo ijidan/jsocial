@@ -42,7 +42,7 @@ func newGoadminOperationLog(db *gorm.DB) goadminOperationLog {
 }
 
 type goadminOperationLog struct {
-	goadminOperationLogDo goadminOperationLogDo
+	goadminOperationLogDo
 
 	ALL       field.Asterisk
 	ID        field.Int32
@@ -83,14 +83,6 @@ func (g *goadminOperationLog) updateTableName(table string) *goadminOperationLog
 	return g
 }
 
-func (g *goadminOperationLog) WithContext(ctx context.Context) *goadminOperationLogDo {
-	return g.goadminOperationLogDo.WithContext(ctx)
-}
-
-func (g goadminOperationLog) TableName() string { return g.goadminOperationLogDo.TableName() }
-
-func (g goadminOperationLog) Alias() string { return g.goadminOperationLogDo.Alias() }
-
 func (g *goadminOperationLog) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -119,95 +111,155 @@ func (g goadminOperationLog) clone(db *gorm.DB) goadminOperationLog {
 
 type goadminOperationLogDo struct{ gen.DO }
 
-func (g goadminOperationLogDo) Debug() *goadminOperationLogDo {
+type IGoadminOperationLogDo interface {
+	gen.SubQuery
+	Debug() IGoadminOperationLogDo
+	WithContext(ctx context.Context) IGoadminOperationLogDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IGoadminOperationLogDo
+	WriteDB() IGoadminOperationLogDo
+	As(alias string) gen.Dao
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IGoadminOperationLogDo
+	Not(conds ...gen.Condition) IGoadminOperationLogDo
+	Or(conds ...gen.Condition) IGoadminOperationLogDo
+	Select(conds ...field.Expr) IGoadminOperationLogDo
+	Where(conds ...gen.Condition) IGoadminOperationLogDo
+	Order(conds ...field.Expr) IGoadminOperationLogDo
+	Distinct(cols ...field.Expr) IGoadminOperationLogDo
+	Omit(cols ...field.Expr) IGoadminOperationLogDo
+	Join(table schema.Tabler, on ...field.Expr) IGoadminOperationLogDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IGoadminOperationLogDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IGoadminOperationLogDo
+	Group(cols ...field.Expr) IGoadminOperationLogDo
+	Having(conds ...gen.Condition) IGoadminOperationLogDo
+	Limit(limit int) IGoadminOperationLogDo
+	Offset(offset int) IGoadminOperationLogDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IGoadminOperationLogDo
+	Unscoped() IGoadminOperationLogDo
+	Create(values ...*model.GoadminOperationLog) error
+	CreateInBatches(values []*model.GoadminOperationLog, batchSize int) error
+	Save(values ...*model.GoadminOperationLog) error
+	First() (*model.GoadminOperationLog, error)
+	Take() (*model.GoadminOperationLog, error)
+	Last() (*model.GoadminOperationLog, error)
+	Find() ([]*model.GoadminOperationLog, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.GoadminOperationLog, err error)
+	FindInBatches(result *[]*model.GoadminOperationLog, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.GoadminOperationLog) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IGoadminOperationLogDo
+	Assign(attrs ...field.AssignExpr) IGoadminOperationLogDo
+	Joins(fields ...field.RelationField) IGoadminOperationLogDo
+	Preload(fields ...field.RelationField) IGoadminOperationLogDo
+	FirstOrInit() (*model.GoadminOperationLog, error)
+	FirstOrCreate() (*model.GoadminOperationLog, error)
+	FindByPage(offset int, limit int) (result []*model.GoadminOperationLog, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IGoadminOperationLogDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (g goadminOperationLogDo) Debug() IGoadminOperationLogDo {
 	return g.withDO(g.DO.Debug())
 }
 
-func (g goadminOperationLogDo) WithContext(ctx context.Context) *goadminOperationLogDo {
+func (g goadminOperationLogDo) WithContext(ctx context.Context) IGoadminOperationLogDo {
 	return g.withDO(g.DO.WithContext(ctx))
 }
 
-func (g goadminOperationLogDo) ReadDB() *goadminOperationLogDo {
+func (g goadminOperationLogDo) ReadDB() IGoadminOperationLogDo {
 	return g.Clauses(dbresolver.Read)
 }
 
-func (g goadminOperationLogDo) WriteDB() *goadminOperationLogDo {
+func (g goadminOperationLogDo) WriteDB() IGoadminOperationLogDo {
 	return g.Clauses(dbresolver.Write)
 }
 
-func (g goadminOperationLogDo) Clauses(conds ...clause.Expression) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Clauses(conds ...clause.Expression) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Clauses(conds...))
 }
 
-func (g goadminOperationLogDo) Returning(value interface{}, columns ...string) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Returning(value interface{}, columns ...string) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Returning(value, columns...))
 }
 
-func (g goadminOperationLogDo) Not(conds ...gen.Condition) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Not(conds ...gen.Condition) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Not(conds...))
 }
 
-func (g goadminOperationLogDo) Or(conds ...gen.Condition) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Or(conds ...gen.Condition) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Or(conds...))
 }
 
-func (g goadminOperationLogDo) Select(conds ...field.Expr) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Select(conds ...field.Expr) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Select(conds...))
 }
 
-func (g goadminOperationLogDo) Where(conds ...gen.Condition) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Where(conds ...gen.Condition) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Where(conds...))
 }
 
-func (g goadminOperationLogDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) IGoadminOperationLogDo {
 	return g.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
-func (g goadminOperationLogDo) Order(conds ...field.Expr) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Order(conds ...field.Expr) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Order(conds...))
 }
 
-func (g goadminOperationLogDo) Distinct(cols ...field.Expr) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Distinct(cols ...field.Expr) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Distinct(cols...))
 }
 
-func (g goadminOperationLogDo) Omit(cols ...field.Expr) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Omit(cols ...field.Expr) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Omit(cols...))
 }
 
-func (g goadminOperationLogDo) Join(table schema.Tabler, on ...field.Expr) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Join(table schema.Tabler, on ...field.Expr) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Join(table, on...))
 }
 
-func (g goadminOperationLogDo) LeftJoin(table schema.Tabler, on ...field.Expr) *goadminOperationLogDo {
+func (g goadminOperationLogDo) LeftJoin(table schema.Tabler, on ...field.Expr) IGoadminOperationLogDo {
 	return g.withDO(g.DO.LeftJoin(table, on...))
 }
 
-func (g goadminOperationLogDo) RightJoin(table schema.Tabler, on ...field.Expr) *goadminOperationLogDo {
+func (g goadminOperationLogDo) RightJoin(table schema.Tabler, on ...field.Expr) IGoadminOperationLogDo {
 	return g.withDO(g.DO.RightJoin(table, on...))
 }
 
-func (g goadminOperationLogDo) Group(cols ...field.Expr) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Group(cols ...field.Expr) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Group(cols...))
 }
 
-func (g goadminOperationLogDo) Having(conds ...gen.Condition) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Having(conds ...gen.Condition) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Having(conds...))
 }
 
-func (g goadminOperationLogDo) Limit(limit int) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Limit(limit int) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Limit(limit))
 }
 
-func (g goadminOperationLogDo) Offset(offset int) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Offset(offset int) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Offset(offset))
 }
 
-func (g goadminOperationLogDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Scopes(funcs...))
 }
 
-func (g goadminOperationLogDo) Unscoped() *goadminOperationLogDo {
+func (g goadminOperationLogDo) Unscoped() IGoadminOperationLogDo {
 	return g.withDO(g.DO.Unscoped())
 }
 
@@ -273,22 +325,22 @@ func (g goadminOperationLogDo) FindInBatches(result *[]*model.GoadminOperationLo
 	return g.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (g goadminOperationLogDo) Attrs(attrs ...field.AssignExpr) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Attrs(attrs ...field.AssignExpr) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Attrs(attrs...))
 }
 
-func (g goadminOperationLogDo) Assign(attrs ...field.AssignExpr) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Assign(attrs ...field.AssignExpr) IGoadminOperationLogDo {
 	return g.withDO(g.DO.Assign(attrs...))
 }
 
-func (g goadminOperationLogDo) Joins(fields ...field.RelationField) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Joins(fields ...field.RelationField) IGoadminOperationLogDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Joins(_f))
 	}
 	return &g
 }
 
-func (g goadminOperationLogDo) Preload(fields ...field.RelationField) *goadminOperationLogDo {
+func (g goadminOperationLogDo) Preload(fields ...field.RelationField) IGoadminOperationLogDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Preload(_f))
 	}

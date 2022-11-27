@@ -44,7 +44,7 @@ func newDeviceAck(db *gorm.DB) deviceAck {
 }
 
 type deviceAck struct {
-	deviceAckDo deviceAckDo
+	deviceAckDo
 
 	ALL        field.Asterisk
 	ID         field.Int64 // 自增主键
@@ -79,14 +79,6 @@ func (d *deviceAck) updateTableName(table string) *deviceAck {
 
 	return d
 }
-
-func (d *deviceAck) WithContext(ctx context.Context) *deviceAckDo {
-	return d.deviceAckDo.WithContext(ctx)
-}
-
-func (d deviceAck) TableName() string { return d.deviceAckDo.TableName() }
-
-func (d deviceAck) Alias() string { return d.deviceAckDo.Alias() }
 
 func (d *deviceAck) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := d.fieldMap[fieldName]
@@ -180,95 +172,155 @@ func (a deviceAckBelongsToDeviceTx) Count() int64 {
 
 type deviceAckDo struct{ gen.DO }
 
-func (d deviceAckDo) Debug() *deviceAckDo {
+type IDeviceAckDo interface {
+	gen.SubQuery
+	Debug() IDeviceAckDo
+	WithContext(ctx context.Context) IDeviceAckDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IDeviceAckDo
+	WriteDB() IDeviceAckDo
+	As(alias string) gen.Dao
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IDeviceAckDo
+	Not(conds ...gen.Condition) IDeviceAckDo
+	Or(conds ...gen.Condition) IDeviceAckDo
+	Select(conds ...field.Expr) IDeviceAckDo
+	Where(conds ...gen.Condition) IDeviceAckDo
+	Order(conds ...field.Expr) IDeviceAckDo
+	Distinct(cols ...field.Expr) IDeviceAckDo
+	Omit(cols ...field.Expr) IDeviceAckDo
+	Join(table schema.Tabler, on ...field.Expr) IDeviceAckDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IDeviceAckDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IDeviceAckDo
+	Group(cols ...field.Expr) IDeviceAckDo
+	Having(conds ...gen.Condition) IDeviceAckDo
+	Limit(limit int) IDeviceAckDo
+	Offset(offset int) IDeviceAckDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IDeviceAckDo
+	Unscoped() IDeviceAckDo
+	Create(values ...*model.DeviceAck) error
+	CreateInBatches(values []*model.DeviceAck, batchSize int) error
+	Save(values ...*model.DeviceAck) error
+	First() (*model.DeviceAck, error)
+	Take() (*model.DeviceAck, error)
+	Last() (*model.DeviceAck, error)
+	Find() ([]*model.DeviceAck, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.DeviceAck, err error)
+	FindInBatches(result *[]*model.DeviceAck, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.DeviceAck) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IDeviceAckDo
+	Assign(attrs ...field.AssignExpr) IDeviceAckDo
+	Joins(fields ...field.RelationField) IDeviceAckDo
+	Preload(fields ...field.RelationField) IDeviceAckDo
+	FirstOrInit() (*model.DeviceAck, error)
+	FirstOrCreate() (*model.DeviceAck, error)
+	FindByPage(offset int, limit int) (result []*model.DeviceAck, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IDeviceAckDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (d deviceAckDo) Debug() IDeviceAckDo {
 	return d.withDO(d.DO.Debug())
 }
 
-func (d deviceAckDo) WithContext(ctx context.Context) *deviceAckDo {
+func (d deviceAckDo) WithContext(ctx context.Context) IDeviceAckDo {
 	return d.withDO(d.DO.WithContext(ctx))
 }
 
-func (d deviceAckDo) ReadDB() *deviceAckDo {
+func (d deviceAckDo) ReadDB() IDeviceAckDo {
 	return d.Clauses(dbresolver.Read)
 }
 
-func (d deviceAckDo) WriteDB() *deviceAckDo {
+func (d deviceAckDo) WriteDB() IDeviceAckDo {
 	return d.Clauses(dbresolver.Write)
 }
 
-func (d deviceAckDo) Clauses(conds ...clause.Expression) *deviceAckDo {
+func (d deviceAckDo) Clauses(conds ...clause.Expression) IDeviceAckDo {
 	return d.withDO(d.DO.Clauses(conds...))
 }
 
-func (d deviceAckDo) Returning(value interface{}, columns ...string) *deviceAckDo {
+func (d deviceAckDo) Returning(value interface{}, columns ...string) IDeviceAckDo {
 	return d.withDO(d.DO.Returning(value, columns...))
 }
 
-func (d deviceAckDo) Not(conds ...gen.Condition) *deviceAckDo {
+func (d deviceAckDo) Not(conds ...gen.Condition) IDeviceAckDo {
 	return d.withDO(d.DO.Not(conds...))
 }
 
-func (d deviceAckDo) Or(conds ...gen.Condition) *deviceAckDo {
+func (d deviceAckDo) Or(conds ...gen.Condition) IDeviceAckDo {
 	return d.withDO(d.DO.Or(conds...))
 }
 
-func (d deviceAckDo) Select(conds ...field.Expr) *deviceAckDo {
+func (d deviceAckDo) Select(conds ...field.Expr) IDeviceAckDo {
 	return d.withDO(d.DO.Select(conds...))
 }
 
-func (d deviceAckDo) Where(conds ...gen.Condition) *deviceAckDo {
+func (d deviceAckDo) Where(conds ...gen.Condition) IDeviceAckDo {
 	return d.withDO(d.DO.Where(conds...))
 }
 
-func (d deviceAckDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *deviceAckDo {
+func (d deviceAckDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) IDeviceAckDo {
 	return d.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
-func (d deviceAckDo) Order(conds ...field.Expr) *deviceAckDo {
+func (d deviceAckDo) Order(conds ...field.Expr) IDeviceAckDo {
 	return d.withDO(d.DO.Order(conds...))
 }
 
-func (d deviceAckDo) Distinct(cols ...field.Expr) *deviceAckDo {
+func (d deviceAckDo) Distinct(cols ...field.Expr) IDeviceAckDo {
 	return d.withDO(d.DO.Distinct(cols...))
 }
 
-func (d deviceAckDo) Omit(cols ...field.Expr) *deviceAckDo {
+func (d deviceAckDo) Omit(cols ...field.Expr) IDeviceAckDo {
 	return d.withDO(d.DO.Omit(cols...))
 }
 
-func (d deviceAckDo) Join(table schema.Tabler, on ...field.Expr) *deviceAckDo {
+func (d deviceAckDo) Join(table schema.Tabler, on ...field.Expr) IDeviceAckDo {
 	return d.withDO(d.DO.Join(table, on...))
 }
 
-func (d deviceAckDo) LeftJoin(table schema.Tabler, on ...field.Expr) *deviceAckDo {
+func (d deviceAckDo) LeftJoin(table schema.Tabler, on ...field.Expr) IDeviceAckDo {
 	return d.withDO(d.DO.LeftJoin(table, on...))
 }
 
-func (d deviceAckDo) RightJoin(table schema.Tabler, on ...field.Expr) *deviceAckDo {
+func (d deviceAckDo) RightJoin(table schema.Tabler, on ...field.Expr) IDeviceAckDo {
 	return d.withDO(d.DO.RightJoin(table, on...))
 }
 
-func (d deviceAckDo) Group(cols ...field.Expr) *deviceAckDo {
+func (d deviceAckDo) Group(cols ...field.Expr) IDeviceAckDo {
 	return d.withDO(d.DO.Group(cols...))
 }
 
-func (d deviceAckDo) Having(conds ...gen.Condition) *deviceAckDo {
+func (d deviceAckDo) Having(conds ...gen.Condition) IDeviceAckDo {
 	return d.withDO(d.DO.Having(conds...))
 }
 
-func (d deviceAckDo) Limit(limit int) *deviceAckDo {
+func (d deviceAckDo) Limit(limit int) IDeviceAckDo {
 	return d.withDO(d.DO.Limit(limit))
 }
 
-func (d deviceAckDo) Offset(offset int) *deviceAckDo {
+func (d deviceAckDo) Offset(offset int) IDeviceAckDo {
 	return d.withDO(d.DO.Offset(offset))
 }
 
-func (d deviceAckDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *deviceAckDo {
+func (d deviceAckDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IDeviceAckDo {
 	return d.withDO(d.DO.Scopes(funcs...))
 }
 
-func (d deviceAckDo) Unscoped() *deviceAckDo {
+func (d deviceAckDo) Unscoped() IDeviceAckDo {
 	return d.withDO(d.DO.Unscoped())
 }
 
@@ -334,22 +386,22 @@ func (d deviceAckDo) FindInBatches(result *[]*model.DeviceAck, batchSize int, fc
 	return d.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (d deviceAckDo) Attrs(attrs ...field.AssignExpr) *deviceAckDo {
+func (d deviceAckDo) Attrs(attrs ...field.AssignExpr) IDeviceAckDo {
 	return d.withDO(d.DO.Attrs(attrs...))
 }
 
-func (d deviceAckDo) Assign(attrs ...field.AssignExpr) *deviceAckDo {
+func (d deviceAckDo) Assign(attrs ...field.AssignExpr) IDeviceAckDo {
 	return d.withDO(d.DO.Assign(attrs...))
 }
 
-func (d deviceAckDo) Joins(fields ...field.RelationField) *deviceAckDo {
+func (d deviceAckDo) Joins(fields ...field.RelationField) IDeviceAckDo {
 	for _, _f := range fields {
 		d = *d.withDO(d.DO.Joins(_f))
 	}
 	return &d
 }
 
-func (d deviceAckDo) Preload(fields ...field.RelationField) *deviceAckDo {
+func (d deviceAckDo) Preload(fields ...field.RelationField) IDeviceAckDo {
 	for _, _f := range fields {
 		d = *d.withDO(d.DO.Preload(_f))
 	}

@@ -30,7 +30,7 @@ func newGoadminMenu(db *gorm.DB) goadminMenu {
 	_goadminMenu.ID = field.NewInt32(tableName, "id")
 	_goadminMenu.ParentID = field.NewInt32(tableName, "parent_id")
 	_goadminMenu.Type = field.NewInt32(tableName, "type")
-	_goadminMenu.Order = field.NewInt32(tableName, "order")
+	_goadminMenu.Order_ = field.NewInt32(tableName, "order")
 	_goadminMenu.Title = field.NewString(tableName, "title")
 	_goadminMenu.Icon = field.NewString(tableName, "icon")
 	_goadminMenu.URI = field.NewString(tableName, "uri")
@@ -46,13 +46,13 @@ func newGoadminMenu(db *gorm.DB) goadminMenu {
 }
 
 type goadminMenu struct {
-	goadminMenuDo goadminMenuDo
+	goadminMenuDo
 
 	ALL        field.Asterisk
 	ID         field.Int32
 	ParentID   field.Int32
 	Type       field.Int32
-	Order      field.Int32
+	Order_     field.Int32
 	Title      field.String
 	Icon       field.String
 	URI        field.String
@@ -80,7 +80,7 @@ func (g *goadminMenu) updateTableName(table string) *goadminMenu {
 	g.ID = field.NewInt32(table, "id")
 	g.ParentID = field.NewInt32(table, "parent_id")
 	g.Type = field.NewInt32(table, "type")
-	g.Order = field.NewInt32(table, "order")
+	g.Order_ = field.NewInt32(table, "order")
 	g.Title = field.NewString(table, "title")
 	g.Icon = field.NewString(table, "icon")
 	g.URI = field.NewString(table, "uri")
@@ -94,14 +94,6 @@ func (g *goadminMenu) updateTableName(table string) *goadminMenu {
 
 	return g
 }
-
-func (g *goadminMenu) WithContext(ctx context.Context) *goadminMenuDo {
-	return g.goadminMenuDo.WithContext(ctx)
-}
-
-func (g goadminMenu) TableName() string { return g.goadminMenuDo.TableName() }
-
-func (g goadminMenu) Alias() string { return g.goadminMenuDo.Alias() }
 
 func (g *goadminMenu) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
@@ -117,7 +109,7 @@ func (g *goadminMenu) fillFieldMap() {
 	g.fieldMap["id"] = g.ID
 	g.fieldMap["parent_id"] = g.ParentID
 	g.fieldMap["type"] = g.Type
-	g.fieldMap["order"] = g.Order
+	g.fieldMap["order"] = g.Order_
 	g.fieldMap["title"] = g.Title
 	g.fieldMap["icon"] = g.Icon
 	g.fieldMap["uri"] = g.URI
@@ -135,95 +127,155 @@ func (g goadminMenu) clone(db *gorm.DB) goadminMenu {
 
 type goadminMenuDo struct{ gen.DO }
 
-func (g goadminMenuDo) Debug() *goadminMenuDo {
+type IGoadminMenuDo interface {
+	gen.SubQuery
+	Debug() IGoadminMenuDo
+	WithContext(ctx context.Context) IGoadminMenuDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IGoadminMenuDo
+	WriteDB() IGoadminMenuDo
+	As(alias string) gen.Dao
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IGoadminMenuDo
+	Not(conds ...gen.Condition) IGoadminMenuDo
+	Or(conds ...gen.Condition) IGoadminMenuDo
+	Select(conds ...field.Expr) IGoadminMenuDo
+	Where(conds ...gen.Condition) IGoadminMenuDo
+	Order(conds ...field.Expr) IGoadminMenuDo
+	Distinct(cols ...field.Expr) IGoadminMenuDo
+	Omit(cols ...field.Expr) IGoadminMenuDo
+	Join(table schema.Tabler, on ...field.Expr) IGoadminMenuDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IGoadminMenuDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IGoadminMenuDo
+	Group(cols ...field.Expr) IGoadminMenuDo
+	Having(conds ...gen.Condition) IGoadminMenuDo
+	Limit(limit int) IGoadminMenuDo
+	Offset(offset int) IGoadminMenuDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IGoadminMenuDo
+	Unscoped() IGoadminMenuDo
+	Create(values ...*model.GoadminMenu) error
+	CreateInBatches(values []*model.GoadminMenu, batchSize int) error
+	Save(values ...*model.GoadminMenu) error
+	First() (*model.GoadminMenu, error)
+	Take() (*model.GoadminMenu, error)
+	Last() (*model.GoadminMenu, error)
+	Find() ([]*model.GoadminMenu, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.GoadminMenu, err error)
+	FindInBatches(result *[]*model.GoadminMenu, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.GoadminMenu) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IGoadminMenuDo
+	Assign(attrs ...field.AssignExpr) IGoadminMenuDo
+	Joins(fields ...field.RelationField) IGoadminMenuDo
+	Preload(fields ...field.RelationField) IGoadminMenuDo
+	FirstOrInit() (*model.GoadminMenu, error)
+	FirstOrCreate() (*model.GoadminMenu, error)
+	FindByPage(offset int, limit int) (result []*model.GoadminMenu, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IGoadminMenuDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (g goadminMenuDo) Debug() IGoadminMenuDo {
 	return g.withDO(g.DO.Debug())
 }
 
-func (g goadminMenuDo) WithContext(ctx context.Context) *goadminMenuDo {
+func (g goadminMenuDo) WithContext(ctx context.Context) IGoadminMenuDo {
 	return g.withDO(g.DO.WithContext(ctx))
 }
 
-func (g goadminMenuDo) ReadDB() *goadminMenuDo {
+func (g goadminMenuDo) ReadDB() IGoadminMenuDo {
 	return g.Clauses(dbresolver.Read)
 }
 
-func (g goadminMenuDo) WriteDB() *goadminMenuDo {
+func (g goadminMenuDo) WriteDB() IGoadminMenuDo {
 	return g.Clauses(dbresolver.Write)
 }
 
-func (g goadminMenuDo) Clauses(conds ...clause.Expression) *goadminMenuDo {
+func (g goadminMenuDo) Clauses(conds ...clause.Expression) IGoadminMenuDo {
 	return g.withDO(g.DO.Clauses(conds...))
 }
 
-func (g goadminMenuDo) Returning(value interface{}, columns ...string) *goadminMenuDo {
+func (g goadminMenuDo) Returning(value interface{}, columns ...string) IGoadminMenuDo {
 	return g.withDO(g.DO.Returning(value, columns...))
 }
 
-func (g goadminMenuDo) Not(conds ...gen.Condition) *goadminMenuDo {
+func (g goadminMenuDo) Not(conds ...gen.Condition) IGoadminMenuDo {
 	return g.withDO(g.DO.Not(conds...))
 }
 
-func (g goadminMenuDo) Or(conds ...gen.Condition) *goadminMenuDo {
+func (g goadminMenuDo) Or(conds ...gen.Condition) IGoadminMenuDo {
 	return g.withDO(g.DO.Or(conds...))
 }
 
-func (g goadminMenuDo) Select(conds ...field.Expr) *goadminMenuDo {
+func (g goadminMenuDo) Select(conds ...field.Expr) IGoadminMenuDo {
 	return g.withDO(g.DO.Select(conds...))
 }
 
-func (g goadminMenuDo) Where(conds ...gen.Condition) *goadminMenuDo {
+func (g goadminMenuDo) Where(conds ...gen.Condition) IGoadminMenuDo {
 	return g.withDO(g.DO.Where(conds...))
 }
 
-func (g goadminMenuDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *goadminMenuDo {
+func (g goadminMenuDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) IGoadminMenuDo {
 	return g.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
-func (g goadminMenuDo) Order(conds ...field.Expr) *goadminMenuDo {
+func (g goadminMenuDo) Order(conds ...field.Expr) IGoadminMenuDo {
 	return g.withDO(g.DO.Order(conds...))
 }
 
-func (g goadminMenuDo) Distinct(cols ...field.Expr) *goadminMenuDo {
+func (g goadminMenuDo) Distinct(cols ...field.Expr) IGoadminMenuDo {
 	return g.withDO(g.DO.Distinct(cols...))
 }
 
-func (g goadminMenuDo) Omit(cols ...field.Expr) *goadminMenuDo {
+func (g goadminMenuDo) Omit(cols ...field.Expr) IGoadminMenuDo {
 	return g.withDO(g.DO.Omit(cols...))
 }
 
-func (g goadminMenuDo) Join(table schema.Tabler, on ...field.Expr) *goadminMenuDo {
+func (g goadminMenuDo) Join(table schema.Tabler, on ...field.Expr) IGoadminMenuDo {
 	return g.withDO(g.DO.Join(table, on...))
 }
 
-func (g goadminMenuDo) LeftJoin(table schema.Tabler, on ...field.Expr) *goadminMenuDo {
+func (g goadminMenuDo) LeftJoin(table schema.Tabler, on ...field.Expr) IGoadminMenuDo {
 	return g.withDO(g.DO.LeftJoin(table, on...))
 }
 
-func (g goadminMenuDo) RightJoin(table schema.Tabler, on ...field.Expr) *goadminMenuDo {
+func (g goadminMenuDo) RightJoin(table schema.Tabler, on ...field.Expr) IGoadminMenuDo {
 	return g.withDO(g.DO.RightJoin(table, on...))
 }
 
-func (g goadminMenuDo) Group(cols ...field.Expr) *goadminMenuDo {
+func (g goadminMenuDo) Group(cols ...field.Expr) IGoadminMenuDo {
 	return g.withDO(g.DO.Group(cols...))
 }
 
-func (g goadminMenuDo) Having(conds ...gen.Condition) *goadminMenuDo {
+func (g goadminMenuDo) Having(conds ...gen.Condition) IGoadminMenuDo {
 	return g.withDO(g.DO.Having(conds...))
 }
 
-func (g goadminMenuDo) Limit(limit int) *goadminMenuDo {
+func (g goadminMenuDo) Limit(limit int) IGoadminMenuDo {
 	return g.withDO(g.DO.Limit(limit))
 }
 
-func (g goadminMenuDo) Offset(offset int) *goadminMenuDo {
+func (g goadminMenuDo) Offset(offset int) IGoadminMenuDo {
 	return g.withDO(g.DO.Offset(offset))
 }
 
-func (g goadminMenuDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *goadminMenuDo {
+func (g goadminMenuDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IGoadminMenuDo {
 	return g.withDO(g.DO.Scopes(funcs...))
 }
 
-func (g goadminMenuDo) Unscoped() *goadminMenuDo {
+func (g goadminMenuDo) Unscoped() IGoadminMenuDo {
 	return g.withDO(g.DO.Unscoped())
 }
 
@@ -289,22 +341,22 @@ func (g goadminMenuDo) FindInBatches(result *[]*model.GoadminMenu, batchSize int
 	return g.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (g goadminMenuDo) Attrs(attrs ...field.AssignExpr) *goadminMenuDo {
+func (g goadminMenuDo) Attrs(attrs ...field.AssignExpr) IGoadminMenuDo {
 	return g.withDO(g.DO.Attrs(attrs...))
 }
 
-func (g goadminMenuDo) Assign(attrs ...field.AssignExpr) *goadminMenuDo {
+func (g goadminMenuDo) Assign(attrs ...field.AssignExpr) IGoadminMenuDo {
 	return g.withDO(g.DO.Assign(attrs...))
 }
 
-func (g goadminMenuDo) Joins(fields ...field.RelationField) *goadminMenuDo {
+func (g goadminMenuDo) Joins(fields ...field.RelationField) IGoadminMenuDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Joins(_f))
 	}
 	return &g
 }
 
-func (g goadminMenuDo) Preload(fields ...field.RelationField) *goadminMenuDo {
+func (g goadminMenuDo) Preload(fields ...field.RelationField) IGoadminMenuDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Preload(_f))
 	}

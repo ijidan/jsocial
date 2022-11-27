@@ -41,7 +41,7 @@ func newMessageContent(db *gorm.DB) messageContent {
 }
 
 type messageContent struct {
-	messageContentDo messageContentDo
+	messageContentDo
 
 	ALL       field.Asterisk
 	ID        field.Int64
@@ -80,14 +80,6 @@ func (m *messageContent) updateTableName(table string) *messageContent {
 	return m
 }
 
-func (m *messageContent) WithContext(ctx context.Context) *messageContentDo {
-	return m.messageContentDo.WithContext(ctx)
-}
-
-func (m messageContent) TableName() string { return m.messageContentDo.TableName() }
-
-func (m messageContent) Alias() string { return m.messageContentDo.Alias() }
-
 func (m *messageContent) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := m.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -115,95 +107,155 @@ func (m messageContent) clone(db *gorm.DB) messageContent {
 
 type messageContentDo struct{ gen.DO }
 
-func (m messageContentDo) Debug() *messageContentDo {
+type IMessageContentDo interface {
+	gen.SubQuery
+	Debug() IMessageContentDo
+	WithContext(ctx context.Context) IMessageContentDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IMessageContentDo
+	WriteDB() IMessageContentDo
+	As(alias string) gen.Dao
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IMessageContentDo
+	Not(conds ...gen.Condition) IMessageContentDo
+	Or(conds ...gen.Condition) IMessageContentDo
+	Select(conds ...field.Expr) IMessageContentDo
+	Where(conds ...gen.Condition) IMessageContentDo
+	Order(conds ...field.Expr) IMessageContentDo
+	Distinct(cols ...field.Expr) IMessageContentDo
+	Omit(cols ...field.Expr) IMessageContentDo
+	Join(table schema.Tabler, on ...field.Expr) IMessageContentDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IMessageContentDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IMessageContentDo
+	Group(cols ...field.Expr) IMessageContentDo
+	Having(conds ...gen.Condition) IMessageContentDo
+	Limit(limit int) IMessageContentDo
+	Offset(offset int) IMessageContentDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IMessageContentDo
+	Unscoped() IMessageContentDo
+	Create(values ...*model.MessageContent) error
+	CreateInBatches(values []*model.MessageContent, batchSize int) error
+	Save(values ...*model.MessageContent) error
+	First() (*model.MessageContent, error)
+	Take() (*model.MessageContent, error)
+	Last() (*model.MessageContent, error)
+	Find() ([]*model.MessageContent, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.MessageContent, err error)
+	FindInBatches(result *[]*model.MessageContent, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.MessageContent) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IMessageContentDo
+	Assign(attrs ...field.AssignExpr) IMessageContentDo
+	Joins(fields ...field.RelationField) IMessageContentDo
+	Preload(fields ...field.RelationField) IMessageContentDo
+	FirstOrInit() (*model.MessageContent, error)
+	FirstOrCreate() (*model.MessageContent, error)
+	FindByPage(offset int, limit int) (result []*model.MessageContent, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IMessageContentDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (m messageContentDo) Debug() IMessageContentDo {
 	return m.withDO(m.DO.Debug())
 }
 
-func (m messageContentDo) WithContext(ctx context.Context) *messageContentDo {
+func (m messageContentDo) WithContext(ctx context.Context) IMessageContentDo {
 	return m.withDO(m.DO.WithContext(ctx))
 }
 
-func (m messageContentDo) ReadDB() *messageContentDo {
+func (m messageContentDo) ReadDB() IMessageContentDo {
 	return m.Clauses(dbresolver.Read)
 }
 
-func (m messageContentDo) WriteDB() *messageContentDo {
+func (m messageContentDo) WriteDB() IMessageContentDo {
 	return m.Clauses(dbresolver.Write)
 }
 
-func (m messageContentDo) Clauses(conds ...clause.Expression) *messageContentDo {
+func (m messageContentDo) Clauses(conds ...clause.Expression) IMessageContentDo {
 	return m.withDO(m.DO.Clauses(conds...))
 }
 
-func (m messageContentDo) Returning(value interface{}, columns ...string) *messageContentDo {
+func (m messageContentDo) Returning(value interface{}, columns ...string) IMessageContentDo {
 	return m.withDO(m.DO.Returning(value, columns...))
 }
 
-func (m messageContentDo) Not(conds ...gen.Condition) *messageContentDo {
+func (m messageContentDo) Not(conds ...gen.Condition) IMessageContentDo {
 	return m.withDO(m.DO.Not(conds...))
 }
 
-func (m messageContentDo) Or(conds ...gen.Condition) *messageContentDo {
+func (m messageContentDo) Or(conds ...gen.Condition) IMessageContentDo {
 	return m.withDO(m.DO.Or(conds...))
 }
 
-func (m messageContentDo) Select(conds ...field.Expr) *messageContentDo {
+func (m messageContentDo) Select(conds ...field.Expr) IMessageContentDo {
 	return m.withDO(m.DO.Select(conds...))
 }
 
-func (m messageContentDo) Where(conds ...gen.Condition) *messageContentDo {
+func (m messageContentDo) Where(conds ...gen.Condition) IMessageContentDo {
 	return m.withDO(m.DO.Where(conds...))
 }
 
-func (m messageContentDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *messageContentDo {
+func (m messageContentDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) IMessageContentDo {
 	return m.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
-func (m messageContentDo) Order(conds ...field.Expr) *messageContentDo {
+func (m messageContentDo) Order(conds ...field.Expr) IMessageContentDo {
 	return m.withDO(m.DO.Order(conds...))
 }
 
-func (m messageContentDo) Distinct(cols ...field.Expr) *messageContentDo {
+func (m messageContentDo) Distinct(cols ...field.Expr) IMessageContentDo {
 	return m.withDO(m.DO.Distinct(cols...))
 }
 
-func (m messageContentDo) Omit(cols ...field.Expr) *messageContentDo {
+func (m messageContentDo) Omit(cols ...field.Expr) IMessageContentDo {
 	return m.withDO(m.DO.Omit(cols...))
 }
 
-func (m messageContentDo) Join(table schema.Tabler, on ...field.Expr) *messageContentDo {
+func (m messageContentDo) Join(table schema.Tabler, on ...field.Expr) IMessageContentDo {
 	return m.withDO(m.DO.Join(table, on...))
 }
 
-func (m messageContentDo) LeftJoin(table schema.Tabler, on ...field.Expr) *messageContentDo {
+func (m messageContentDo) LeftJoin(table schema.Tabler, on ...field.Expr) IMessageContentDo {
 	return m.withDO(m.DO.LeftJoin(table, on...))
 }
 
-func (m messageContentDo) RightJoin(table schema.Tabler, on ...field.Expr) *messageContentDo {
+func (m messageContentDo) RightJoin(table schema.Tabler, on ...field.Expr) IMessageContentDo {
 	return m.withDO(m.DO.RightJoin(table, on...))
 }
 
-func (m messageContentDo) Group(cols ...field.Expr) *messageContentDo {
+func (m messageContentDo) Group(cols ...field.Expr) IMessageContentDo {
 	return m.withDO(m.DO.Group(cols...))
 }
 
-func (m messageContentDo) Having(conds ...gen.Condition) *messageContentDo {
+func (m messageContentDo) Having(conds ...gen.Condition) IMessageContentDo {
 	return m.withDO(m.DO.Having(conds...))
 }
 
-func (m messageContentDo) Limit(limit int) *messageContentDo {
+func (m messageContentDo) Limit(limit int) IMessageContentDo {
 	return m.withDO(m.DO.Limit(limit))
 }
 
-func (m messageContentDo) Offset(offset int) *messageContentDo {
+func (m messageContentDo) Offset(offset int) IMessageContentDo {
 	return m.withDO(m.DO.Offset(offset))
 }
 
-func (m messageContentDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *messageContentDo {
+func (m messageContentDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IMessageContentDo {
 	return m.withDO(m.DO.Scopes(funcs...))
 }
 
-func (m messageContentDo) Unscoped() *messageContentDo {
+func (m messageContentDo) Unscoped() IMessageContentDo {
 	return m.withDO(m.DO.Unscoped())
 }
 
@@ -269,22 +321,22 @@ func (m messageContentDo) FindInBatches(result *[]*model.MessageContent, batchSi
 	return m.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (m messageContentDo) Attrs(attrs ...field.AssignExpr) *messageContentDo {
+func (m messageContentDo) Attrs(attrs ...field.AssignExpr) IMessageContentDo {
 	return m.withDO(m.DO.Attrs(attrs...))
 }
 
-func (m messageContentDo) Assign(attrs ...field.AssignExpr) *messageContentDo {
+func (m messageContentDo) Assign(attrs ...field.AssignExpr) IMessageContentDo {
 	return m.withDO(m.DO.Assign(attrs...))
 }
 
-func (m messageContentDo) Joins(fields ...field.RelationField) *messageContentDo {
+func (m messageContentDo) Joins(fields ...field.RelationField) IMessageContentDo {
 	for _, _f := range fields {
 		m = *m.withDO(m.DO.Joins(_f))
 	}
 	return &m
 }
 
-func (m messageContentDo) Preload(fields ...field.RelationField) *messageContentDo {
+func (m messageContentDo) Preload(fields ...field.RelationField) IMessageContentDo {
 	for _, _f := range fields {
 		m = *m.withDO(m.DO.Preload(_f))
 	}

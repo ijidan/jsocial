@@ -40,7 +40,7 @@ func newFeedImage(db *gorm.DB) feedImage {
 }
 
 type feedImage struct {
-	feedImageDo feedImageDo
+	feedImageDo
 
 	ALL       field.Asterisk
 	ID        field.Int64  // ID
@@ -77,14 +77,6 @@ func (f *feedImage) updateTableName(table string) *feedImage {
 	return f
 }
 
-func (f *feedImage) WithContext(ctx context.Context) *feedImageDo {
-	return f.feedImageDo.WithContext(ctx)
-}
-
-func (f feedImage) TableName() string { return f.feedImageDo.TableName() }
-
-func (f feedImage) Alias() string { return f.feedImageDo.Alias() }
-
 func (f *feedImage) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := f.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -111,95 +103,155 @@ func (f feedImage) clone(db *gorm.DB) feedImage {
 
 type feedImageDo struct{ gen.DO }
 
-func (f feedImageDo) Debug() *feedImageDo {
+type IFeedImageDo interface {
+	gen.SubQuery
+	Debug() IFeedImageDo
+	WithContext(ctx context.Context) IFeedImageDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IFeedImageDo
+	WriteDB() IFeedImageDo
+	As(alias string) gen.Dao
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IFeedImageDo
+	Not(conds ...gen.Condition) IFeedImageDo
+	Or(conds ...gen.Condition) IFeedImageDo
+	Select(conds ...field.Expr) IFeedImageDo
+	Where(conds ...gen.Condition) IFeedImageDo
+	Order(conds ...field.Expr) IFeedImageDo
+	Distinct(cols ...field.Expr) IFeedImageDo
+	Omit(cols ...field.Expr) IFeedImageDo
+	Join(table schema.Tabler, on ...field.Expr) IFeedImageDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IFeedImageDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IFeedImageDo
+	Group(cols ...field.Expr) IFeedImageDo
+	Having(conds ...gen.Condition) IFeedImageDo
+	Limit(limit int) IFeedImageDo
+	Offset(offset int) IFeedImageDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IFeedImageDo
+	Unscoped() IFeedImageDo
+	Create(values ...*model.FeedImage) error
+	CreateInBatches(values []*model.FeedImage, batchSize int) error
+	Save(values ...*model.FeedImage) error
+	First() (*model.FeedImage, error)
+	Take() (*model.FeedImage, error)
+	Last() (*model.FeedImage, error)
+	Find() ([]*model.FeedImage, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.FeedImage, err error)
+	FindInBatches(result *[]*model.FeedImage, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.FeedImage) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IFeedImageDo
+	Assign(attrs ...field.AssignExpr) IFeedImageDo
+	Joins(fields ...field.RelationField) IFeedImageDo
+	Preload(fields ...field.RelationField) IFeedImageDo
+	FirstOrInit() (*model.FeedImage, error)
+	FirstOrCreate() (*model.FeedImage, error)
+	FindByPage(offset int, limit int) (result []*model.FeedImage, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IFeedImageDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (f feedImageDo) Debug() IFeedImageDo {
 	return f.withDO(f.DO.Debug())
 }
 
-func (f feedImageDo) WithContext(ctx context.Context) *feedImageDo {
+func (f feedImageDo) WithContext(ctx context.Context) IFeedImageDo {
 	return f.withDO(f.DO.WithContext(ctx))
 }
 
-func (f feedImageDo) ReadDB() *feedImageDo {
+func (f feedImageDo) ReadDB() IFeedImageDo {
 	return f.Clauses(dbresolver.Read)
 }
 
-func (f feedImageDo) WriteDB() *feedImageDo {
+func (f feedImageDo) WriteDB() IFeedImageDo {
 	return f.Clauses(dbresolver.Write)
 }
 
-func (f feedImageDo) Clauses(conds ...clause.Expression) *feedImageDo {
+func (f feedImageDo) Clauses(conds ...clause.Expression) IFeedImageDo {
 	return f.withDO(f.DO.Clauses(conds...))
 }
 
-func (f feedImageDo) Returning(value interface{}, columns ...string) *feedImageDo {
+func (f feedImageDo) Returning(value interface{}, columns ...string) IFeedImageDo {
 	return f.withDO(f.DO.Returning(value, columns...))
 }
 
-func (f feedImageDo) Not(conds ...gen.Condition) *feedImageDo {
+func (f feedImageDo) Not(conds ...gen.Condition) IFeedImageDo {
 	return f.withDO(f.DO.Not(conds...))
 }
 
-func (f feedImageDo) Or(conds ...gen.Condition) *feedImageDo {
+func (f feedImageDo) Or(conds ...gen.Condition) IFeedImageDo {
 	return f.withDO(f.DO.Or(conds...))
 }
 
-func (f feedImageDo) Select(conds ...field.Expr) *feedImageDo {
+func (f feedImageDo) Select(conds ...field.Expr) IFeedImageDo {
 	return f.withDO(f.DO.Select(conds...))
 }
 
-func (f feedImageDo) Where(conds ...gen.Condition) *feedImageDo {
+func (f feedImageDo) Where(conds ...gen.Condition) IFeedImageDo {
 	return f.withDO(f.DO.Where(conds...))
 }
 
-func (f feedImageDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *feedImageDo {
+func (f feedImageDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) IFeedImageDo {
 	return f.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
-func (f feedImageDo) Order(conds ...field.Expr) *feedImageDo {
+func (f feedImageDo) Order(conds ...field.Expr) IFeedImageDo {
 	return f.withDO(f.DO.Order(conds...))
 }
 
-func (f feedImageDo) Distinct(cols ...field.Expr) *feedImageDo {
+func (f feedImageDo) Distinct(cols ...field.Expr) IFeedImageDo {
 	return f.withDO(f.DO.Distinct(cols...))
 }
 
-func (f feedImageDo) Omit(cols ...field.Expr) *feedImageDo {
+func (f feedImageDo) Omit(cols ...field.Expr) IFeedImageDo {
 	return f.withDO(f.DO.Omit(cols...))
 }
 
-func (f feedImageDo) Join(table schema.Tabler, on ...field.Expr) *feedImageDo {
+func (f feedImageDo) Join(table schema.Tabler, on ...field.Expr) IFeedImageDo {
 	return f.withDO(f.DO.Join(table, on...))
 }
 
-func (f feedImageDo) LeftJoin(table schema.Tabler, on ...field.Expr) *feedImageDo {
+func (f feedImageDo) LeftJoin(table schema.Tabler, on ...field.Expr) IFeedImageDo {
 	return f.withDO(f.DO.LeftJoin(table, on...))
 }
 
-func (f feedImageDo) RightJoin(table schema.Tabler, on ...field.Expr) *feedImageDo {
+func (f feedImageDo) RightJoin(table schema.Tabler, on ...field.Expr) IFeedImageDo {
 	return f.withDO(f.DO.RightJoin(table, on...))
 }
 
-func (f feedImageDo) Group(cols ...field.Expr) *feedImageDo {
+func (f feedImageDo) Group(cols ...field.Expr) IFeedImageDo {
 	return f.withDO(f.DO.Group(cols...))
 }
 
-func (f feedImageDo) Having(conds ...gen.Condition) *feedImageDo {
+func (f feedImageDo) Having(conds ...gen.Condition) IFeedImageDo {
 	return f.withDO(f.DO.Having(conds...))
 }
 
-func (f feedImageDo) Limit(limit int) *feedImageDo {
+func (f feedImageDo) Limit(limit int) IFeedImageDo {
 	return f.withDO(f.DO.Limit(limit))
 }
 
-func (f feedImageDo) Offset(offset int) *feedImageDo {
+func (f feedImageDo) Offset(offset int) IFeedImageDo {
 	return f.withDO(f.DO.Offset(offset))
 }
 
-func (f feedImageDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *feedImageDo {
+func (f feedImageDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IFeedImageDo {
 	return f.withDO(f.DO.Scopes(funcs...))
 }
 
-func (f feedImageDo) Unscoped() *feedImageDo {
+func (f feedImageDo) Unscoped() IFeedImageDo {
 	return f.withDO(f.DO.Unscoped())
 }
 
@@ -265,22 +317,22 @@ func (f feedImageDo) FindInBatches(result *[]*model.FeedImage, batchSize int, fc
 	return f.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (f feedImageDo) Attrs(attrs ...field.AssignExpr) *feedImageDo {
+func (f feedImageDo) Attrs(attrs ...field.AssignExpr) IFeedImageDo {
 	return f.withDO(f.DO.Attrs(attrs...))
 }
 
-func (f feedImageDo) Assign(attrs ...field.AssignExpr) *feedImageDo {
+func (f feedImageDo) Assign(attrs ...field.AssignExpr) IFeedImageDo {
 	return f.withDO(f.DO.Assign(attrs...))
 }
 
-func (f feedImageDo) Joins(fields ...field.RelationField) *feedImageDo {
+func (f feedImageDo) Joins(fields ...field.RelationField) IFeedImageDo {
 	for _, _f := range fields {
 		f = *f.withDO(f.DO.Joins(_f))
 	}
 	return &f
 }
 
-func (f feedImageDo) Preload(fields ...field.RelationField) *feedImageDo {
+func (f feedImageDo) Preload(fields ...field.RelationField) IFeedImageDo {
 	for _, _f := range fields {
 		f = *f.withDO(f.DO.Preload(_f))
 	}

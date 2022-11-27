@@ -48,7 +48,7 @@ func newDevice(db *gorm.DB) device {
 }
 
 type device struct {
-	deviceDo deviceDo
+	deviceDo
 
 	ALL           field.Asterisk
 	ID            field.Int64  // 自增主键
@@ -101,12 +101,6 @@ func (d *device) updateTableName(table string) *device {
 	return d
 }
 
-func (d *device) WithContext(ctx context.Context) *deviceDo { return d.deviceDo.WithContext(ctx) }
-
-func (d device) TableName() string { return d.deviceDo.TableName() }
-
-func (d device) Alias() string { return d.deviceDo.Alias() }
-
 func (d *device) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := d.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -141,95 +135,155 @@ func (d device) clone(db *gorm.DB) device {
 
 type deviceDo struct{ gen.DO }
 
-func (d deviceDo) Debug() *deviceDo {
+type IDeviceDo interface {
+	gen.SubQuery
+	Debug() IDeviceDo
+	WithContext(ctx context.Context) IDeviceDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IDeviceDo
+	WriteDB() IDeviceDo
+	As(alias string) gen.Dao
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IDeviceDo
+	Not(conds ...gen.Condition) IDeviceDo
+	Or(conds ...gen.Condition) IDeviceDo
+	Select(conds ...field.Expr) IDeviceDo
+	Where(conds ...gen.Condition) IDeviceDo
+	Order(conds ...field.Expr) IDeviceDo
+	Distinct(cols ...field.Expr) IDeviceDo
+	Omit(cols ...field.Expr) IDeviceDo
+	Join(table schema.Tabler, on ...field.Expr) IDeviceDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IDeviceDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IDeviceDo
+	Group(cols ...field.Expr) IDeviceDo
+	Having(conds ...gen.Condition) IDeviceDo
+	Limit(limit int) IDeviceDo
+	Offset(offset int) IDeviceDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IDeviceDo
+	Unscoped() IDeviceDo
+	Create(values ...*model.Device) error
+	CreateInBatches(values []*model.Device, batchSize int) error
+	Save(values ...*model.Device) error
+	First() (*model.Device, error)
+	Take() (*model.Device, error)
+	Last() (*model.Device, error)
+	Find() ([]*model.Device, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Device, err error)
+	FindInBatches(result *[]*model.Device, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.Device) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IDeviceDo
+	Assign(attrs ...field.AssignExpr) IDeviceDo
+	Joins(fields ...field.RelationField) IDeviceDo
+	Preload(fields ...field.RelationField) IDeviceDo
+	FirstOrInit() (*model.Device, error)
+	FirstOrCreate() (*model.Device, error)
+	FindByPage(offset int, limit int) (result []*model.Device, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IDeviceDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (d deviceDo) Debug() IDeviceDo {
 	return d.withDO(d.DO.Debug())
 }
 
-func (d deviceDo) WithContext(ctx context.Context) *deviceDo {
+func (d deviceDo) WithContext(ctx context.Context) IDeviceDo {
 	return d.withDO(d.DO.WithContext(ctx))
 }
 
-func (d deviceDo) ReadDB() *deviceDo {
+func (d deviceDo) ReadDB() IDeviceDo {
 	return d.Clauses(dbresolver.Read)
 }
 
-func (d deviceDo) WriteDB() *deviceDo {
+func (d deviceDo) WriteDB() IDeviceDo {
 	return d.Clauses(dbresolver.Write)
 }
 
-func (d deviceDo) Clauses(conds ...clause.Expression) *deviceDo {
+func (d deviceDo) Clauses(conds ...clause.Expression) IDeviceDo {
 	return d.withDO(d.DO.Clauses(conds...))
 }
 
-func (d deviceDo) Returning(value interface{}, columns ...string) *deviceDo {
+func (d deviceDo) Returning(value interface{}, columns ...string) IDeviceDo {
 	return d.withDO(d.DO.Returning(value, columns...))
 }
 
-func (d deviceDo) Not(conds ...gen.Condition) *deviceDo {
+func (d deviceDo) Not(conds ...gen.Condition) IDeviceDo {
 	return d.withDO(d.DO.Not(conds...))
 }
 
-func (d deviceDo) Or(conds ...gen.Condition) *deviceDo {
+func (d deviceDo) Or(conds ...gen.Condition) IDeviceDo {
 	return d.withDO(d.DO.Or(conds...))
 }
 
-func (d deviceDo) Select(conds ...field.Expr) *deviceDo {
+func (d deviceDo) Select(conds ...field.Expr) IDeviceDo {
 	return d.withDO(d.DO.Select(conds...))
 }
 
-func (d deviceDo) Where(conds ...gen.Condition) *deviceDo {
+func (d deviceDo) Where(conds ...gen.Condition) IDeviceDo {
 	return d.withDO(d.DO.Where(conds...))
 }
 
-func (d deviceDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *deviceDo {
+func (d deviceDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) IDeviceDo {
 	return d.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
-func (d deviceDo) Order(conds ...field.Expr) *deviceDo {
+func (d deviceDo) Order(conds ...field.Expr) IDeviceDo {
 	return d.withDO(d.DO.Order(conds...))
 }
 
-func (d deviceDo) Distinct(cols ...field.Expr) *deviceDo {
+func (d deviceDo) Distinct(cols ...field.Expr) IDeviceDo {
 	return d.withDO(d.DO.Distinct(cols...))
 }
 
-func (d deviceDo) Omit(cols ...field.Expr) *deviceDo {
+func (d deviceDo) Omit(cols ...field.Expr) IDeviceDo {
 	return d.withDO(d.DO.Omit(cols...))
 }
 
-func (d deviceDo) Join(table schema.Tabler, on ...field.Expr) *deviceDo {
+func (d deviceDo) Join(table schema.Tabler, on ...field.Expr) IDeviceDo {
 	return d.withDO(d.DO.Join(table, on...))
 }
 
-func (d deviceDo) LeftJoin(table schema.Tabler, on ...field.Expr) *deviceDo {
+func (d deviceDo) LeftJoin(table schema.Tabler, on ...field.Expr) IDeviceDo {
 	return d.withDO(d.DO.LeftJoin(table, on...))
 }
 
-func (d deviceDo) RightJoin(table schema.Tabler, on ...field.Expr) *deviceDo {
+func (d deviceDo) RightJoin(table schema.Tabler, on ...field.Expr) IDeviceDo {
 	return d.withDO(d.DO.RightJoin(table, on...))
 }
 
-func (d deviceDo) Group(cols ...field.Expr) *deviceDo {
+func (d deviceDo) Group(cols ...field.Expr) IDeviceDo {
 	return d.withDO(d.DO.Group(cols...))
 }
 
-func (d deviceDo) Having(conds ...gen.Condition) *deviceDo {
+func (d deviceDo) Having(conds ...gen.Condition) IDeviceDo {
 	return d.withDO(d.DO.Having(conds...))
 }
 
-func (d deviceDo) Limit(limit int) *deviceDo {
+func (d deviceDo) Limit(limit int) IDeviceDo {
 	return d.withDO(d.DO.Limit(limit))
 }
 
-func (d deviceDo) Offset(offset int) *deviceDo {
+func (d deviceDo) Offset(offset int) IDeviceDo {
 	return d.withDO(d.DO.Offset(offset))
 }
 
-func (d deviceDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *deviceDo {
+func (d deviceDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IDeviceDo {
 	return d.withDO(d.DO.Scopes(funcs...))
 }
 
-func (d deviceDo) Unscoped() *deviceDo {
+func (d deviceDo) Unscoped() IDeviceDo {
 	return d.withDO(d.DO.Unscoped())
 }
 
@@ -295,22 +349,22 @@ func (d deviceDo) FindInBatches(result *[]*model.Device, batchSize int, fc func(
 	return d.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (d deviceDo) Attrs(attrs ...field.AssignExpr) *deviceDo {
+func (d deviceDo) Attrs(attrs ...field.AssignExpr) IDeviceDo {
 	return d.withDO(d.DO.Attrs(attrs...))
 }
 
-func (d deviceDo) Assign(attrs ...field.AssignExpr) *deviceDo {
+func (d deviceDo) Assign(attrs ...field.AssignExpr) IDeviceDo {
 	return d.withDO(d.DO.Assign(attrs...))
 }
 
-func (d deviceDo) Joins(fields ...field.RelationField) *deviceDo {
+func (d deviceDo) Joins(fields ...field.RelationField) IDeviceDo {
 	for _, _f := range fields {
 		d = *d.withDO(d.DO.Joins(_f))
 	}
 	return &d
 }
 
-func (d deviceDo) Preload(fields ...field.RelationField) *deviceDo {
+func (d deviceDo) Preload(fields ...field.RelationField) IDeviceDo {
 	for _, _f := range fields {
 		d = *d.withDO(d.DO.Preload(_f))
 	}

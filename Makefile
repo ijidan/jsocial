@@ -35,7 +35,9 @@ help:
 	echo "make docker_rm -- 删除所有docker容器"
 	echo "make test_api -- 运行API"
 	echo "make build_api -- 构建API"
+	echo "make status_api --查看API状态"
 	echo "make start_api -- 启动API"
+	echo "make restart_api --重启API"
 	echo "make ping_api -- ping API"
 	echo "make wire --执行wire"
 
@@ -49,7 +51,7 @@ proto_build: dl
     		-I=third_party/googleapis \
     		-I=third_party/protoc-gen-validate \
     		-I=third_party/protobuf/src \
-            --doc_out=api --doc_opt=html,docs.html  api/proto/*.proto
+            --doc_out=docs --doc_opt=html,protocol_docs.html  api/proto/*.proto
 
 	protoc -I=api/proto \
 		-I=$(GOPATH)/pkg/mod \
@@ -60,7 +62,7 @@ proto_build: dl
         --go-grpc_out=api \
         --grpc-gateway_out=api  \
         --validate_out="lang=go:api" \
-        --doc_out=api --doc_opt=markdown,docs.md  \
+        --doc_out=docs --doc_opt=markdown,protocol_docs.md  \
         --grpc-gateway_opt logtostderr=true api/proto/*.proto
 tidy:
 	go mod tidy
@@ -112,9 +114,14 @@ docker_rm: docker_stop
 test_api:
 	go run $(CMD_DIR)/api/main.go -c $(CONFIGS_DIR)/api.yaml -d $(PROJECT_DIR)
 build_api:
-	go build -o $(CMD_DIR)/api/api $(CMD_DIR)/api/main.go
+	go build -o $(CMD_DIR)/api/jsocial_api $(CMD_DIR)/api/main.go
+status_api:
+	ps -ef | grep "jsocial_api"
 start_api:build_api
-	nohup $(CMD_DIR)/api/api &
+	nohup $(CMD_DIR)/api/jsocial_api &
+restart_api:build_api
+	ps -ef | grep jsocial_api | grep -v grep | awk '{print $2}' | xargs kill -1
+	nohup $(CMD_DIR)/api/jsocial_api &
 ping_api:
 	curl 127.0.0.1:9096/api/v1/ping
 wire:

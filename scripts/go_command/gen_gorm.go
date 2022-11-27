@@ -26,6 +26,7 @@ var genGormCmd = &cobra.Command{
 		// ### if you want to query without context constrain, set mode gen.WithoutContext ###
 		g := gen.NewGenerator(gen.Config{
 			OutPath: Path.InternalDir + "query",
+			Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
 			/* Mode: gen.WithoutContext|gen.WithDefaultQuery*/
 			//if you want the nullable field generation property to be pointer type, set FieldNullable true
 			/* FieldNullable: true,*/

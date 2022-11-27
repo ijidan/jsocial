@@ -49,7 +49,7 @@ func newFeed(db *gorm.DB) feed {
 }
 
 type feed struct {
-	feedDo feedDo
+	feedDo
 
 	ALL          field.Asterisk
 	ID           field.Int64  // 动态 ID
@@ -104,12 +104,6 @@ func (f *feed) updateTableName(table string) *feed {
 	return f
 }
 
-func (f *feed) WithContext(ctx context.Context) *feedDo { return f.feedDo.WithContext(ctx) }
-
-func (f feed) TableName() string { return f.feedDo.TableName() }
-
-func (f feed) Alias() string { return f.feedDo.Alias() }
-
 func (f *feed) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := f.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -145,95 +139,155 @@ func (f feed) clone(db *gorm.DB) feed {
 
 type feedDo struct{ gen.DO }
 
-func (f feedDo) Debug() *feedDo {
+type IFeedDo interface {
+	gen.SubQuery
+	Debug() IFeedDo
+	WithContext(ctx context.Context) IFeedDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IFeedDo
+	WriteDB() IFeedDo
+	As(alias string) gen.Dao
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IFeedDo
+	Not(conds ...gen.Condition) IFeedDo
+	Or(conds ...gen.Condition) IFeedDo
+	Select(conds ...field.Expr) IFeedDo
+	Where(conds ...gen.Condition) IFeedDo
+	Order(conds ...field.Expr) IFeedDo
+	Distinct(cols ...field.Expr) IFeedDo
+	Omit(cols ...field.Expr) IFeedDo
+	Join(table schema.Tabler, on ...field.Expr) IFeedDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IFeedDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IFeedDo
+	Group(cols ...field.Expr) IFeedDo
+	Having(conds ...gen.Condition) IFeedDo
+	Limit(limit int) IFeedDo
+	Offset(offset int) IFeedDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IFeedDo
+	Unscoped() IFeedDo
+	Create(values ...*model.Feed) error
+	CreateInBatches(values []*model.Feed, batchSize int) error
+	Save(values ...*model.Feed) error
+	First() (*model.Feed, error)
+	Take() (*model.Feed, error)
+	Last() (*model.Feed, error)
+	Find() ([]*model.Feed, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Feed, err error)
+	FindInBatches(result *[]*model.Feed, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.Feed) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IFeedDo
+	Assign(attrs ...field.AssignExpr) IFeedDo
+	Joins(fields ...field.RelationField) IFeedDo
+	Preload(fields ...field.RelationField) IFeedDo
+	FirstOrInit() (*model.Feed, error)
+	FirstOrCreate() (*model.Feed, error)
+	FindByPage(offset int, limit int) (result []*model.Feed, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IFeedDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (f feedDo) Debug() IFeedDo {
 	return f.withDO(f.DO.Debug())
 }
 
-func (f feedDo) WithContext(ctx context.Context) *feedDo {
+func (f feedDo) WithContext(ctx context.Context) IFeedDo {
 	return f.withDO(f.DO.WithContext(ctx))
 }
 
-func (f feedDo) ReadDB() *feedDo {
+func (f feedDo) ReadDB() IFeedDo {
 	return f.Clauses(dbresolver.Read)
 }
 
-func (f feedDo) WriteDB() *feedDo {
+func (f feedDo) WriteDB() IFeedDo {
 	return f.Clauses(dbresolver.Write)
 }
 
-func (f feedDo) Clauses(conds ...clause.Expression) *feedDo {
+func (f feedDo) Clauses(conds ...clause.Expression) IFeedDo {
 	return f.withDO(f.DO.Clauses(conds...))
 }
 
-func (f feedDo) Returning(value interface{}, columns ...string) *feedDo {
+func (f feedDo) Returning(value interface{}, columns ...string) IFeedDo {
 	return f.withDO(f.DO.Returning(value, columns...))
 }
 
-func (f feedDo) Not(conds ...gen.Condition) *feedDo {
+func (f feedDo) Not(conds ...gen.Condition) IFeedDo {
 	return f.withDO(f.DO.Not(conds...))
 }
 
-func (f feedDo) Or(conds ...gen.Condition) *feedDo {
+func (f feedDo) Or(conds ...gen.Condition) IFeedDo {
 	return f.withDO(f.DO.Or(conds...))
 }
 
-func (f feedDo) Select(conds ...field.Expr) *feedDo {
+func (f feedDo) Select(conds ...field.Expr) IFeedDo {
 	return f.withDO(f.DO.Select(conds...))
 }
 
-func (f feedDo) Where(conds ...gen.Condition) *feedDo {
+func (f feedDo) Where(conds ...gen.Condition) IFeedDo {
 	return f.withDO(f.DO.Where(conds...))
 }
 
-func (f feedDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *feedDo {
+func (f feedDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) IFeedDo {
 	return f.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
-func (f feedDo) Order(conds ...field.Expr) *feedDo {
+func (f feedDo) Order(conds ...field.Expr) IFeedDo {
 	return f.withDO(f.DO.Order(conds...))
 }
 
-func (f feedDo) Distinct(cols ...field.Expr) *feedDo {
+func (f feedDo) Distinct(cols ...field.Expr) IFeedDo {
 	return f.withDO(f.DO.Distinct(cols...))
 }
 
-func (f feedDo) Omit(cols ...field.Expr) *feedDo {
+func (f feedDo) Omit(cols ...field.Expr) IFeedDo {
 	return f.withDO(f.DO.Omit(cols...))
 }
 
-func (f feedDo) Join(table schema.Tabler, on ...field.Expr) *feedDo {
+func (f feedDo) Join(table schema.Tabler, on ...field.Expr) IFeedDo {
 	return f.withDO(f.DO.Join(table, on...))
 }
 
-func (f feedDo) LeftJoin(table schema.Tabler, on ...field.Expr) *feedDo {
+func (f feedDo) LeftJoin(table schema.Tabler, on ...field.Expr) IFeedDo {
 	return f.withDO(f.DO.LeftJoin(table, on...))
 }
 
-func (f feedDo) RightJoin(table schema.Tabler, on ...field.Expr) *feedDo {
+func (f feedDo) RightJoin(table schema.Tabler, on ...field.Expr) IFeedDo {
 	return f.withDO(f.DO.RightJoin(table, on...))
 }
 
-func (f feedDo) Group(cols ...field.Expr) *feedDo {
+func (f feedDo) Group(cols ...field.Expr) IFeedDo {
 	return f.withDO(f.DO.Group(cols...))
 }
 
-func (f feedDo) Having(conds ...gen.Condition) *feedDo {
+func (f feedDo) Having(conds ...gen.Condition) IFeedDo {
 	return f.withDO(f.DO.Having(conds...))
 }
 
-func (f feedDo) Limit(limit int) *feedDo {
+func (f feedDo) Limit(limit int) IFeedDo {
 	return f.withDO(f.DO.Limit(limit))
 }
 
-func (f feedDo) Offset(offset int) *feedDo {
+func (f feedDo) Offset(offset int) IFeedDo {
 	return f.withDO(f.DO.Offset(offset))
 }
 
-func (f feedDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *feedDo {
+func (f feedDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IFeedDo {
 	return f.withDO(f.DO.Scopes(funcs...))
 }
 
-func (f feedDo) Unscoped() *feedDo {
+func (f feedDo) Unscoped() IFeedDo {
 	return f.withDO(f.DO.Unscoped())
 }
 
@@ -299,22 +353,22 @@ func (f feedDo) FindInBatches(result *[]*model.Feed, batchSize int, fc func(tx g
 	return f.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (f feedDo) Attrs(attrs ...field.AssignExpr) *feedDo {
+func (f feedDo) Attrs(attrs ...field.AssignExpr) IFeedDo {
 	return f.withDO(f.DO.Attrs(attrs...))
 }
 
-func (f feedDo) Assign(attrs ...field.AssignExpr) *feedDo {
+func (f feedDo) Assign(attrs ...field.AssignExpr) IFeedDo {
 	return f.withDO(f.DO.Assign(attrs...))
 }
 
-func (f feedDo) Joins(fields ...field.RelationField) *feedDo {
+func (f feedDo) Joins(fields ...field.RelationField) IFeedDo {
 	for _, _f := range fields {
 		f = *f.withDO(f.DO.Joins(_f))
 	}
 	return &f
 }
 
-func (f feedDo) Preload(fields ...field.RelationField) *feedDo {
+func (f feedDo) Preload(fields ...field.RelationField) IFeedDo {
 	for _, _f := range fields {
 		f = *f.withDO(f.DO.Preload(_f))
 	}

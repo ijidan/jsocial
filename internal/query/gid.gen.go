@@ -41,7 +41,7 @@ func newGid(db *gorm.DB) gid {
 }
 
 type gid struct {
-	gidDo gidDo
+	gidDo
 
 	ALL         field.Asterisk
 	ID          field.Int64  // 自增主键
@@ -80,12 +80,6 @@ func (g *gid) updateTableName(table string) *gid {
 	return g
 }
 
-func (g *gid) WithContext(ctx context.Context) *gidDo { return g.gidDo.WithContext(ctx) }
-
-func (g gid) TableName() string { return g.gidDo.TableName() }
-
-func (g gid) Alias() string { return g.gidDo.Alias() }
-
 func (g *gid) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -113,95 +107,155 @@ func (g gid) clone(db *gorm.DB) gid {
 
 type gidDo struct{ gen.DO }
 
-func (g gidDo) Debug() *gidDo {
+type IGidDo interface {
+	gen.SubQuery
+	Debug() IGidDo
+	WithContext(ctx context.Context) IGidDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IGidDo
+	WriteDB() IGidDo
+	As(alias string) gen.Dao
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IGidDo
+	Not(conds ...gen.Condition) IGidDo
+	Or(conds ...gen.Condition) IGidDo
+	Select(conds ...field.Expr) IGidDo
+	Where(conds ...gen.Condition) IGidDo
+	Order(conds ...field.Expr) IGidDo
+	Distinct(cols ...field.Expr) IGidDo
+	Omit(cols ...field.Expr) IGidDo
+	Join(table schema.Tabler, on ...field.Expr) IGidDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IGidDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IGidDo
+	Group(cols ...field.Expr) IGidDo
+	Having(conds ...gen.Condition) IGidDo
+	Limit(limit int) IGidDo
+	Offset(offset int) IGidDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IGidDo
+	Unscoped() IGidDo
+	Create(values ...*model.Gid) error
+	CreateInBatches(values []*model.Gid, batchSize int) error
+	Save(values ...*model.Gid) error
+	First() (*model.Gid, error)
+	Take() (*model.Gid, error)
+	Last() (*model.Gid, error)
+	Find() ([]*model.Gid, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Gid, err error)
+	FindInBatches(result *[]*model.Gid, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.Gid) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IGidDo
+	Assign(attrs ...field.AssignExpr) IGidDo
+	Joins(fields ...field.RelationField) IGidDo
+	Preload(fields ...field.RelationField) IGidDo
+	FirstOrInit() (*model.Gid, error)
+	FirstOrCreate() (*model.Gid, error)
+	FindByPage(offset int, limit int) (result []*model.Gid, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IGidDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (g gidDo) Debug() IGidDo {
 	return g.withDO(g.DO.Debug())
 }
 
-func (g gidDo) WithContext(ctx context.Context) *gidDo {
+func (g gidDo) WithContext(ctx context.Context) IGidDo {
 	return g.withDO(g.DO.WithContext(ctx))
 }
 
-func (g gidDo) ReadDB() *gidDo {
+func (g gidDo) ReadDB() IGidDo {
 	return g.Clauses(dbresolver.Read)
 }
 
-func (g gidDo) WriteDB() *gidDo {
+func (g gidDo) WriteDB() IGidDo {
 	return g.Clauses(dbresolver.Write)
 }
 
-func (g gidDo) Clauses(conds ...clause.Expression) *gidDo {
+func (g gidDo) Clauses(conds ...clause.Expression) IGidDo {
 	return g.withDO(g.DO.Clauses(conds...))
 }
 
-func (g gidDo) Returning(value interface{}, columns ...string) *gidDo {
+func (g gidDo) Returning(value interface{}, columns ...string) IGidDo {
 	return g.withDO(g.DO.Returning(value, columns...))
 }
 
-func (g gidDo) Not(conds ...gen.Condition) *gidDo {
+func (g gidDo) Not(conds ...gen.Condition) IGidDo {
 	return g.withDO(g.DO.Not(conds...))
 }
 
-func (g gidDo) Or(conds ...gen.Condition) *gidDo {
+func (g gidDo) Or(conds ...gen.Condition) IGidDo {
 	return g.withDO(g.DO.Or(conds...))
 }
 
-func (g gidDo) Select(conds ...field.Expr) *gidDo {
+func (g gidDo) Select(conds ...field.Expr) IGidDo {
 	return g.withDO(g.DO.Select(conds...))
 }
 
-func (g gidDo) Where(conds ...gen.Condition) *gidDo {
+func (g gidDo) Where(conds ...gen.Condition) IGidDo {
 	return g.withDO(g.DO.Where(conds...))
 }
 
-func (g gidDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *gidDo {
+func (g gidDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) IGidDo {
 	return g.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
-func (g gidDo) Order(conds ...field.Expr) *gidDo {
+func (g gidDo) Order(conds ...field.Expr) IGidDo {
 	return g.withDO(g.DO.Order(conds...))
 }
 
-func (g gidDo) Distinct(cols ...field.Expr) *gidDo {
+func (g gidDo) Distinct(cols ...field.Expr) IGidDo {
 	return g.withDO(g.DO.Distinct(cols...))
 }
 
-func (g gidDo) Omit(cols ...field.Expr) *gidDo {
+func (g gidDo) Omit(cols ...field.Expr) IGidDo {
 	return g.withDO(g.DO.Omit(cols...))
 }
 
-func (g gidDo) Join(table schema.Tabler, on ...field.Expr) *gidDo {
+func (g gidDo) Join(table schema.Tabler, on ...field.Expr) IGidDo {
 	return g.withDO(g.DO.Join(table, on...))
 }
 
-func (g gidDo) LeftJoin(table schema.Tabler, on ...field.Expr) *gidDo {
+func (g gidDo) LeftJoin(table schema.Tabler, on ...field.Expr) IGidDo {
 	return g.withDO(g.DO.LeftJoin(table, on...))
 }
 
-func (g gidDo) RightJoin(table schema.Tabler, on ...field.Expr) *gidDo {
+func (g gidDo) RightJoin(table schema.Tabler, on ...field.Expr) IGidDo {
 	return g.withDO(g.DO.RightJoin(table, on...))
 }
 
-func (g gidDo) Group(cols ...field.Expr) *gidDo {
+func (g gidDo) Group(cols ...field.Expr) IGidDo {
 	return g.withDO(g.DO.Group(cols...))
 }
 
-func (g gidDo) Having(conds ...gen.Condition) *gidDo {
+func (g gidDo) Having(conds ...gen.Condition) IGidDo {
 	return g.withDO(g.DO.Having(conds...))
 }
 
-func (g gidDo) Limit(limit int) *gidDo {
+func (g gidDo) Limit(limit int) IGidDo {
 	return g.withDO(g.DO.Limit(limit))
 }
 
-func (g gidDo) Offset(offset int) *gidDo {
+func (g gidDo) Offset(offset int) IGidDo {
 	return g.withDO(g.DO.Offset(offset))
 }
 
-func (g gidDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *gidDo {
+func (g gidDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IGidDo {
 	return g.withDO(g.DO.Scopes(funcs...))
 }
 
-func (g gidDo) Unscoped() *gidDo {
+func (g gidDo) Unscoped() IGidDo {
 	return g.withDO(g.DO.Unscoped())
 }
 
@@ -267,22 +321,22 @@ func (g gidDo) FindInBatches(result *[]*model.Gid, batchSize int, fc func(tx gen
 	return g.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (g gidDo) Attrs(attrs ...field.AssignExpr) *gidDo {
+func (g gidDo) Attrs(attrs ...field.AssignExpr) IGidDo {
 	return g.withDO(g.DO.Attrs(attrs...))
 }
 
-func (g gidDo) Assign(attrs ...field.AssignExpr) *gidDo {
+func (g gidDo) Assign(attrs ...field.AssignExpr) IGidDo {
 	return g.withDO(g.DO.Assign(attrs...))
 }
 
-func (g gidDo) Joins(fields ...field.RelationField) *gidDo {
+func (g gidDo) Joins(fields ...field.RelationField) IGidDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Joins(_f))
 	}
 	return &g
 }
 
-func (g gidDo) Preload(fields ...field.RelationField) *gidDo {
+func (g gidDo) Preload(fields ...field.RelationField) IGidDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Preload(_f))
 	}

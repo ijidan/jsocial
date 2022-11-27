@@ -38,7 +38,7 @@ func newGoadminRoleUsers(db *gorm.DB) goadminRoleUsers {
 }
 
 type goadminRoleUsers struct {
-	goadminRoleUsersDo goadminRoleUsersDo
+	goadminRoleUsersDo
 
 	ALL       field.Asterisk
 	RoleID    field.Int32
@@ -71,14 +71,6 @@ func (g *goadminRoleUsers) updateTableName(table string) *goadminRoleUsers {
 	return g
 }
 
-func (g *goadminRoleUsers) WithContext(ctx context.Context) *goadminRoleUsersDo {
-	return g.goadminRoleUsersDo.WithContext(ctx)
-}
-
-func (g goadminRoleUsers) TableName() string { return g.goadminRoleUsersDo.TableName() }
-
-func (g goadminRoleUsers) Alias() string { return g.goadminRoleUsersDo.Alias() }
-
 func (g *goadminRoleUsers) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -103,95 +95,155 @@ func (g goadminRoleUsers) clone(db *gorm.DB) goadminRoleUsers {
 
 type goadminRoleUsersDo struct{ gen.DO }
 
-func (g goadminRoleUsersDo) Debug() *goadminRoleUsersDo {
+type IGoadminRoleUsersDo interface {
+	gen.SubQuery
+	Debug() IGoadminRoleUsersDo
+	WithContext(ctx context.Context) IGoadminRoleUsersDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IGoadminRoleUsersDo
+	WriteDB() IGoadminRoleUsersDo
+	As(alias string) gen.Dao
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IGoadminRoleUsersDo
+	Not(conds ...gen.Condition) IGoadminRoleUsersDo
+	Or(conds ...gen.Condition) IGoadminRoleUsersDo
+	Select(conds ...field.Expr) IGoadminRoleUsersDo
+	Where(conds ...gen.Condition) IGoadminRoleUsersDo
+	Order(conds ...field.Expr) IGoadminRoleUsersDo
+	Distinct(cols ...field.Expr) IGoadminRoleUsersDo
+	Omit(cols ...field.Expr) IGoadminRoleUsersDo
+	Join(table schema.Tabler, on ...field.Expr) IGoadminRoleUsersDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IGoadminRoleUsersDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IGoadminRoleUsersDo
+	Group(cols ...field.Expr) IGoadminRoleUsersDo
+	Having(conds ...gen.Condition) IGoadminRoleUsersDo
+	Limit(limit int) IGoadminRoleUsersDo
+	Offset(offset int) IGoadminRoleUsersDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IGoadminRoleUsersDo
+	Unscoped() IGoadminRoleUsersDo
+	Create(values ...*model.GoadminRoleUsers) error
+	CreateInBatches(values []*model.GoadminRoleUsers, batchSize int) error
+	Save(values ...*model.GoadminRoleUsers) error
+	First() (*model.GoadminRoleUsers, error)
+	Take() (*model.GoadminRoleUsers, error)
+	Last() (*model.GoadminRoleUsers, error)
+	Find() ([]*model.GoadminRoleUsers, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.GoadminRoleUsers, err error)
+	FindInBatches(result *[]*model.GoadminRoleUsers, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.GoadminRoleUsers) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IGoadminRoleUsersDo
+	Assign(attrs ...field.AssignExpr) IGoadminRoleUsersDo
+	Joins(fields ...field.RelationField) IGoadminRoleUsersDo
+	Preload(fields ...field.RelationField) IGoadminRoleUsersDo
+	FirstOrInit() (*model.GoadminRoleUsers, error)
+	FirstOrCreate() (*model.GoadminRoleUsers, error)
+	FindByPage(offset int, limit int) (result []*model.GoadminRoleUsers, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IGoadminRoleUsersDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (g goadminRoleUsersDo) Debug() IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Debug())
 }
 
-func (g goadminRoleUsersDo) WithContext(ctx context.Context) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) WithContext(ctx context.Context) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.WithContext(ctx))
 }
 
-func (g goadminRoleUsersDo) ReadDB() *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) ReadDB() IGoadminRoleUsersDo {
 	return g.Clauses(dbresolver.Read)
 }
 
-func (g goadminRoleUsersDo) WriteDB() *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) WriteDB() IGoadminRoleUsersDo {
 	return g.Clauses(dbresolver.Write)
 }
 
-func (g goadminRoleUsersDo) Clauses(conds ...clause.Expression) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Clauses(conds ...clause.Expression) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Clauses(conds...))
 }
 
-func (g goadminRoleUsersDo) Returning(value interface{}, columns ...string) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Returning(value interface{}, columns ...string) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Returning(value, columns...))
 }
 
-func (g goadminRoleUsersDo) Not(conds ...gen.Condition) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Not(conds ...gen.Condition) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Not(conds...))
 }
 
-func (g goadminRoleUsersDo) Or(conds ...gen.Condition) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Or(conds ...gen.Condition) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Or(conds...))
 }
 
-func (g goadminRoleUsersDo) Select(conds ...field.Expr) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Select(conds ...field.Expr) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Select(conds...))
 }
 
-func (g goadminRoleUsersDo) Where(conds ...gen.Condition) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Where(conds ...gen.Condition) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Where(conds...))
 }
 
-func (g goadminRoleUsersDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) IGoadminRoleUsersDo {
 	return g.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
-func (g goadminRoleUsersDo) Order(conds ...field.Expr) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Order(conds ...field.Expr) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Order(conds...))
 }
 
-func (g goadminRoleUsersDo) Distinct(cols ...field.Expr) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Distinct(cols ...field.Expr) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Distinct(cols...))
 }
 
-func (g goadminRoleUsersDo) Omit(cols ...field.Expr) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Omit(cols ...field.Expr) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Omit(cols...))
 }
 
-func (g goadminRoleUsersDo) Join(table schema.Tabler, on ...field.Expr) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Join(table schema.Tabler, on ...field.Expr) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Join(table, on...))
 }
 
-func (g goadminRoleUsersDo) LeftJoin(table schema.Tabler, on ...field.Expr) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) LeftJoin(table schema.Tabler, on ...field.Expr) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.LeftJoin(table, on...))
 }
 
-func (g goadminRoleUsersDo) RightJoin(table schema.Tabler, on ...field.Expr) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) RightJoin(table schema.Tabler, on ...field.Expr) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.RightJoin(table, on...))
 }
 
-func (g goadminRoleUsersDo) Group(cols ...field.Expr) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Group(cols ...field.Expr) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Group(cols...))
 }
 
-func (g goadminRoleUsersDo) Having(conds ...gen.Condition) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Having(conds ...gen.Condition) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Having(conds...))
 }
 
-func (g goadminRoleUsersDo) Limit(limit int) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Limit(limit int) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Limit(limit))
 }
 
-func (g goadminRoleUsersDo) Offset(offset int) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Offset(offset int) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Offset(offset))
 }
 
-func (g goadminRoleUsersDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Scopes(funcs...))
 }
 
-func (g goadminRoleUsersDo) Unscoped() *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Unscoped() IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Unscoped())
 }
 
@@ -257,22 +309,22 @@ func (g goadminRoleUsersDo) FindInBatches(result *[]*model.GoadminRoleUsers, bat
 	return g.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (g goadminRoleUsersDo) Attrs(attrs ...field.AssignExpr) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Attrs(attrs ...field.AssignExpr) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Attrs(attrs...))
 }
 
-func (g goadminRoleUsersDo) Assign(attrs ...field.AssignExpr) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Assign(attrs ...field.AssignExpr) IGoadminRoleUsersDo {
 	return g.withDO(g.DO.Assign(attrs...))
 }
 
-func (g goadminRoleUsersDo) Joins(fields ...field.RelationField) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Joins(fields ...field.RelationField) IGoadminRoleUsersDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Joins(_f))
 	}
 	return &g
 }
 
-func (g goadminRoleUsersDo) Preload(fields ...field.RelationField) *goadminRoleUsersDo {
+func (g goadminRoleUsersDo) Preload(fields ...field.RelationField) IGoadminRoleUsersDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Preload(_f))
 	}

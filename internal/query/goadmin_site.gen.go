@@ -41,7 +41,7 @@ func newGoadminSite(db *gorm.DB) goadminSite {
 }
 
 type goadminSite struct {
-	goadminSiteDo goadminSiteDo
+	goadminSiteDo
 
 	ALL         field.Asterisk
 	ID          field.Int32
@@ -80,14 +80,6 @@ func (g *goadminSite) updateTableName(table string) *goadminSite {
 	return g
 }
 
-func (g *goadminSite) WithContext(ctx context.Context) *goadminSiteDo {
-	return g.goadminSiteDo.WithContext(ctx)
-}
-
-func (g goadminSite) TableName() string { return g.goadminSiteDo.TableName() }
-
-func (g goadminSite) Alias() string { return g.goadminSiteDo.Alias() }
-
 func (g *goadminSite) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -115,95 +107,155 @@ func (g goadminSite) clone(db *gorm.DB) goadminSite {
 
 type goadminSiteDo struct{ gen.DO }
 
-func (g goadminSiteDo) Debug() *goadminSiteDo {
+type IGoadminSiteDo interface {
+	gen.SubQuery
+	Debug() IGoadminSiteDo
+	WithContext(ctx context.Context) IGoadminSiteDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IGoadminSiteDo
+	WriteDB() IGoadminSiteDo
+	As(alias string) gen.Dao
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IGoadminSiteDo
+	Not(conds ...gen.Condition) IGoadminSiteDo
+	Or(conds ...gen.Condition) IGoadminSiteDo
+	Select(conds ...field.Expr) IGoadminSiteDo
+	Where(conds ...gen.Condition) IGoadminSiteDo
+	Order(conds ...field.Expr) IGoadminSiteDo
+	Distinct(cols ...field.Expr) IGoadminSiteDo
+	Omit(cols ...field.Expr) IGoadminSiteDo
+	Join(table schema.Tabler, on ...field.Expr) IGoadminSiteDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IGoadminSiteDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IGoadminSiteDo
+	Group(cols ...field.Expr) IGoadminSiteDo
+	Having(conds ...gen.Condition) IGoadminSiteDo
+	Limit(limit int) IGoadminSiteDo
+	Offset(offset int) IGoadminSiteDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IGoadminSiteDo
+	Unscoped() IGoadminSiteDo
+	Create(values ...*model.GoadminSite) error
+	CreateInBatches(values []*model.GoadminSite, batchSize int) error
+	Save(values ...*model.GoadminSite) error
+	First() (*model.GoadminSite, error)
+	Take() (*model.GoadminSite, error)
+	Last() (*model.GoadminSite, error)
+	Find() ([]*model.GoadminSite, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.GoadminSite, err error)
+	FindInBatches(result *[]*model.GoadminSite, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.GoadminSite) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IGoadminSiteDo
+	Assign(attrs ...field.AssignExpr) IGoadminSiteDo
+	Joins(fields ...field.RelationField) IGoadminSiteDo
+	Preload(fields ...field.RelationField) IGoadminSiteDo
+	FirstOrInit() (*model.GoadminSite, error)
+	FirstOrCreate() (*model.GoadminSite, error)
+	FindByPage(offset int, limit int) (result []*model.GoadminSite, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IGoadminSiteDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (g goadminSiteDo) Debug() IGoadminSiteDo {
 	return g.withDO(g.DO.Debug())
 }
 
-func (g goadminSiteDo) WithContext(ctx context.Context) *goadminSiteDo {
+func (g goadminSiteDo) WithContext(ctx context.Context) IGoadminSiteDo {
 	return g.withDO(g.DO.WithContext(ctx))
 }
 
-func (g goadminSiteDo) ReadDB() *goadminSiteDo {
+func (g goadminSiteDo) ReadDB() IGoadminSiteDo {
 	return g.Clauses(dbresolver.Read)
 }
 
-func (g goadminSiteDo) WriteDB() *goadminSiteDo {
+func (g goadminSiteDo) WriteDB() IGoadminSiteDo {
 	return g.Clauses(dbresolver.Write)
 }
 
-func (g goadminSiteDo) Clauses(conds ...clause.Expression) *goadminSiteDo {
+func (g goadminSiteDo) Clauses(conds ...clause.Expression) IGoadminSiteDo {
 	return g.withDO(g.DO.Clauses(conds...))
 }
 
-func (g goadminSiteDo) Returning(value interface{}, columns ...string) *goadminSiteDo {
+func (g goadminSiteDo) Returning(value interface{}, columns ...string) IGoadminSiteDo {
 	return g.withDO(g.DO.Returning(value, columns...))
 }
 
-func (g goadminSiteDo) Not(conds ...gen.Condition) *goadminSiteDo {
+func (g goadminSiteDo) Not(conds ...gen.Condition) IGoadminSiteDo {
 	return g.withDO(g.DO.Not(conds...))
 }
 
-func (g goadminSiteDo) Or(conds ...gen.Condition) *goadminSiteDo {
+func (g goadminSiteDo) Or(conds ...gen.Condition) IGoadminSiteDo {
 	return g.withDO(g.DO.Or(conds...))
 }
 
-func (g goadminSiteDo) Select(conds ...field.Expr) *goadminSiteDo {
+func (g goadminSiteDo) Select(conds ...field.Expr) IGoadminSiteDo {
 	return g.withDO(g.DO.Select(conds...))
 }
 
-func (g goadminSiteDo) Where(conds ...gen.Condition) *goadminSiteDo {
+func (g goadminSiteDo) Where(conds ...gen.Condition) IGoadminSiteDo {
 	return g.withDO(g.DO.Where(conds...))
 }
 
-func (g goadminSiteDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *goadminSiteDo {
+func (g goadminSiteDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) IGoadminSiteDo {
 	return g.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
-func (g goadminSiteDo) Order(conds ...field.Expr) *goadminSiteDo {
+func (g goadminSiteDo) Order(conds ...field.Expr) IGoadminSiteDo {
 	return g.withDO(g.DO.Order(conds...))
 }
 
-func (g goadminSiteDo) Distinct(cols ...field.Expr) *goadminSiteDo {
+func (g goadminSiteDo) Distinct(cols ...field.Expr) IGoadminSiteDo {
 	return g.withDO(g.DO.Distinct(cols...))
 }
 
-func (g goadminSiteDo) Omit(cols ...field.Expr) *goadminSiteDo {
+func (g goadminSiteDo) Omit(cols ...field.Expr) IGoadminSiteDo {
 	return g.withDO(g.DO.Omit(cols...))
 }
 
-func (g goadminSiteDo) Join(table schema.Tabler, on ...field.Expr) *goadminSiteDo {
+func (g goadminSiteDo) Join(table schema.Tabler, on ...field.Expr) IGoadminSiteDo {
 	return g.withDO(g.DO.Join(table, on...))
 }
 
-func (g goadminSiteDo) LeftJoin(table schema.Tabler, on ...field.Expr) *goadminSiteDo {
+func (g goadminSiteDo) LeftJoin(table schema.Tabler, on ...field.Expr) IGoadminSiteDo {
 	return g.withDO(g.DO.LeftJoin(table, on...))
 }
 
-func (g goadminSiteDo) RightJoin(table schema.Tabler, on ...field.Expr) *goadminSiteDo {
+func (g goadminSiteDo) RightJoin(table schema.Tabler, on ...field.Expr) IGoadminSiteDo {
 	return g.withDO(g.DO.RightJoin(table, on...))
 }
 
-func (g goadminSiteDo) Group(cols ...field.Expr) *goadminSiteDo {
+func (g goadminSiteDo) Group(cols ...field.Expr) IGoadminSiteDo {
 	return g.withDO(g.DO.Group(cols...))
 }
 
-func (g goadminSiteDo) Having(conds ...gen.Condition) *goadminSiteDo {
+func (g goadminSiteDo) Having(conds ...gen.Condition) IGoadminSiteDo {
 	return g.withDO(g.DO.Having(conds...))
 }
 
-func (g goadminSiteDo) Limit(limit int) *goadminSiteDo {
+func (g goadminSiteDo) Limit(limit int) IGoadminSiteDo {
 	return g.withDO(g.DO.Limit(limit))
 }
 
-func (g goadminSiteDo) Offset(offset int) *goadminSiteDo {
+func (g goadminSiteDo) Offset(offset int) IGoadminSiteDo {
 	return g.withDO(g.DO.Offset(offset))
 }
 
-func (g goadminSiteDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *goadminSiteDo {
+func (g goadminSiteDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IGoadminSiteDo {
 	return g.withDO(g.DO.Scopes(funcs...))
 }
 
-func (g goadminSiteDo) Unscoped() *goadminSiteDo {
+func (g goadminSiteDo) Unscoped() IGoadminSiteDo {
 	return g.withDO(g.DO.Unscoped())
 }
 
@@ -269,22 +321,22 @@ func (g goadminSiteDo) FindInBatches(result *[]*model.GoadminSite, batchSize int
 	return g.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (g goadminSiteDo) Attrs(attrs ...field.AssignExpr) *goadminSiteDo {
+func (g goadminSiteDo) Attrs(attrs ...field.AssignExpr) IGoadminSiteDo {
 	return g.withDO(g.DO.Attrs(attrs...))
 }
 
-func (g goadminSiteDo) Assign(attrs ...field.AssignExpr) *goadminSiteDo {
+func (g goadminSiteDo) Assign(attrs ...field.AssignExpr) IGoadminSiteDo {
 	return g.withDO(g.DO.Assign(attrs...))
 }
 
-func (g goadminSiteDo) Joins(fields ...field.RelationField) *goadminSiteDo {
+func (g goadminSiteDo) Joins(fields ...field.RelationField) IGoadminSiteDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Joins(_f))
 	}
 	return &g
 }
 
-func (g goadminSiteDo) Preload(fields ...field.RelationField) *goadminSiteDo {
+func (g goadminSiteDo) Preload(fields ...field.RelationField) IGoadminSiteDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Preload(_f))
 	}

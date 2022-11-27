@@ -43,7 +43,7 @@ func newMessageIndex(db *gorm.DB) messageIndex {
 }
 
 type messageIndex struct {
-	messageIndexDo messageIndexDo
+	messageIndexDo
 
 	ALL              field.Asterisk
 	ID               field.Int64
@@ -86,14 +86,6 @@ func (m *messageIndex) updateTableName(table string) *messageIndex {
 	return m
 }
 
-func (m *messageIndex) WithContext(ctx context.Context) *messageIndexDo {
-	return m.messageIndexDo.WithContext(ctx)
-}
-
-func (m messageIndex) TableName() string { return m.messageIndexDo.TableName() }
-
-func (m messageIndex) Alias() string { return m.messageIndexDo.Alias() }
-
 func (m *messageIndex) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := m.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -123,95 +115,155 @@ func (m messageIndex) clone(db *gorm.DB) messageIndex {
 
 type messageIndexDo struct{ gen.DO }
 
-func (m messageIndexDo) Debug() *messageIndexDo {
+type IMessageIndexDo interface {
+	gen.SubQuery
+	Debug() IMessageIndexDo
+	WithContext(ctx context.Context) IMessageIndexDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IMessageIndexDo
+	WriteDB() IMessageIndexDo
+	As(alias string) gen.Dao
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IMessageIndexDo
+	Not(conds ...gen.Condition) IMessageIndexDo
+	Or(conds ...gen.Condition) IMessageIndexDo
+	Select(conds ...field.Expr) IMessageIndexDo
+	Where(conds ...gen.Condition) IMessageIndexDo
+	Order(conds ...field.Expr) IMessageIndexDo
+	Distinct(cols ...field.Expr) IMessageIndexDo
+	Omit(cols ...field.Expr) IMessageIndexDo
+	Join(table schema.Tabler, on ...field.Expr) IMessageIndexDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IMessageIndexDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IMessageIndexDo
+	Group(cols ...field.Expr) IMessageIndexDo
+	Having(conds ...gen.Condition) IMessageIndexDo
+	Limit(limit int) IMessageIndexDo
+	Offset(offset int) IMessageIndexDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IMessageIndexDo
+	Unscoped() IMessageIndexDo
+	Create(values ...*model.MessageIndex) error
+	CreateInBatches(values []*model.MessageIndex, batchSize int) error
+	Save(values ...*model.MessageIndex) error
+	First() (*model.MessageIndex, error)
+	Take() (*model.MessageIndex, error)
+	Last() (*model.MessageIndex, error)
+	Find() ([]*model.MessageIndex, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.MessageIndex, err error)
+	FindInBatches(result *[]*model.MessageIndex, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.MessageIndex) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IMessageIndexDo
+	Assign(attrs ...field.AssignExpr) IMessageIndexDo
+	Joins(fields ...field.RelationField) IMessageIndexDo
+	Preload(fields ...field.RelationField) IMessageIndexDo
+	FirstOrInit() (*model.MessageIndex, error)
+	FirstOrCreate() (*model.MessageIndex, error)
+	FindByPage(offset int, limit int) (result []*model.MessageIndex, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IMessageIndexDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (m messageIndexDo) Debug() IMessageIndexDo {
 	return m.withDO(m.DO.Debug())
 }
 
-func (m messageIndexDo) WithContext(ctx context.Context) *messageIndexDo {
+func (m messageIndexDo) WithContext(ctx context.Context) IMessageIndexDo {
 	return m.withDO(m.DO.WithContext(ctx))
 }
 
-func (m messageIndexDo) ReadDB() *messageIndexDo {
+func (m messageIndexDo) ReadDB() IMessageIndexDo {
 	return m.Clauses(dbresolver.Read)
 }
 
-func (m messageIndexDo) WriteDB() *messageIndexDo {
+func (m messageIndexDo) WriteDB() IMessageIndexDo {
 	return m.Clauses(dbresolver.Write)
 }
 
-func (m messageIndexDo) Clauses(conds ...clause.Expression) *messageIndexDo {
+func (m messageIndexDo) Clauses(conds ...clause.Expression) IMessageIndexDo {
 	return m.withDO(m.DO.Clauses(conds...))
 }
 
-func (m messageIndexDo) Returning(value interface{}, columns ...string) *messageIndexDo {
+func (m messageIndexDo) Returning(value interface{}, columns ...string) IMessageIndexDo {
 	return m.withDO(m.DO.Returning(value, columns...))
 }
 
-func (m messageIndexDo) Not(conds ...gen.Condition) *messageIndexDo {
+func (m messageIndexDo) Not(conds ...gen.Condition) IMessageIndexDo {
 	return m.withDO(m.DO.Not(conds...))
 }
 
-func (m messageIndexDo) Or(conds ...gen.Condition) *messageIndexDo {
+func (m messageIndexDo) Or(conds ...gen.Condition) IMessageIndexDo {
 	return m.withDO(m.DO.Or(conds...))
 }
 
-func (m messageIndexDo) Select(conds ...field.Expr) *messageIndexDo {
+func (m messageIndexDo) Select(conds ...field.Expr) IMessageIndexDo {
 	return m.withDO(m.DO.Select(conds...))
 }
 
-func (m messageIndexDo) Where(conds ...gen.Condition) *messageIndexDo {
+func (m messageIndexDo) Where(conds ...gen.Condition) IMessageIndexDo {
 	return m.withDO(m.DO.Where(conds...))
 }
 
-func (m messageIndexDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *messageIndexDo {
+func (m messageIndexDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) IMessageIndexDo {
 	return m.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
-func (m messageIndexDo) Order(conds ...field.Expr) *messageIndexDo {
+func (m messageIndexDo) Order(conds ...field.Expr) IMessageIndexDo {
 	return m.withDO(m.DO.Order(conds...))
 }
 
-func (m messageIndexDo) Distinct(cols ...field.Expr) *messageIndexDo {
+func (m messageIndexDo) Distinct(cols ...field.Expr) IMessageIndexDo {
 	return m.withDO(m.DO.Distinct(cols...))
 }
 
-func (m messageIndexDo) Omit(cols ...field.Expr) *messageIndexDo {
+func (m messageIndexDo) Omit(cols ...field.Expr) IMessageIndexDo {
 	return m.withDO(m.DO.Omit(cols...))
 }
 
-func (m messageIndexDo) Join(table schema.Tabler, on ...field.Expr) *messageIndexDo {
+func (m messageIndexDo) Join(table schema.Tabler, on ...field.Expr) IMessageIndexDo {
 	return m.withDO(m.DO.Join(table, on...))
 }
 
-func (m messageIndexDo) LeftJoin(table schema.Tabler, on ...field.Expr) *messageIndexDo {
+func (m messageIndexDo) LeftJoin(table schema.Tabler, on ...field.Expr) IMessageIndexDo {
 	return m.withDO(m.DO.LeftJoin(table, on...))
 }
 
-func (m messageIndexDo) RightJoin(table schema.Tabler, on ...field.Expr) *messageIndexDo {
+func (m messageIndexDo) RightJoin(table schema.Tabler, on ...field.Expr) IMessageIndexDo {
 	return m.withDO(m.DO.RightJoin(table, on...))
 }
 
-func (m messageIndexDo) Group(cols ...field.Expr) *messageIndexDo {
+func (m messageIndexDo) Group(cols ...field.Expr) IMessageIndexDo {
 	return m.withDO(m.DO.Group(cols...))
 }
 
-func (m messageIndexDo) Having(conds ...gen.Condition) *messageIndexDo {
+func (m messageIndexDo) Having(conds ...gen.Condition) IMessageIndexDo {
 	return m.withDO(m.DO.Having(conds...))
 }
 
-func (m messageIndexDo) Limit(limit int) *messageIndexDo {
+func (m messageIndexDo) Limit(limit int) IMessageIndexDo {
 	return m.withDO(m.DO.Limit(limit))
 }
 
-func (m messageIndexDo) Offset(offset int) *messageIndexDo {
+func (m messageIndexDo) Offset(offset int) IMessageIndexDo {
 	return m.withDO(m.DO.Offset(offset))
 }
 
-func (m messageIndexDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *messageIndexDo {
+func (m messageIndexDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IMessageIndexDo {
 	return m.withDO(m.DO.Scopes(funcs...))
 }
 
-func (m messageIndexDo) Unscoped() *messageIndexDo {
+func (m messageIndexDo) Unscoped() IMessageIndexDo {
 	return m.withDO(m.DO.Unscoped())
 }
 
@@ -277,22 +329,22 @@ func (m messageIndexDo) FindInBatches(result *[]*model.MessageIndex, batchSize i
 	return m.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (m messageIndexDo) Attrs(attrs ...field.AssignExpr) *messageIndexDo {
+func (m messageIndexDo) Attrs(attrs ...field.AssignExpr) IMessageIndexDo {
 	return m.withDO(m.DO.Attrs(attrs...))
 }
 
-func (m messageIndexDo) Assign(attrs ...field.AssignExpr) *messageIndexDo {
+func (m messageIndexDo) Assign(attrs ...field.AssignExpr) IMessageIndexDo {
 	return m.withDO(m.DO.Assign(attrs...))
 }
 
-func (m messageIndexDo) Joins(fields ...field.RelationField) *messageIndexDo {
+func (m messageIndexDo) Joins(fields ...field.RelationField) IMessageIndexDo {
 	for _, _f := range fields {
 		m = *m.withDO(m.DO.Joins(_f))
 	}
 	return &m
 }
 
-func (m messageIndexDo) Preload(fields ...field.RelationField) *messageIndexDo {
+func (m messageIndexDo) Preload(fields ...field.RelationField) IMessageIndexDo {
 	for _, _f := range fields {
 		m = *m.withDO(m.DO.Preload(_f))
 	}

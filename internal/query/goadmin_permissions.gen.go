@@ -41,7 +41,7 @@ func newGoadminPermissions(db *gorm.DB) goadminPermissions {
 }
 
 type goadminPermissions struct {
-	goadminPermissionsDo goadminPermissionsDo
+	goadminPermissionsDo
 
 	ALL        field.Asterisk
 	ID         field.Int32
@@ -80,14 +80,6 @@ func (g *goadminPermissions) updateTableName(table string) *goadminPermissions {
 	return g
 }
 
-func (g *goadminPermissions) WithContext(ctx context.Context) *goadminPermissionsDo {
-	return g.goadminPermissionsDo.WithContext(ctx)
-}
-
-func (g goadminPermissions) TableName() string { return g.goadminPermissionsDo.TableName() }
-
-func (g goadminPermissions) Alias() string { return g.goadminPermissionsDo.Alias() }
-
 func (g *goadminPermissions) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
 	if !ok || _f == nil {
@@ -115,95 +107,155 @@ func (g goadminPermissions) clone(db *gorm.DB) goadminPermissions {
 
 type goadminPermissionsDo struct{ gen.DO }
 
-func (g goadminPermissionsDo) Debug() *goadminPermissionsDo {
+type IGoadminPermissionsDo interface {
+	gen.SubQuery
+	Debug() IGoadminPermissionsDo
+	WithContext(ctx context.Context) IGoadminPermissionsDo
+	WithResult(fc func(tx gen.Dao)) gen.ResultInfo
+	ReplaceDB(db *gorm.DB)
+	ReadDB() IGoadminPermissionsDo
+	WriteDB() IGoadminPermissionsDo
+	As(alias string) gen.Dao
+	Columns(cols ...field.Expr) gen.Columns
+	Clauses(conds ...clause.Expression) IGoadminPermissionsDo
+	Not(conds ...gen.Condition) IGoadminPermissionsDo
+	Or(conds ...gen.Condition) IGoadminPermissionsDo
+	Select(conds ...field.Expr) IGoadminPermissionsDo
+	Where(conds ...gen.Condition) IGoadminPermissionsDo
+	Order(conds ...field.Expr) IGoadminPermissionsDo
+	Distinct(cols ...field.Expr) IGoadminPermissionsDo
+	Omit(cols ...field.Expr) IGoadminPermissionsDo
+	Join(table schema.Tabler, on ...field.Expr) IGoadminPermissionsDo
+	LeftJoin(table schema.Tabler, on ...field.Expr) IGoadminPermissionsDo
+	RightJoin(table schema.Tabler, on ...field.Expr) IGoadminPermissionsDo
+	Group(cols ...field.Expr) IGoadminPermissionsDo
+	Having(conds ...gen.Condition) IGoadminPermissionsDo
+	Limit(limit int) IGoadminPermissionsDo
+	Offset(offset int) IGoadminPermissionsDo
+	Count() (count int64, err error)
+	Scopes(funcs ...func(gen.Dao) gen.Dao) IGoadminPermissionsDo
+	Unscoped() IGoadminPermissionsDo
+	Create(values ...*model.GoadminPermissions) error
+	CreateInBatches(values []*model.GoadminPermissions, batchSize int) error
+	Save(values ...*model.GoadminPermissions) error
+	First() (*model.GoadminPermissions, error)
+	Take() (*model.GoadminPermissions, error)
+	Last() (*model.GoadminPermissions, error)
+	Find() ([]*model.GoadminPermissions, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.GoadminPermissions, err error)
+	FindInBatches(result *[]*model.GoadminPermissions, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Pluck(column field.Expr, dest interface{}) error
+	Delete(...*model.GoadminPermissions) (info gen.ResultInfo, err error)
+	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	Updates(value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumn(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
+	UpdateColumnSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
+	UpdateColumns(value interface{}) (info gen.ResultInfo, err error)
+	UpdateFrom(q gen.SubQuery) gen.Dao
+	Attrs(attrs ...field.AssignExpr) IGoadminPermissionsDo
+	Assign(attrs ...field.AssignExpr) IGoadminPermissionsDo
+	Joins(fields ...field.RelationField) IGoadminPermissionsDo
+	Preload(fields ...field.RelationField) IGoadminPermissionsDo
+	FirstOrInit() (*model.GoadminPermissions, error)
+	FirstOrCreate() (*model.GoadminPermissions, error)
+	FindByPage(offset int, limit int) (result []*model.GoadminPermissions, count int64, err error)
+	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
+	Scan(result interface{}) (err error)
+	Returning(value interface{}, columns ...string) IGoadminPermissionsDo
+	UnderlyingDB() *gorm.DB
+	schema.Tabler
+}
+
+func (g goadminPermissionsDo) Debug() IGoadminPermissionsDo {
 	return g.withDO(g.DO.Debug())
 }
 
-func (g goadminPermissionsDo) WithContext(ctx context.Context) *goadminPermissionsDo {
+func (g goadminPermissionsDo) WithContext(ctx context.Context) IGoadminPermissionsDo {
 	return g.withDO(g.DO.WithContext(ctx))
 }
 
-func (g goadminPermissionsDo) ReadDB() *goadminPermissionsDo {
+func (g goadminPermissionsDo) ReadDB() IGoadminPermissionsDo {
 	return g.Clauses(dbresolver.Read)
 }
 
-func (g goadminPermissionsDo) WriteDB() *goadminPermissionsDo {
+func (g goadminPermissionsDo) WriteDB() IGoadminPermissionsDo {
 	return g.Clauses(dbresolver.Write)
 }
 
-func (g goadminPermissionsDo) Clauses(conds ...clause.Expression) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Clauses(conds ...clause.Expression) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Clauses(conds...))
 }
 
-func (g goadminPermissionsDo) Returning(value interface{}, columns ...string) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Returning(value interface{}, columns ...string) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Returning(value, columns...))
 }
 
-func (g goadminPermissionsDo) Not(conds ...gen.Condition) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Not(conds ...gen.Condition) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Not(conds...))
 }
 
-func (g goadminPermissionsDo) Or(conds ...gen.Condition) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Or(conds ...gen.Condition) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Or(conds...))
 }
 
-func (g goadminPermissionsDo) Select(conds ...field.Expr) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Select(conds ...field.Expr) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Select(conds...))
 }
 
-func (g goadminPermissionsDo) Where(conds ...gen.Condition) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Where(conds ...gen.Condition) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Where(conds...))
 }
 
-func (g goadminPermissionsDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Exists(subquery interface{ UnderlyingDB() *gorm.DB }) IGoadminPermissionsDo {
 	return g.Where(field.CompareSubQuery(field.ExistsOp, nil, subquery.UnderlyingDB()))
 }
 
-func (g goadminPermissionsDo) Order(conds ...field.Expr) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Order(conds ...field.Expr) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Order(conds...))
 }
 
-func (g goadminPermissionsDo) Distinct(cols ...field.Expr) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Distinct(cols ...field.Expr) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Distinct(cols...))
 }
 
-func (g goadminPermissionsDo) Omit(cols ...field.Expr) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Omit(cols ...field.Expr) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Omit(cols...))
 }
 
-func (g goadminPermissionsDo) Join(table schema.Tabler, on ...field.Expr) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Join(table schema.Tabler, on ...field.Expr) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Join(table, on...))
 }
 
-func (g goadminPermissionsDo) LeftJoin(table schema.Tabler, on ...field.Expr) *goadminPermissionsDo {
+func (g goadminPermissionsDo) LeftJoin(table schema.Tabler, on ...field.Expr) IGoadminPermissionsDo {
 	return g.withDO(g.DO.LeftJoin(table, on...))
 }
 
-func (g goadminPermissionsDo) RightJoin(table schema.Tabler, on ...field.Expr) *goadminPermissionsDo {
+func (g goadminPermissionsDo) RightJoin(table schema.Tabler, on ...field.Expr) IGoadminPermissionsDo {
 	return g.withDO(g.DO.RightJoin(table, on...))
 }
 
-func (g goadminPermissionsDo) Group(cols ...field.Expr) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Group(cols ...field.Expr) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Group(cols...))
 }
 
-func (g goadminPermissionsDo) Having(conds ...gen.Condition) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Having(conds ...gen.Condition) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Having(conds...))
 }
 
-func (g goadminPermissionsDo) Limit(limit int) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Limit(limit int) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Limit(limit))
 }
 
-func (g goadminPermissionsDo) Offset(offset int) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Offset(offset int) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Offset(offset))
 }
 
-func (g goadminPermissionsDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Scopes(funcs ...func(gen.Dao) gen.Dao) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Scopes(funcs...))
 }
 
-func (g goadminPermissionsDo) Unscoped() *goadminPermissionsDo {
+func (g goadminPermissionsDo) Unscoped() IGoadminPermissionsDo {
 	return g.withDO(g.DO.Unscoped())
 }
 
@@ -269,22 +321,22 @@ func (g goadminPermissionsDo) FindInBatches(result *[]*model.GoadminPermissions,
 	return g.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (g goadminPermissionsDo) Attrs(attrs ...field.AssignExpr) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Attrs(attrs ...field.AssignExpr) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Attrs(attrs...))
 }
 
-func (g goadminPermissionsDo) Assign(attrs ...field.AssignExpr) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Assign(attrs ...field.AssignExpr) IGoadminPermissionsDo {
 	return g.withDO(g.DO.Assign(attrs...))
 }
 
-func (g goadminPermissionsDo) Joins(fields ...field.RelationField) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Joins(fields ...field.RelationField) IGoadminPermissionsDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Joins(_f))
 	}
 	return &g
 }
 
-func (g goadminPermissionsDo) Preload(fields ...field.RelationField) *goadminPermissionsDo {
+func (g goadminPermissionsDo) Preload(fields ...field.RelationField) IGoadminPermissionsDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Preload(_f))
 	}

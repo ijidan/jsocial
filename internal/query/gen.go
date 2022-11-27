@@ -13,6 +13,60 @@ import (
 	"gorm.io/plugin/dbresolver"
 )
 
+var (
+	Q                      = new(Query)
+	Device                 *device
+	DeviceAck              *deviceAck
+	Feed                   *feed
+	FeedImage              *feedImage
+	FeedLike               *feedLike
+	FeedVideo              *feedVideo
+	Gid                    *gid
+	GoadminMenu            *goadminMenu
+	GoadminOperationLog    *goadminOperationLog
+	GoadminPermissions     *goadminPermissions
+	GoadminRoleMenu        *goadminRoleMenu
+	GoadminRolePermissions *goadminRolePermissions
+	GoadminRoleUsers       *goadminRoleUsers
+	GoadminRoles           *goadminRoles
+	GoadminSession         *goadminSession
+	GoadminSite            *goadminSite
+	GoadminUserPermissions *goadminUserPermissions
+	GoadminUsers           *goadminUsers
+	Group                  *group
+	GroupUser              *groupUser
+	MessageContent         *messageContent
+	MessageIndex           *messageIndex
+	User                   *user
+)
+
+func SetDefault(db *gorm.DB) {
+	*Q = *Use(db)
+	Device = &Q.Device
+	DeviceAck = &Q.DeviceAck
+	Feed = &Q.Feed
+	FeedImage = &Q.FeedImage
+	FeedLike = &Q.FeedLike
+	FeedVideo = &Q.FeedVideo
+	Gid = &Q.Gid
+	GoadminMenu = &Q.GoadminMenu
+	GoadminOperationLog = &Q.GoadminOperationLog
+	GoadminPermissions = &Q.GoadminPermissions
+	GoadminRoleMenu = &Q.GoadminRoleMenu
+	GoadminRolePermissions = &Q.GoadminRolePermissions
+	GoadminRoleUsers = &Q.GoadminRoleUsers
+	GoadminRoles = &Q.GoadminRoles
+	GoadminSession = &Q.GoadminSession
+	GoadminSite = &Q.GoadminSite
+	GoadminUserPermissions = &Q.GoadminUserPermissions
+	GoadminUsers = &Q.GoadminUsers
+	Group = &Q.Group
+	GroupUser = &Q.GroupUser
+	MessageContent = &Q.MessageContent
+	MessageIndex = &Q.MessageIndex
+	User = &Q.User
+}
+
 func Use(db *gorm.DB) *Query {
 	return &Query{
 		db:                     db,
@@ -114,29 +168,29 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 }
 
 type queryCtx struct {
-	Device                 *deviceDo
-	DeviceAck              *deviceAckDo
-	Feed                   *feedDo
-	FeedImage              *feedImageDo
-	FeedLike               *feedLikeDo
-	FeedVideo              *feedVideoDo
-	Gid                    *gidDo
-	GoadminMenu            *goadminMenuDo
-	GoadminOperationLog    *goadminOperationLogDo
-	GoadminPermissions     *goadminPermissionsDo
-	GoadminRoleMenu        *goadminRoleMenuDo
-	GoadminRolePermissions *goadminRolePermissionsDo
-	GoadminRoleUsers       *goadminRoleUsersDo
-	GoadminRoles           *goadminRolesDo
-	GoadminSession         *goadminSessionDo
-	GoadminSite            *goadminSiteDo
-	GoadminUserPermissions *goadminUserPermissionsDo
-	GoadminUsers           *goadminUsersDo
-	Group                  *groupDo
-	GroupUser              *groupUserDo
-	MessageContent         *messageContentDo
-	MessageIndex           *messageIndexDo
-	User                   *userDo
+	Device                 IDeviceDo
+	DeviceAck              IDeviceAckDo
+	Feed                   IFeedDo
+	FeedImage              IFeedImageDo
+	FeedLike               IFeedLikeDo
+	FeedVideo              IFeedVideoDo
+	Gid                    IGidDo
+	GoadminMenu            IGoadminMenuDo
+	GoadminOperationLog    IGoadminOperationLogDo
+	GoadminPermissions     IGoadminPermissionsDo
+	GoadminRoleMenu        IGoadminRoleMenuDo
+	GoadminRolePermissions IGoadminRolePermissionsDo
+	GoadminRoleUsers       IGoadminRoleUsersDo
+	GoadminRoles           IGoadminRolesDo
+	GoadminSession         IGoadminSessionDo
+	GoadminSite            IGoadminSiteDo
+	GoadminUserPermissions IGoadminUserPermissionsDo
+	GoadminUsers           IGoadminUsersDo
+	Group                  IGroupDo
+	GroupUser              IGroupUserDo
+	MessageContent         IMessageContentDo
+	MessageIndex           IMessageIndexDo
+	User                   IUserDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
