@@ -87,7 +87,7 @@ func (s *Service) QuitGroup(c context.Context, req *proto_build.QuitGroupRequest
 	return rsp, nil
 }
 
-func NewGroupService(cf config.Rpc) *Service {
+func NewService(cf config.Rpc) *Service {
 	instance := &Service{BasicService: service.BasicService{
 		Name: "service_group",
 		Host: cf.Host,

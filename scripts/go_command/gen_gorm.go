@@ -6,9 +6,16 @@ import (
 	"github.com/ijidan/jsocial/internal/injector"
 	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/spf13/cobra"
+	"gorm.io/driver/mysql"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
+	"gorm.io/gorm"
 )
+
+type queries interface {
+	//SELECT * FROM @@table WHERE id=@id
+	GetById(id int) (gen.T, error)
+}
 
 // genGormCmd represents the genGorm command
 var genGormCmd = &cobra.Command{
@@ -26,29 +33,12 @@ var genGormCmd = &cobra.Command{
 		// ### if you want to query without context constrain, set mode gen.WithoutContext ###
 		g := gen.NewGenerator(gen.Config{
 			OutPath: Path.InternalDir + "query",
-			Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
-			/* Mode: gen.WithoutContext|gen.WithDefaultQuery*/
-			//if you want the nullable field generation property to be pointer type, set FieldNullable true
-			/* FieldNullable: true,*/
-			//if you want to generate index tags from database, set FieldWithIndexTag true
-			/* FieldWithIndexTag: true,*/
-			//if you want to generate type tags from database, set FieldWithTypeTag true
-			/* FieldWithTypeTag: true,*/
-			//if you need unit tests for query code, set WithUnitTest true
-			/* WithUnitTest: true, */
+			Mode:    gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
 		})
 
-		// reuse the database connection in Project or create a connection here
-		// if you want to use GenerateModel/GenerateModelAs, UseDB is necessray or it will panic
-		// db, _ := gorm.Open(mysql.Open("root:@(127.0.0.1:3306)/demo?charset=utf8mb4&parseTime=True&loc=Local"))
-		g.UseDB(global.GH.Db)
+		gormdb, _ := gorm.Open(mysql.Open("jidan:jidan@(127.0.0.1:3306)/jsocial?charset=utf8mb4&parseTime=True&loc=Local"))
 
-		// apply basic crud api on structs or table models which is specified by table name with function
-		// GenerateModel/GenerateModelAs. And generator will generate table models' code when calling Excute.
-		//g.ApplyBasic(model.User{}, g.GenerateModel("company"), g.GenerateModelAs("people", "Person", gen.FieldIgnore("address")))
-
-		// apply diy interfaces on structs or table models
-		//g.ApplyInterface(func(method model.Method) {}, model.User{}, g.GenerateModel("company"))
+		g.UseDB(gormdb)
 
 		device := g.GenerateModel("device")
 		deviceAck := g.GenerateModel("device_ack", gen.FieldRelate(field.BelongsTo, "Device", device, &field.RelateConfig{
@@ -80,6 +70,12 @@ var genGormCmd = &cobra.Command{
 
 		g.ApplyBasic(device, deviceAck, group, groupUser, messageIndex, user)
 		g.ApplyBasic(g.GenerateAllTable()...)
+		tableModels := g.GenerateAllTable()
+		for _, v := range tableModels {
+			func(v interface{}) {
+				g.ApplyInterface(func(queries) {}, v)
+			}(v)
+		}
 		// execute the action of code generation
 		g.Execute()
 

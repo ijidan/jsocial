@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -38,7 +39,7 @@ func newGoadminRoleMenu(db *gorm.DB) goadminRoleMenu {
 }
 
 type goadminRoleMenu struct {
-	goadminRoleMenuDo
+	goadminRoleMenuDo goadminRoleMenuDo
 
 	ALL       field.Asterisk
 	RoleID    field.Int32
@@ -70,6 +71,14 @@ func (g *goadminRoleMenu) updateTableName(table string) *goadminRoleMenu {
 
 	return g
 }
+
+func (g *goadminRoleMenu) WithContext(ctx context.Context) IGoadminRoleMenuDo {
+	return g.goadminRoleMenuDo.WithContext(ctx)
+}
+
+func (g goadminRoleMenu) TableName() string { return g.goadminRoleMenuDo.TableName() }
+
+func (g goadminRoleMenu) Alias() string { return g.goadminRoleMenuDo.Alias() }
 
 func (g *goadminRoleMenu) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
@@ -153,6 +162,26 @@ type IGoadminRoleMenuDo interface {
 	Returning(value interface{}, columns ...string) IGoadminRoleMenuDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.GoadminRoleMenu, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (g goadminRoleMenuDo) GetById(id int) (result *model.GoadminRoleMenu, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM goadmin_role_menu WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (g goadminRoleMenuDo) Debug() IGoadminRoleMenuDo {

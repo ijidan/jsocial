@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -40,7 +41,7 @@ func newFeedImage(db *gorm.DB) feedImage {
 }
 
 type feedImage struct {
-	feedImageDo
+	feedImageDo feedImageDo
 
 	ALL       field.Asterisk
 	ID        field.Int64  // ID
@@ -76,6 +77,14 @@ func (f *feedImage) updateTableName(table string) *feedImage {
 
 	return f
 }
+
+func (f *feedImage) WithContext(ctx context.Context) IFeedImageDo {
+	return f.feedImageDo.WithContext(ctx)
+}
+
+func (f feedImage) TableName() string { return f.feedImageDo.TableName() }
+
+func (f feedImage) Alias() string { return f.feedImageDo.Alias() }
 
 func (f *feedImage) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := f.fieldMap[fieldName]
@@ -161,6 +170,26 @@ type IFeedImageDo interface {
 	Returning(value interface{}, columns ...string) IFeedImageDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.FeedImage, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (f feedImageDo) GetById(id int) (result *model.FeedImage, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM feed_image WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = f.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = f.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (f feedImageDo) Debug() IFeedImageDo {

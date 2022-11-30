@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -44,7 +45,7 @@ func newDeviceAck(db *gorm.DB) deviceAck {
 }
 
 type deviceAck struct {
-	deviceAckDo
+	deviceAckDo deviceAckDo
 
 	ALL        field.Asterisk
 	ID         field.Int64 // 自增主键
@@ -79,6 +80,14 @@ func (d *deviceAck) updateTableName(table string) *deviceAck {
 
 	return d
 }
+
+func (d *deviceAck) WithContext(ctx context.Context) IDeviceAckDo {
+	return d.deviceAckDo.WithContext(ctx)
+}
+
+func (d deviceAck) TableName() string { return d.deviceAckDo.TableName() }
+
+func (d deviceAck) Alias() string { return d.deviceAckDo.Alias() }
 
 func (d *deviceAck) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := d.fieldMap[fieldName]
@@ -230,6 +239,26 @@ type IDeviceAckDo interface {
 	Returning(value interface{}, columns ...string) IDeviceAckDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.DeviceAck, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (d deviceAckDo) GetById(id int) (result *model.DeviceAck, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM device_ack WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = d.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = d.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (d deviceAckDo) Debug() IDeviceAckDo {

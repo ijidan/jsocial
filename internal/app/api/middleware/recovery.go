@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 	"github.com/ijidan/jsocial/internal/constant"
 	"github.com/ijidan/jsocial/internal/pkg/response"
@@ -14,6 +15,7 @@ func Recovery() gin.HandlerFunc {
 			if r := recover(); r != nil {
 				message := error2Message(r)
 				if gin.IsDebugging() {
+					color.Red(message)
 					debug.PrintStack()
 				}
 				//global.Logger.Fatal(r)

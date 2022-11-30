@@ -74,7 +74,7 @@ func (s *Service) SendMessage(stream proto_build.GatewayService_SendMessageServe
 
 			//send message to kafka
 			go func(senderId uint64, receiverId uint64, groupId uint64, messageContentId int64, messageType string, messageBody []byte, messageExtra []byte) {
-				dispatch2.PublishMessage(senderId, receiverId, groupId, messageContentId, messageType, messageBody, messageExtra)
+				//dispatch2.PublishMessage(senderId, receiverId, groupId, messageContentId, messageType, messageBody, messageExtra)
 			}(cast.ToUint64(senderId), cast.ToUint64(receiverId), groupId, messageContentId, messageType, messageBody, messageExtra)
 
 			//send ack
@@ -182,7 +182,7 @@ func SendToAll(cmd string, requestId uint32, data []byte) {
 	})
 }
 
-func NewGatewayService(cf config.Rpc) *Service {
+func NewService(cf config.Rpc) *Service {
 	instance := &Service{BasicService: service.BasicService{
 		Name: "service_gateway",
 		Host: cf.Host,

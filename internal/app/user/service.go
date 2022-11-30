@@ -97,7 +97,7 @@ func (s *Service) UpdateAvatar(c context.Context, req *proto_build.UpdateAvatarR
 	return rsp, nil
 }
 
-func NewUserService(cf config.Rpc) *Service {
+func NewService(cf config.Rpc) *Service {
 	instance := &Service{BasicService: service.BasicService{
 		Name: "service_ping",
 		Host: cf.Host,

@@ -15,14 +15,14 @@ import (
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/ijidan/jsocial/api/proto_build"
-	service4 "github.com/ijidan/jsocial/internal/app/gateway/service"
-	service2 "github.com/ijidan/jsocial/internal/app/group/service"
-	service5 "github.com/ijidan/jsocial/internal/app/ping/service"
-	service3 "github.com/ijidan/jsocial/internal/app/user/service"
+	"github.com/ijidan/jsocial/internal/app/gateway"
+	"github.com/ijidan/jsocial/internal/app/group"
+	"github.com/ijidan/jsocial/internal/app/ping"
+	"github.com/ijidan/jsocial/internal/app/user"
 	"github.com/ijidan/jsocial/internal/global"
 	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/ijidan/jsocial/internal/pkg/interceptor"
-	service6 "github.com/ijidan/jsocial/internal/service"
+	"github.com/ijidan/jsocial/internal/service"
 	_ "github.com/mkevac/debugcharts"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
@@ -37,13 +37,13 @@ import (
 	"time"
 )
 
-var commonService *service6.CommonService
-var gatewayService *service4.GatewayService
-var groupService *service2.GroupService
+var commonService *service.CommonService
+var gatewayService *gateway.Service
+var groupService *group.Service
 
 //var messageService *service.MessageService
-var pingService *service5.PingService
-var userService *service3.UserService
+var pingService *ping.Service
+var userService *user.Service
 
 func runHttpServerMux(gatewayServer *gwruntime.ServeMux) *http.ServeMux {
 	serveMux := http.NewServeMux()
@@ -127,8 +127,8 @@ func runGrpcGatewayServer(cf config.Rpc) *gwruntime.ServeMux {
 }
 
 func ServiceRegister() {
-	clientV3 := service6.NewClientV3(global.GR.Conf.Etcd.Host, global.GR.Conf.Etcd.Timeout)
-	serviceRegister := service6.NewServiceRegister(clientV3, global.GR.Conf.App.Name)
+	clientV3 := service.NewClientV3(global.GR.Conf.Etcd.Host, global.GR.Conf.Etcd.Timeout)
+	serviceRegister := service.NewServiceRegister(clientV3, global.GR.Conf.App.Name)
 	serviceRegister.RegisterService(userService.BasicService, pingService.BasicService)
 }
 
@@ -144,8 +144,8 @@ func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Ha
 
 func RunHttp(config config.Config, ctx context.Context) error {
 
-	userService = service3.NewUserService(config.Rpc)
-	pingService = service5.NewPingService(config.Rpc)
+	userService = user.NewService(config.Rpc)
+	pingService = ping.NewService(config.Rpc)
 	gatewayServer := runGrpcGatewayServer(config.Rpc)
 	httpMutex := runHttpServerMux(gatewayServer)
 

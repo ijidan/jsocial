@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -41,7 +42,7 @@ func newGid(db *gorm.DB) gid {
 }
 
 type gid struct {
-	gidDo
+	gidDo gidDo
 
 	ALL         field.Asterisk
 	ID          field.Int64  // 自增主键
@@ -79,6 +80,12 @@ func (g *gid) updateTableName(table string) *gid {
 
 	return g
 }
+
+func (g *gid) WithContext(ctx context.Context) IGidDo { return g.gidDo.WithContext(ctx) }
+
+func (g gid) TableName() string { return g.gidDo.TableName() }
+
+func (g gid) Alias() string { return g.gidDo.Alias() }
 
 func (g *gid) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
@@ -165,6 +172,26 @@ type IGidDo interface {
 	Returning(value interface{}, columns ...string) IGidDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.Gid, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (g gidDo) GetById(id int) (result *model.Gid, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM gid WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (g gidDo) Debug() IGidDo {

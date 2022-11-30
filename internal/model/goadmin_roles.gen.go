@@ -8,10 +8,10 @@ import (
 	"time"
 )
 
-const TableNameGoadminRoles = "goadmin_roles"
+const TableNameGoadminRole = "goadmin_roles"
 
-// GoadminRoles mapped from table <goadmin_roles>
-type GoadminRoles struct {
+// GoadminRole mapped from table <goadmin_roles>
+type GoadminRole struct {
 	ID        int32     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
 	Name      string    `gorm:"column:name;not null" json:"name"`
 	Slug      string    `gorm:"column:slug;not null" json:"slug"`
@@ -19,7 +19,7 @@ type GoadminRoles struct {
 	UpdatedAt time.Time `gorm:"column:updated_at;default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
-// TableName GoadminRoles's table name
-func (*GoadminRoles) TableName() string {
-	return TableNameGoadminRoles
+// TableName GoadminRole's table name
+func (*GoadminRole) TableName() string {
+	return TableNameGoadminRole
 }

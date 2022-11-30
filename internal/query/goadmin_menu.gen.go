@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -30,7 +31,7 @@ func newGoadminMenu(db *gorm.DB) goadminMenu {
 	_goadminMenu.ID = field.NewInt32(tableName, "id")
 	_goadminMenu.ParentID = field.NewInt32(tableName, "parent_id")
 	_goadminMenu.Type = field.NewInt32(tableName, "type")
-	_goadminMenu.Order_ = field.NewInt32(tableName, "order")
+	_goadminMenu.Order = field.NewInt32(tableName, "order")
 	_goadminMenu.Title = field.NewString(tableName, "title")
 	_goadminMenu.Icon = field.NewString(tableName, "icon")
 	_goadminMenu.URI = field.NewString(tableName, "uri")
@@ -46,13 +47,13 @@ func newGoadminMenu(db *gorm.DB) goadminMenu {
 }
 
 type goadminMenu struct {
-	goadminMenuDo
+	goadminMenuDo goadminMenuDo
 
 	ALL        field.Asterisk
 	ID         field.Int32
 	ParentID   field.Int32
 	Type       field.Int32
-	Order_     field.Int32
+	Order      field.Int32
 	Title      field.String
 	Icon       field.String
 	URI        field.String
@@ -80,7 +81,7 @@ func (g *goadminMenu) updateTableName(table string) *goadminMenu {
 	g.ID = field.NewInt32(table, "id")
 	g.ParentID = field.NewInt32(table, "parent_id")
 	g.Type = field.NewInt32(table, "type")
-	g.Order_ = field.NewInt32(table, "order")
+	g.Order = field.NewInt32(table, "order")
 	g.Title = field.NewString(table, "title")
 	g.Icon = field.NewString(table, "icon")
 	g.URI = field.NewString(table, "uri")
@@ -94,6 +95,14 @@ func (g *goadminMenu) updateTableName(table string) *goadminMenu {
 
 	return g
 }
+
+func (g *goadminMenu) WithContext(ctx context.Context) IGoadminMenuDo {
+	return g.goadminMenuDo.WithContext(ctx)
+}
+
+func (g goadminMenu) TableName() string { return g.goadminMenuDo.TableName() }
+
+func (g goadminMenu) Alias() string { return g.goadminMenuDo.Alias() }
 
 func (g *goadminMenu) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
@@ -109,7 +118,7 @@ func (g *goadminMenu) fillFieldMap() {
 	g.fieldMap["id"] = g.ID
 	g.fieldMap["parent_id"] = g.ParentID
 	g.fieldMap["type"] = g.Type
-	g.fieldMap["order"] = g.Order_
+	g.fieldMap["order"] = g.Order
 	g.fieldMap["title"] = g.Title
 	g.fieldMap["icon"] = g.Icon
 	g.fieldMap["uri"] = g.URI
@@ -185,6 +194,26 @@ type IGoadminMenuDo interface {
 	Returning(value interface{}, columns ...string) IGoadminMenuDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.GoadminMenu, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (g goadminMenuDo) GetById(id int) (result *model.GoadminMenu, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM goadmin_menu WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (g goadminMenuDo) Debug() IGoadminMenuDo {

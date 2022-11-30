@@ -14,30 +14,30 @@ import (
 )
 
 var (
-	Q                      = new(Query)
-	Device                 *device
-	DeviceAck              *deviceAck
-	Feed                   *feed
-	FeedImage              *feedImage
-	FeedLike               *feedLike
-	FeedVideo              *feedVideo
-	Gid                    *gid
-	GoadminMenu            *goadminMenu
-	GoadminOperationLog    *goadminOperationLog
-	GoadminPermissions     *goadminPermissions
-	GoadminRoleMenu        *goadminRoleMenu
-	GoadminRolePermissions *goadminRolePermissions
-	GoadminRoleUsers       *goadminRoleUsers
-	GoadminRoles           *goadminRoles
-	GoadminSession         *goadminSession
-	GoadminSite            *goadminSite
-	GoadminUserPermissions *goadminUserPermissions
-	GoadminUsers           *goadminUsers
-	Group                  *group
-	GroupUser              *groupUser
-	MessageContent         *messageContent
-	MessageIndex           *messageIndex
-	User                   *user
+	Q                     = new(Query)
+	Device                *device
+	DeviceAck             *deviceAck
+	Feed                  *feed
+	FeedImage             *feedImage
+	FeedLike              *feedLike
+	FeedVideo             *feedVideo
+	Gid                   *gid
+	GoadminMenu           *goadminMenu
+	GoadminOperationLog   *goadminOperationLog
+	GoadminPermission     *goadminPermission
+	GoadminRole           *goadminRole
+	GoadminRoleMenu       *goadminRoleMenu
+	GoadminRolePermission *goadminRolePermission
+	GoadminRoleUser       *goadminRoleUser
+	GoadminSession        *goadminSession
+	GoadminSite           *goadminSite
+	GoadminUser           *goadminUser
+	GoadminUserPermission *goadminUserPermission
+	Group                 *group
+	GroupUser             *groupUser
+	MessageContent        *messageContent
+	MessageIndex          *messageIndex
+	User                  *user
 )
 
 func SetDefault(db *gorm.DB) {
@@ -51,15 +51,15 @@ func SetDefault(db *gorm.DB) {
 	Gid = &Q.Gid
 	GoadminMenu = &Q.GoadminMenu
 	GoadminOperationLog = &Q.GoadminOperationLog
-	GoadminPermissions = &Q.GoadminPermissions
+	GoadminPermission = &Q.GoadminPermission
+	GoadminRole = &Q.GoadminRole
 	GoadminRoleMenu = &Q.GoadminRoleMenu
-	GoadminRolePermissions = &Q.GoadminRolePermissions
-	GoadminRoleUsers = &Q.GoadminRoleUsers
-	GoadminRoles = &Q.GoadminRoles
+	GoadminRolePermission = &Q.GoadminRolePermission
+	GoadminRoleUser = &Q.GoadminRoleUser
 	GoadminSession = &Q.GoadminSession
 	GoadminSite = &Q.GoadminSite
-	GoadminUserPermissions = &Q.GoadminUserPermissions
-	GoadminUsers = &Q.GoadminUsers
+	GoadminUser = &Q.GoadminUser
+	GoadminUserPermission = &Q.GoadminUserPermission
 	Group = &Q.Group
 	GroupUser = &Q.GroupUser
 	MessageContent = &Q.MessageContent
@@ -69,89 +69,89 @@ func SetDefault(db *gorm.DB) {
 
 func Use(db *gorm.DB) *Query {
 	return &Query{
-		db:                     db,
-		Device:                 newDevice(db),
-		DeviceAck:              newDeviceAck(db),
-		Feed:                   newFeed(db),
-		FeedImage:              newFeedImage(db),
-		FeedLike:               newFeedLike(db),
-		FeedVideo:              newFeedVideo(db),
-		Gid:                    newGid(db),
-		GoadminMenu:            newGoadminMenu(db),
-		GoadminOperationLog:    newGoadminOperationLog(db),
-		GoadminPermissions:     newGoadminPermissions(db),
-		GoadminRoleMenu:        newGoadminRoleMenu(db),
-		GoadminRolePermissions: newGoadminRolePermissions(db),
-		GoadminRoleUsers:       newGoadminRoleUsers(db),
-		GoadminRoles:           newGoadminRoles(db),
-		GoadminSession:         newGoadminSession(db),
-		GoadminSite:            newGoadminSite(db),
-		GoadminUserPermissions: newGoadminUserPermissions(db),
-		GoadminUsers:           newGoadminUsers(db),
-		Group:                  newGroup(db),
-		GroupUser:              newGroupUser(db),
-		MessageContent:         newMessageContent(db),
-		MessageIndex:           newMessageIndex(db),
-		User:                   newUser(db),
+		db:                    db,
+		Device:                newDevice(db),
+		DeviceAck:             newDeviceAck(db),
+		Feed:                  newFeed(db),
+		FeedImage:             newFeedImage(db),
+		FeedLike:              newFeedLike(db),
+		FeedVideo:             newFeedVideo(db),
+		Gid:                   newGid(db),
+		GoadminMenu:           newGoadminMenu(db),
+		GoadminOperationLog:   newGoadminOperationLog(db),
+		GoadminPermission:     newGoadminPermission(db),
+		GoadminRole:           newGoadminRole(db),
+		GoadminRoleMenu:       newGoadminRoleMenu(db),
+		GoadminRolePermission: newGoadminRolePermission(db),
+		GoadminRoleUser:       newGoadminRoleUser(db),
+		GoadminSession:        newGoadminSession(db),
+		GoadminSite:           newGoadminSite(db),
+		GoadminUser:           newGoadminUser(db),
+		GoadminUserPermission: newGoadminUserPermission(db),
+		Group:                 newGroup(db),
+		GroupUser:             newGroupUser(db),
+		MessageContent:        newMessageContent(db),
+		MessageIndex:          newMessageIndex(db),
+		User:                  newUser(db),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	Device                 device
-	DeviceAck              deviceAck
-	Feed                   feed
-	FeedImage              feedImage
-	FeedLike               feedLike
-	FeedVideo              feedVideo
-	Gid                    gid
-	GoadminMenu            goadminMenu
-	GoadminOperationLog    goadminOperationLog
-	GoadminPermissions     goadminPermissions
-	GoadminRoleMenu        goadminRoleMenu
-	GoadminRolePermissions goadminRolePermissions
-	GoadminRoleUsers       goadminRoleUsers
-	GoadminRoles           goadminRoles
-	GoadminSession         goadminSession
-	GoadminSite            goadminSite
-	GoadminUserPermissions goadminUserPermissions
-	GoadminUsers           goadminUsers
-	Group                  group
-	GroupUser              groupUser
-	MessageContent         messageContent
-	MessageIndex           messageIndex
-	User                   user
+	Device                device
+	DeviceAck             deviceAck
+	Feed                  feed
+	FeedImage             feedImage
+	FeedLike              feedLike
+	FeedVideo             feedVideo
+	Gid                   gid
+	GoadminMenu           goadminMenu
+	GoadminOperationLog   goadminOperationLog
+	GoadminPermission     goadminPermission
+	GoadminRole           goadminRole
+	GoadminRoleMenu       goadminRoleMenu
+	GoadminRolePermission goadminRolePermission
+	GoadminRoleUser       goadminRoleUser
+	GoadminSession        goadminSession
+	GoadminSite           goadminSite
+	GoadminUser           goadminUser
+	GoadminUserPermission goadminUserPermission
+	Group                 group
+	GroupUser             groupUser
+	MessageContent        messageContent
+	MessageIndex          messageIndex
+	User                  user
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:                     db,
-		Device:                 q.Device.clone(db),
-		DeviceAck:              q.DeviceAck.clone(db),
-		Feed:                   q.Feed.clone(db),
-		FeedImage:              q.FeedImage.clone(db),
-		FeedLike:               q.FeedLike.clone(db),
-		FeedVideo:              q.FeedVideo.clone(db),
-		Gid:                    q.Gid.clone(db),
-		GoadminMenu:            q.GoadminMenu.clone(db),
-		GoadminOperationLog:    q.GoadminOperationLog.clone(db),
-		GoadminPermissions:     q.GoadminPermissions.clone(db),
-		GoadminRoleMenu:        q.GoadminRoleMenu.clone(db),
-		GoadminRolePermissions: q.GoadminRolePermissions.clone(db),
-		GoadminRoleUsers:       q.GoadminRoleUsers.clone(db),
-		GoadminRoles:           q.GoadminRoles.clone(db),
-		GoadminSession:         q.GoadminSession.clone(db),
-		GoadminSite:            q.GoadminSite.clone(db),
-		GoadminUserPermissions: q.GoadminUserPermissions.clone(db),
-		GoadminUsers:           q.GoadminUsers.clone(db),
-		Group:                  q.Group.clone(db),
-		GroupUser:              q.GroupUser.clone(db),
-		MessageContent:         q.MessageContent.clone(db),
-		MessageIndex:           q.MessageIndex.clone(db),
-		User:                   q.User.clone(db),
+		db:                    db,
+		Device:                q.Device.clone(db),
+		DeviceAck:             q.DeviceAck.clone(db),
+		Feed:                  q.Feed.clone(db),
+		FeedImage:             q.FeedImage.clone(db),
+		FeedLike:              q.FeedLike.clone(db),
+		FeedVideo:             q.FeedVideo.clone(db),
+		Gid:                   q.Gid.clone(db),
+		GoadminMenu:           q.GoadminMenu.clone(db),
+		GoadminOperationLog:   q.GoadminOperationLog.clone(db),
+		GoadminPermission:     q.GoadminPermission.clone(db),
+		GoadminRole:           q.GoadminRole.clone(db),
+		GoadminRoleMenu:       q.GoadminRoleMenu.clone(db),
+		GoadminRolePermission: q.GoadminRolePermission.clone(db),
+		GoadminRoleUser:       q.GoadminRoleUser.clone(db),
+		GoadminSession:        q.GoadminSession.clone(db),
+		GoadminSite:           q.GoadminSite.clone(db),
+		GoadminUser:           q.GoadminUser.clone(db),
+		GoadminUserPermission: q.GoadminUserPermission.clone(db),
+		Group:                 q.Group.clone(db),
+		GroupUser:             q.GroupUser.clone(db),
+		MessageContent:        q.MessageContent.clone(db),
+		MessageIndex:          q.MessageIndex.clone(db),
+		User:                  q.User.clone(db),
 	}
 }
 
@@ -168,56 +168,56 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 }
 
 type queryCtx struct {
-	Device                 IDeviceDo
-	DeviceAck              IDeviceAckDo
-	Feed                   IFeedDo
-	FeedImage              IFeedImageDo
-	FeedLike               IFeedLikeDo
-	FeedVideo              IFeedVideoDo
-	Gid                    IGidDo
-	GoadminMenu            IGoadminMenuDo
-	GoadminOperationLog    IGoadminOperationLogDo
-	GoadminPermissions     IGoadminPermissionsDo
-	GoadminRoleMenu        IGoadminRoleMenuDo
-	GoadminRolePermissions IGoadminRolePermissionsDo
-	GoadminRoleUsers       IGoadminRoleUsersDo
-	GoadminRoles           IGoadminRolesDo
-	GoadminSession         IGoadminSessionDo
-	GoadminSite            IGoadminSiteDo
-	GoadminUserPermissions IGoadminUserPermissionsDo
-	GoadminUsers           IGoadminUsersDo
-	Group                  IGroupDo
-	GroupUser              IGroupUserDo
-	MessageContent         IMessageContentDo
-	MessageIndex           IMessageIndexDo
-	User                   IUserDo
+	Device                IDeviceDo
+	DeviceAck             IDeviceAckDo
+	Feed                  IFeedDo
+	FeedImage             IFeedImageDo
+	FeedLike              IFeedLikeDo
+	FeedVideo             IFeedVideoDo
+	Gid                   IGidDo
+	GoadminMenu           IGoadminMenuDo
+	GoadminOperationLog   IGoadminOperationLogDo
+	GoadminPermission     IGoadminPermissionDo
+	GoadminRole           IGoadminRoleDo
+	GoadminRoleMenu       IGoadminRoleMenuDo
+	GoadminRolePermission IGoadminRolePermissionDo
+	GoadminRoleUser       IGoadminRoleUserDo
+	GoadminSession        IGoadminSessionDo
+	GoadminSite           IGoadminSiteDo
+	GoadminUser           IGoadminUserDo
+	GoadminUserPermission IGoadminUserPermissionDo
+	Group                 IGroupDo
+	GroupUser             IGroupUserDo
+	MessageContent        IMessageContentDo
+	MessageIndex          IMessageIndexDo
+	User                  IUserDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		Device:                 q.Device.WithContext(ctx),
-		DeviceAck:              q.DeviceAck.WithContext(ctx),
-		Feed:                   q.Feed.WithContext(ctx),
-		FeedImage:              q.FeedImage.WithContext(ctx),
-		FeedLike:               q.FeedLike.WithContext(ctx),
-		FeedVideo:              q.FeedVideo.WithContext(ctx),
-		Gid:                    q.Gid.WithContext(ctx),
-		GoadminMenu:            q.GoadminMenu.WithContext(ctx),
-		GoadminOperationLog:    q.GoadminOperationLog.WithContext(ctx),
-		GoadminPermissions:     q.GoadminPermissions.WithContext(ctx),
-		GoadminRoleMenu:        q.GoadminRoleMenu.WithContext(ctx),
-		GoadminRolePermissions: q.GoadminRolePermissions.WithContext(ctx),
-		GoadminRoleUsers:       q.GoadminRoleUsers.WithContext(ctx),
-		GoadminRoles:           q.GoadminRoles.WithContext(ctx),
-		GoadminSession:         q.GoadminSession.WithContext(ctx),
-		GoadminSite:            q.GoadminSite.WithContext(ctx),
-		GoadminUserPermissions: q.GoadminUserPermissions.WithContext(ctx),
-		GoadminUsers:           q.GoadminUsers.WithContext(ctx),
-		Group:                  q.Group.WithContext(ctx),
-		GroupUser:              q.GroupUser.WithContext(ctx),
-		MessageContent:         q.MessageContent.WithContext(ctx),
-		MessageIndex:           q.MessageIndex.WithContext(ctx),
-		User:                   q.User.WithContext(ctx),
+		Device:                q.Device.WithContext(ctx),
+		DeviceAck:             q.DeviceAck.WithContext(ctx),
+		Feed:                  q.Feed.WithContext(ctx),
+		FeedImage:             q.FeedImage.WithContext(ctx),
+		FeedLike:              q.FeedLike.WithContext(ctx),
+		FeedVideo:             q.FeedVideo.WithContext(ctx),
+		Gid:                   q.Gid.WithContext(ctx),
+		GoadminMenu:           q.GoadminMenu.WithContext(ctx),
+		GoadminOperationLog:   q.GoadminOperationLog.WithContext(ctx),
+		GoadminPermission:     q.GoadminPermission.WithContext(ctx),
+		GoadminRole:           q.GoadminRole.WithContext(ctx),
+		GoadminRoleMenu:       q.GoadminRoleMenu.WithContext(ctx),
+		GoadminRolePermission: q.GoadminRolePermission.WithContext(ctx),
+		GoadminRoleUser:       q.GoadminRoleUser.WithContext(ctx),
+		GoadminSession:        q.GoadminSession.WithContext(ctx),
+		GoadminSite:           q.GoadminSite.WithContext(ctx),
+		GoadminUser:           q.GoadminUser.WithContext(ctx),
+		GoadminUserPermission: q.GoadminUserPermission.WithContext(ctx),
+		Group:                 q.Group.WithContext(ctx),
+		GroupUser:             q.GroupUser.WithContext(ctx),
+		MessageContent:        q.MessageContent.WithContext(ctx),
+		MessageIndex:          q.MessageIndex.WithContext(ctx),
+		User:                  q.User.WithContext(ctx),
 	}
 }
 

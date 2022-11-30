@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -43,7 +44,7 @@ func newMessageIndex(db *gorm.DB) messageIndex {
 }
 
 type messageIndex struct {
-	messageIndexDo
+	messageIndexDo messageIndexDo
 
 	ALL              field.Asterisk
 	ID               field.Int64
@@ -85,6 +86,14 @@ func (m *messageIndex) updateTableName(table string) *messageIndex {
 
 	return m
 }
+
+func (m *messageIndex) WithContext(ctx context.Context) IMessageIndexDo {
+	return m.messageIndexDo.WithContext(ctx)
+}
+
+func (m messageIndex) TableName() string { return m.messageIndexDo.TableName() }
+
+func (m messageIndex) Alias() string { return m.messageIndexDo.Alias() }
 
 func (m *messageIndex) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := m.fieldMap[fieldName]
@@ -173,6 +182,26 @@ type IMessageIndexDo interface {
 	Returning(value interface{}, columns ...string) IMessageIndexDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.MessageIndex, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (m messageIndexDo) GetById(id int) (result *model.MessageIndex, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM message_index WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = m.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = m.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (m messageIndexDo) Debug() IMessageIndexDo {

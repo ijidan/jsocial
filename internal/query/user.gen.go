@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -60,7 +61,7 @@ func newUser(db *gorm.DB) user {
 }
 
 type user struct {
-	userDo
+	userDo userDo
 
 	ALL       field.Asterisk
 	ID        field.Int64  // 自增主键
@@ -107,6 +108,12 @@ func (u *user) updateTableName(table string) *user {
 
 	return u
 }
+
+func (u *user) WithContext(ctx context.Context) IUserDo { return u.userDo.WithContext(ctx) }
+
+func (u user) TableName() string { return u.userDo.TableName() }
+
+func (u user) Alias() string { return u.userDo.Alias() }
 
 func (u *user) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := u.fieldMap[fieldName]
@@ -394,6 +401,26 @@ type IUserDo interface {
 	Returning(value interface{}, columns ...string) IUserDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.User, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (u userDo) GetById(id int) (result *model.User, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM user WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = u.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = u.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (u userDo) Debug() IUserDo {

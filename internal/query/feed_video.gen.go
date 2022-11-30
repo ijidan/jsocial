@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -44,7 +45,7 @@ func newFeedVideo(db *gorm.DB) feedVideo {
 }
 
 type feedVideo struct {
-	feedVideoDo
+	feedVideoDo feedVideoDo
 
 	ALL       field.Asterisk
 	ID        field.Int32
@@ -88,6 +89,14 @@ func (f *feedVideo) updateTableName(table string) *feedVideo {
 
 	return f
 }
+
+func (f *feedVideo) WithContext(ctx context.Context) IFeedVideoDo {
+	return f.feedVideoDo.WithContext(ctx)
+}
+
+func (f feedVideo) TableName() string { return f.feedVideoDo.TableName() }
+
+func (f feedVideo) Alias() string { return f.feedVideoDo.Alias() }
 
 func (f *feedVideo) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := f.fieldMap[fieldName]
@@ -177,6 +186,26 @@ type IFeedVideoDo interface {
 	Returning(value interface{}, columns ...string) IFeedVideoDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.FeedVideo, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (f feedVideoDo) GetById(id int) (result *model.FeedVideo, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM feed_video WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = f.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = f.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (f feedVideoDo) Debug() IFeedVideoDo {

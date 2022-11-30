@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -48,7 +49,7 @@ func newGroup(db *gorm.DB) group {
 }
 
 type group struct {
-	groupDo
+	groupDo groupDo
 
 	ALL          field.Asterisk
 	ID           field.Int64  // 自增主键
@@ -91,6 +92,12 @@ func (g *group) updateTableName(table string) *group {
 
 	return g
 }
+
+func (g *group) WithContext(ctx context.Context) IGroupDo { return g.groupDo.WithContext(ctx) }
+
+func (g group) TableName() string { return g.groupDo.TableName() }
+
+func (g group) Alias() string { return g.groupDo.Alias() }
 
 func (g *group) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
@@ -246,6 +253,26 @@ type IGroupDo interface {
 	Returning(value interface{}, columns ...string) IGroupDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.Group, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (g groupDo) GetById(id int) (result *model.Group, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM group WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (g groupDo) Debug() IGroupDo {

@@ -25,10 +25,10 @@ http:
 mysql:
   host: 127.0.0.1 #172.17.0.1
   port: 3306
-  user: root
-  password: root
+  user: jidan
+  password: jidan
   charset: utf8mb4
-  database: jim
+  database: jsocial
 
 redis:
   host: 127.0.0.1 #172.17.0.1

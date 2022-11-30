@@ -1,0 +1,38 @@
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /api/v1/group/create      --> github.com/ijidan/jsocial/internal/app/api/controller.(*GroupController).Create-fm (9 handlers)
+[GIN-debug] POST   /api/v1/group/update      --> github.com/ijidan/jsocial/internal/app/api/controller.(*GroupController).Update-fm (9 handlers)
+[GIN-debug] DELETE /api/v1/group/delete      --> github.com/ijidan/jsocial/internal/app/api/controller.(*GroupController).Delete-fm (9 handlers)
+[GIN-debug] POST   /api/v1/group/join        --> github.com/ijidan/jsocial/internal/app/api/controller.(*GroupController).Join-fm (9 handlers)
+[GIN-debug] POST   /api/v1/group/quit        --> github.com/ijidan/jsocial/internal/app/api/controller.(*GroupController).Quit-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/user/text --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendUserTextMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/user/location --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendUserLocationMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/user/face --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendUserFaceMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/user/sound --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendUserSoundMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/user/video --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendUserVideoMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/user/image --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendUserImageMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/user/file --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendUserFileMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/group/text --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendGroupTextMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/group/location --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendGroupLocationMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/group/face --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendGroupFaceMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/group/sound --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendGroupSoundMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/group/video --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendGroupVideoMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/group/image --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendGroupImageMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/message/group/file --> github.com/ijidan/jsocial/internal/app/api/controller.(*MessageController).SendGroupFileMessage-fm (9 handlers)
+[GIN-debug] POST   /api/v1/user/password     --> github.com/ijidan/jsocial/internal/app/api/controller.(*UserController).UpdatePassword-fm (9 handlers)
+[GIN-debug] POST   /api/v1/usr/avatar        --> github.com/ijidan/jsocial/internal/app/api/controller.(*UserController).UpdateAvatar-fm (9 handlers)
+[GIN-debug] POST   /api/v1/common/image      --> github.com/ijidan/jsocial/internal/app/api/controller.(*CommonController).UploadImage-fm (8 handlers)
+[GIN-debug] GET    /api/v1/group/get         --> github.com/ijidan/jsocial/internal/app/api/controller.(*GroupController).Get-fm (8 handlers)
+[GIN-debug] GET    /api/v1/group/query       --> github.com/ijidan/jsocial/internal/app/api/controller.(*GroupController).Query-fm (8 handlers)
+[GIN-debug] GET    /api/v1/ping              --> github.com/ijidan/jsocial/internal/app/api/controller.(*HealthController).Ping-fm (8 handlers)
+[GIN-debug] GET    /api/v1/user/get          --> github.com/ijidan/jsocial/internal/app/api/controller.(*UserController).Get-fm (8 handlers)
+[GIN-debug] GET    /api/v1/user/query        --> github.com/ijidan/jsocial/internal/app/api/controller.(*UserController).Query-fm (8 handlers)
+[GIN-debug] POST   /api/v1/usr/login         --> github.com/ijidan/jsocial/internal/app/api/controller.(*UserController).Login-fm (8 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on 127.0.0.1:9096
+[GIN] 2022/11/30 - 22:20:50 | 200 |      3.6213ms |       127.0.0.1 | GET      "/api/v1/ping"

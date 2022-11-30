@@ -16,7 +16,7 @@ import (
 )
 
 var path = file.NewPath()
-var configFile = flag.String("f", path.ConfigsDir+"feed.yml", "set config file which viper will loading.")
+var configFile = flag.String("f", path.ConfigsDir+"user.yml", "set config file which viper will loading.")
 var rootPath = flag.String("r", path.ProjectDir, "set root path")
 
 func main() {

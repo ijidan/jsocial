@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -40,7 +41,7 @@ func newFeedLike(db *gorm.DB) feedLike {
 }
 
 type feedLike struct {
-	feedLikeDo
+	feedLikeDo feedLikeDo
 
 	ALL       field.Asterisk
 	ID        field.Int64 // ID
@@ -76,6 +77,12 @@ func (f *feedLike) updateTableName(table string) *feedLike {
 
 	return f
 }
+
+func (f *feedLike) WithContext(ctx context.Context) IFeedLikeDo { return f.feedLikeDo.WithContext(ctx) }
+
+func (f feedLike) TableName() string { return f.feedLikeDo.TableName() }
+
+func (f feedLike) Alias() string { return f.feedLikeDo.Alias() }
 
 func (f *feedLike) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := f.fieldMap[fieldName]
@@ -161,6 +168,26 @@ type IFeedLikeDo interface {
 	Returning(value interface{}, columns ...string) IFeedLikeDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.FeedLike, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (f feedLikeDo) GetById(id int) (result *model.FeedLike, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM feed_like WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = f.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = f.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (f feedLikeDo) Debug() IFeedLikeDo {

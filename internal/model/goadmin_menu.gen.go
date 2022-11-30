@@ -15,7 +15,7 @@ type GoadminMenu struct {
 	ID         int32     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
 	ParentID   int32     `gorm:"column:parent_id;not null" json:"parent_id"`
 	Type       int32     `gorm:"column:type;not null" json:"type"`
-	Order_     int32     `gorm:"column:order;not null" json:"order"`
+	Order      int32     `gorm:"column:order;not null" json:"order"`
 	Title      string    `gorm:"column:title;not null" json:"title"`
 	Icon       string    `gorm:"column:icon;not null" json:"icon"`
 	URI        string    `gorm:"column:uri;not null" json:"uri"`

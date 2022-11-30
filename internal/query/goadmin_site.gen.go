@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -41,7 +42,7 @@ func newGoadminSite(db *gorm.DB) goadminSite {
 }
 
 type goadminSite struct {
-	goadminSiteDo
+	goadminSiteDo goadminSiteDo
 
 	ALL         field.Asterisk
 	ID          field.Int32
@@ -79,6 +80,14 @@ func (g *goadminSite) updateTableName(table string) *goadminSite {
 
 	return g
 }
+
+func (g *goadminSite) WithContext(ctx context.Context) IGoadminSiteDo {
+	return g.goadminSiteDo.WithContext(ctx)
+}
+
+func (g goadminSite) TableName() string { return g.goadminSiteDo.TableName() }
+
+func (g goadminSite) Alias() string { return g.goadminSiteDo.Alias() }
 
 func (g *goadminSite) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
@@ -165,6 +174,26 @@ type IGoadminSiteDo interface {
 	Returning(value interface{}, columns ...string) IGoadminSiteDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.GoadminSite, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (g goadminSiteDo) GetById(id int) (result *model.GoadminSite, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM goadmin_site WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (g goadminSiteDo) Debug() IGoadminSiteDo {

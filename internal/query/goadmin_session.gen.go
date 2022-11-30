@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -39,7 +40,7 @@ func newGoadminSession(db *gorm.DB) goadminSession {
 }
 
 type goadminSession struct {
-	goadminSessionDo
+	goadminSessionDo goadminSessionDo
 
 	ALL       field.Asterisk
 	ID        field.Int32
@@ -73,6 +74,14 @@ func (g *goadminSession) updateTableName(table string) *goadminSession {
 
 	return g
 }
+
+func (g *goadminSession) WithContext(ctx context.Context) IGoadminSessionDo {
+	return g.goadminSessionDo.WithContext(ctx)
+}
+
+func (g goadminSession) TableName() string { return g.goadminSessionDo.TableName() }
+
+func (g goadminSession) Alias() string { return g.goadminSessionDo.Alias() }
 
 func (g *goadminSession) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
@@ -157,6 +166,26 @@ type IGoadminSessionDo interface {
 	Returning(value interface{}, columns ...string) IGoadminSessionDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.GoadminSession, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (g goadminSessionDo) GetById(id int) (result *model.GoadminSession, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM goadmin_session WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (g goadminSessionDo) Debug() IGoadminSessionDo {

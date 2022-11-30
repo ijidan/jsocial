@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -42,7 +43,7 @@ func newGoadminOperationLog(db *gorm.DB) goadminOperationLog {
 }
 
 type goadminOperationLog struct {
-	goadminOperationLogDo
+	goadminOperationLogDo goadminOperationLogDo
 
 	ALL       field.Asterisk
 	ID        field.Int32
@@ -82,6 +83,14 @@ func (g *goadminOperationLog) updateTableName(table string) *goadminOperationLog
 
 	return g
 }
+
+func (g *goadminOperationLog) WithContext(ctx context.Context) IGoadminOperationLogDo {
+	return g.goadminOperationLogDo.WithContext(ctx)
+}
+
+func (g goadminOperationLog) TableName() string { return g.goadminOperationLogDo.TableName() }
+
+func (g goadminOperationLog) Alias() string { return g.goadminOperationLogDo.Alias() }
 
 func (g *goadminOperationLog) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
@@ -169,6 +178,26 @@ type IGoadminOperationLogDo interface {
 	Returning(value interface{}, columns ...string) IGoadminOperationLogDo
 	UnderlyingDB() *gorm.DB
 	schema.Tabler
+
+	GetById(id int) (result *model.GoadminOperationLog, err error)
+}
+
+//SELECT * FROM @@table WHERE id=@id
+func (g goadminOperationLogDo) GetById(id int) (result *model.GoadminOperationLog, err error) {
+	params := make(map[string]interface{}, 0)
+
+	var generateSQL strings.Builder
+	params["id"] = id
+	generateSQL.WriteString("SELECT * FROM goadmin_operation_log WHERE id=@id ")
+
+	var executeSQL *gorm.DB
+	if len(params) > 0 {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String(), params).Take(&result)
+	} else {
+		executeSQL = g.UnderlyingDB().Raw(generateSQL.String()).Take(&result)
+	}
+	err = executeSQL.Error
+	return
 }
 
 func (g goadminOperationLogDo) Debug() IGoadminOperationLogDo {

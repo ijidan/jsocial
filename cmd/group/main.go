@@ -7,6 +7,7 @@ import (
 	"github.com/ijidan/jsocial/internal/global"
 	"github.com/ijidan/jsocial/internal/injector"
 	"github.com/ijidan/jsocial/internal/pkg/config"
+	"github.com/ijidan/jsocial/internal/pkg/file"
 	"github.com/ijidan/jsocial/internal/pkg/info"
 	"github.com/ijidan/jsocial/internal/server"
 	"os"
@@ -14,8 +15,9 @@ import (
 	"syscall"
 )
 
-var configFile = flag.String("f", "E:\\go_project\\jsocial\\configs\\feed.yml", "set config file which viper will loading.")
-var rootPath = flag.String("r", "E:\\go_project\\jsocial", "set root path")
+var path = file.NewPath()
+var configFile = flag.String("f", path.ConfigsDir+"group.yml", "set config file which viper will loading.")
+var rootPath = flag.String("r", path.ProjectDir, "set root path")
 
 func main() {
 	param := config.NewCmdParam(*rootPath, *configFile)

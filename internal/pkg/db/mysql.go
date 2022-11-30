@@ -3,9 +3,11 @@ package db
 import (
 	"fmt"
 	"github.com/google/wire"
+	"github.com/ijidan/jsocial/internal/log"
 	"github.com/ijidan/jsocial/internal/pkg/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"time"
 )
@@ -17,7 +19,7 @@ func NewDb(conf *config.Mysql) *gorm.DB {
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
-		//Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Info),
 	})
 	sqlDB, _ := instanceDb.DB()
 	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
@@ -26,7 +28,7 @@ func NewDb(conf *config.Mysql) *gorm.DB {
 	sqlDB.SetMaxOpenConns(100)
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
-
+	instanceDb.Use(&log.LoggerPlugin{})
 	return instanceDb
 }
 

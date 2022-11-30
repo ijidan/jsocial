@@ -9,6 +9,8 @@ import (
 	"github.com/ijidan/jsocial/internal/app/api/middleware"
 	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/ijidan/jsocial/internal/pkg/validate"
+	"io"
+	"os"
 	"sync"
 )
 
@@ -79,7 +81,10 @@ func NewGin(conf config.App) *gin.Engine {
 			gin.SetMode(gin.ReleaseMode)
 			break
 		}
+		f, _ := os.Create("gin.log")
+		gin.DefaultWriter = io.MultiWriter(f)
 		instance = gin.Default()
+
 		if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 			if err := v.RegisterValidation("mobile", validate.MobileValidator); err != nil {
 				panic(err)
