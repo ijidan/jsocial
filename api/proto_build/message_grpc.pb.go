@@ -36,6 +36,7 @@ type MessageServiceClient interface {
 	SendGroupVideoMessage(ctx context.Context, in *SendGroupVideoMessageRequest, opts ...grpc.CallOption) (*SendGroupVideoMessageResponse, error)
 	SendGroupImageMessage(ctx context.Context, in *SendGroupImageMessageRequest, opts ...grpc.CallOption) (*SendGroupImageMessageResponse, error)
 	SendGroupFileMessage(ctx context.Context, in *SendGroupFileMessageRequest, opts ...grpc.CallOption) (*SendGroupFileMessageResponse, error)
+	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
 }
 
 type messageServiceClient struct {
@@ -172,6 +173,15 @@ func (c *messageServiceClient) SendGroupFileMessage(ctx context.Context, in *Sen
 	return out, nil
 }
 
+func (c *messageServiceClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
+	out := new(PingResponse)
+	err := c.cc.Invoke(ctx, "/message.MessageService/Ping", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MessageServiceServer is the server API for MessageService service.
 // All implementations must embed UnimplementedMessageServiceServer
 // for forward compatibility
@@ -190,6 +200,7 @@ type MessageServiceServer interface {
 	SendGroupVideoMessage(context.Context, *SendGroupVideoMessageRequest) (*SendGroupVideoMessageResponse, error)
 	SendGroupImageMessage(context.Context, *SendGroupImageMessageRequest) (*SendGroupImageMessageResponse, error)
 	SendGroupFileMessage(context.Context, *SendGroupFileMessageRequest) (*SendGroupFileMessageResponse, error)
+	Ping(context.Context, *PingRequest) (*PingResponse, error)
 	mustEmbedUnimplementedMessageServiceServer()
 }
 
@@ -238,6 +249,9 @@ func (UnimplementedMessageServiceServer) SendGroupImageMessage(context.Context, 
 }
 func (UnimplementedMessageServiceServer) SendGroupFileMessage(context.Context, *SendGroupFileMessageRequest) (*SendGroupFileMessageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendGroupFileMessage not implemented")
+}
+func (UnimplementedMessageServiceServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
 func (UnimplementedMessageServiceServer) mustEmbedUnimplementedMessageServiceServer() {}
 
@@ -504,6 +518,24 @@ func _MessageService_SendGroupFileMessage_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MessageService_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).Ping(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/message.MessageService/Ping",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).Ping(ctx, req.(*PingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MessageService_ServiceDesc is the grpc.ServiceDesc for MessageService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -566,6 +598,10 @@ var MessageService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendGroupFileMessage",
 			Handler:    _MessageService_SendGroupFileMessage_Handler,
+		},
+		{
+			MethodName: "Ping",
+			Handler:    _MessageService_Ping_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

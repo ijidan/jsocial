@@ -2,6 +2,8 @@ syntax = "proto3";
 package gateway;
 option go_package = "proto_build/;proto_build";
 
+import "common.proto";
+
 import "google/api/annotations.proto";
 //import "github.com/mwitkow/go-proto-validators@v0.3.2/validator.proto";
 import "validate/validate.proto";
@@ -79,6 +81,12 @@ service GatewayService {
     option (google.api.http)={
       post:"/v1/api/gateway/sendToAll",
       body:"*"
+    };
+  }
+
+  rpc Ping(common.PingRequest) returns(common.PingResponse){
+    option(google.api.http)={
+      get:"/v1/api/gateway/ping",
     };
   }
 

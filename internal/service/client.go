@@ -42,18 +42,6 @@ func GetServiceMessageClient() (proto_build.MessageServiceClient, error) {
 	return client, nil
 }
 
-func GetServicePingClient() (proto_build.PingServiceClient, error) {
-	clientV3 := NewClientV3(global.GH.Conf.Etcd.Host, global.GH.Conf.Etcd.Timeout)
-	builder := NewJResolverBuilder(clientV3)
-	resolver.Register(builder)
-	conn, err := GetRpcConn("service_ping")
-	if err != nil {
-		return nil, err
-	}
-	client := proto_build.NewPingServiceClient(conn)
-	return client, nil
-}
-
 func GetServiceUserClient() (proto_build.UserServiceClient, error) {
 	clientV3 := NewClientV3(global.GH.Conf.Etcd.Host, global.GH.Conf.Etcd.Timeout)
 	builder := NewJResolverBuilder(clientV3)

@@ -26,6 +26,7 @@ type GatewayServiceClient interface {
 	UnRegister(ctx context.Context, in *UnRegisterRequest, opts ...grpc.CallOption) (*UnRegisterResponse, error)
 	SendMessage(ctx context.Context, opts ...grpc.CallOption) (GatewayService_SendMessageClient, error)
 	SendToAll(ctx context.Context, in *SendToAllRequest, opts ...grpc.CallOption) (*SendToAllResponse, error)
+	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
 }
 
 type gatewayServiceClient struct {
@@ -94,6 +95,15 @@ func (c *gatewayServiceClient) SendToAll(ctx context.Context, in *SendToAllReque
 	return out, nil
 }
 
+func (c *gatewayServiceClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
+	out := new(PingResponse)
+	err := c.cc.Invoke(ctx, "/gateway.GatewayService/Ping", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GatewayServiceServer is the server API for GatewayService service.
 // All implementations must embed UnimplementedGatewayServiceServer
 // for forward compatibility
@@ -102,6 +112,7 @@ type GatewayServiceServer interface {
 	UnRegister(context.Context, *UnRegisterRequest) (*UnRegisterResponse, error)
 	SendMessage(GatewayService_SendMessageServer) error
 	SendToAll(context.Context, *SendToAllRequest) (*SendToAllResponse, error)
+	Ping(context.Context, *PingRequest) (*PingResponse, error)
 	mustEmbedUnimplementedGatewayServiceServer()
 }
 
@@ -120,6 +131,9 @@ func (UnimplementedGatewayServiceServer) SendMessage(GatewayService_SendMessageS
 }
 func (UnimplementedGatewayServiceServer) SendToAll(context.Context, *SendToAllRequest) (*SendToAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendToAll not implemented")
+}
+func (UnimplementedGatewayServiceServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
 func (UnimplementedGatewayServiceServer) mustEmbedUnimplementedGatewayServiceServer() {}
 
@@ -214,6 +228,24 @@ func _GatewayService_SendToAll_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GatewayService_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GatewayServiceServer).Ping(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gateway.GatewayService/Ping",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GatewayServiceServer).Ping(ctx, req.(*PingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GatewayService_ServiceDesc is the grpc.ServiceDesc for GatewayService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -232,6 +264,10 @@ var GatewayService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendToAll",
 			Handler:    _GatewayService_SendToAll_Handler,
+		},
+		{
+			MethodName: "Ping",
+			Handler:    _GatewayService_Ping_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

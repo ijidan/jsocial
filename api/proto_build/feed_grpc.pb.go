@@ -31,6 +31,7 @@ type FeedServiceClient interface {
 	FeedOwn(ctx context.Context, in *FeedOwnRequest, opts ...grpc.CallOption) (*FeedOwnResponse, error)
 	FeedQuery(ctx context.Context, in *FeedQueryRequest, opts ...grpc.CallOption) (*FeedQueryResponse, error)
 	FeedFollow(ctx context.Context, in *FeedFollowRequest, opts ...grpc.CallOption) (*FeedFollowResponse, error)
+	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
 }
 
 type feedServiceClient struct {
@@ -43,7 +44,7 @@ func NewFeedServiceClient(cc grpc.ClientConnInterface) FeedServiceClient {
 
 func (c *feedServiceClient) FeedCreate(ctx context.Context, in *FeedCreateRequest, opts ...grpc.CallOption) (*FeedCreateResponse, error) {
 	out := new(FeedCreateResponse)
-	err := c.cc.Invoke(ctx, "/user.FeedService/FeedCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/feed.FeedService/FeedCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +53,7 @@ func (c *feedServiceClient) FeedCreate(ctx context.Context, in *FeedCreateReques
 
 func (c *feedServiceClient) FeedEdit(ctx context.Context, in *FeedEditRequest, opts ...grpc.CallOption) (*FeedEditResponse, error) {
 	out := new(FeedEditResponse)
-	err := c.cc.Invoke(ctx, "/user.FeedService/FeedEdit", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/feed.FeedService/FeedEdit", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +62,7 @@ func (c *feedServiceClient) FeedEdit(ctx context.Context, in *FeedEditRequest, o
 
 func (c *feedServiceClient) FeedLike(ctx context.Context, in *FeedLikeRequest, opts ...grpc.CallOption) (*FeedLikeResponse, error) {
 	out := new(FeedLikeResponse)
-	err := c.cc.Invoke(ctx, "/user.FeedService/FeedLike", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/feed.FeedService/FeedLike", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +71,7 @@ func (c *feedServiceClient) FeedLike(ctx context.Context, in *FeedLikeRequest, o
 
 func (c *feedServiceClient) FeedUnLike(ctx context.Context, in *FeedUnLikeRequest, opts ...grpc.CallOption) (*FeedUnLikeResponse, error) {
 	out := new(FeedUnLikeResponse)
-	err := c.cc.Invoke(ctx, "/user.FeedService/FeedUnLike", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/feed.FeedService/FeedUnLike", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +80,7 @@ func (c *feedServiceClient) FeedUnLike(ctx context.Context, in *FeedUnLikeReques
 
 func (c *feedServiceClient) FeedGet(ctx context.Context, in *FeedGetRequest, opts ...grpc.CallOption) (*FeedGetResponse, error) {
 	out := new(FeedGetResponse)
-	err := c.cc.Invoke(ctx, "/user.FeedService/FeedGet", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/feed.FeedService/FeedGet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +89,7 @@ func (c *feedServiceClient) FeedGet(ctx context.Context, in *FeedGetRequest, opt
 
 func (c *feedServiceClient) FeedDelete(ctx context.Context, in *FeedDeleteRequest, opts ...grpc.CallOption) (*FeedDeleteResponse, error) {
 	out := new(FeedDeleteResponse)
-	err := c.cc.Invoke(ctx, "/user.FeedService/FeedDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/feed.FeedService/FeedDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +98,7 @@ func (c *feedServiceClient) FeedDelete(ctx context.Context, in *FeedDeleteReques
 
 func (c *feedServiceClient) FeedOwn(ctx context.Context, in *FeedOwnRequest, opts ...grpc.CallOption) (*FeedOwnResponse, error) {
 	out := new(FeedOwnResponse)
-	err := c.cc.Invoke(ctx, "/user.FeedService/FeedOwn", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/feed.FeedService/FeedOwn", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +107,7 @@ func (c *feedServiceClient) FeedOwn(ctx context.Context, in *FeedOwnRequest, opt
 
 func (c *feedServiceClient) FeedQuery(ctx context.Context, in *FeedQueryRequest, opts ...grpc.CallOption) (*FeedQueryResponse, error) {
 	out := new(FeedQueryResponse)
-	err := c.cc.Invoke(ctx, "/user.FeedService/FeedQuery", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/feed.FeedService/FeedQuery", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +116,16 @@ func (c *feedServiceClient) FeedQuery(ctx context.Context, in *FeedQueryRequest,
 
 func (c *feedServiceClient) FeedFollow(ctx context.Context, in *FeedFollowRequest, opts ...grpc.CallOption) (*FeedFollowResponse, error) {
 	out := new(FeedFollowResponse)
-	err := c.cc.Invoke(ctx, "/user.FeedService/FeedFollow", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/feed.FeedService/FeedFollow", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *feedServiceClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
+	out := new(PingResponse)
+	err := c.cc.Invoke(ctx, "/feed.FeedService/Ping", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -135,6 +145,7 @@ type FeedServiceServer interface {
 	FeedOwn(context.Context, *FeedOwnRequest) (*FeedOwnResponse, error)
 	FeedQuery(context.Context, *FeedQueryRequest) (*FeedQueryResponse, error)
 	FeedFollow(context.Context, *FeedFollowRequest) (*FeedFollowResponse, error)
+	Ping(context.Context, *PingRequest) (*PingResponse, error)
 	mustEmbedUnimplementedFeedServiceServer()
 }
 
@@ -169,6 +180,9 @@ func (UnimplementedFeedServiceServer) FeedQuery(context.Context, *FeedQueryReque
 func (UnimplementedFeedServiceServer) FeedFollow(context.Context, *FeedFollowRequest) (*FeedFollowResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FeedFollow not implemented")
 }
+func (UnimplementedFeedServiceServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+}
 func (UnimplementedFeedServiceServer) mustEmbedUnimplementedFeedServiceServer() {}
 
 // UnsafeFeedServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -192,7 +206,7 @@ func _FeedService_FeedCreate_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.FeedService/FeedCreate",
+		FullMethod: "/feed.FeedService/FeedCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FeedServiceServer).FeedCreate(ctx, req.(*FeedCreateRequest))
@@ -210,7 +224,7 @@ func _FeedService_FeedEdit_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.FeedService/FeedEdit",
+		FullMethod: "/feed.FeedService/FeedEdit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FeedServiceServer).FeedEdit(ctx, req.(*FeedEditRequest))
@@ -228,7 +242,7 @@ func _FeedService_FeedLike_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.FeedService/FeedLike",
+		FullMethod: "/feed.FeedService/FeedLike",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FeedServiceServer).FeedLike(ctx, req.(*FeedLikeRequest))
@@ -246,7 +260,7 @@ func _FeedService_FeedUnLike_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.FeedService/FeedUnLike",
+		FullMethod: "/feed.FeedService/FeedUnLike",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FeedServiceServer).FeedUnLike(ctx, req.(*FeedUnLikeRequest))
@@ -264,7 +278,7 @@ func _FeedService_FeedGet_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.FeedService/FeedGet",
+		FullMethod: "/feed.FeedService/FeedGet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FeedServiceServer).FeedGet(ctx, req.(*FeedGetRequest))
@@ -282,7 +296,7 @@ func _FeedService_FeedDelete_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.FeedService/FeedDelete",
+		FullMethod: "/feed.FeedService/FeedDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FeedServiceServer).FeedDelete(ctx, req.(*FeedDeleteRequest))
@@ -300,7 +314,7 @@ func _FeedService_FeedOwn_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.FeedService/FeedOwn",
+		FullMethod: "/feed.FeedService/FeedOwn",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FeedServiceServer).FeedOwn(ctx, req.(*FeedOwnRequest))
@@ -318,7 +332,7 @@ func _FeedService_FeedQuery_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.FeedService/FeedQuery",
+		FullMethod: "/feed.FeedService/FeedQuery",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FeedServiceServer).FeedQuery(ctx, req.(*FeedQueryRequest))
@@ -336,10 +350,28 @@ func _FeedService_FeedFollow_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.FeedService/FeedFollow",
+		FullMethod: "/feed.FeedService/FeedFollow",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FeedServiceServer).FeedFollow(ctx, req.(*FeedFollowRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FeedService_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FeedServiceServer).Ping(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/feed.FeedService/Ping",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FeedServiceServer).Ping(ctx, req.(*PingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -348,7 +380,7 @@ func _FeedService_FeedFollow_Handler(srv interface{}, ctx context.Context, dec f
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var FeedService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "user.FeedService",
+	ServiceName: "feed.FeedService",
 	HandlerType: (*FeedServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -386,6 +418,10 @@ var FeedService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FeedFollow",
 			Handler:    _FeedService_FeedFollow_Handler,
+		},
+		{
+			MethodName: "Ping",
+			Handler:    _FeedService_Ping_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

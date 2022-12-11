@@ -7,6 +7,8 @@
     - [CommonResponse](#common-CommonResponse)
     - [ImageInfo](#common-ImageInfo)
     - [Pager](#common-Pager)
+    - [PingRequest](#common-PingRequest)
+    - [PingResponse](#common-PingResponse)
     - [SendEmailRequest](#common-SendEmailRequest)
     - [SendEmailRequest.CcEntry](#common-SendEmailRequest-CcEntry)
     - [SendEmailRequest.ReceiverEntry](#common-SendEmailRequest-ReceiverEntry)
@@ -21,34 +23,34 @@
     - [CommonService](#common-CommonService)
   
 - [feed.proto](#feed-proto)
-    - [Feed](#user-Feed)
-    - [FeedCreateRequest](#user-FeedCreateRequest)
-    - [FeedCreateResponse](#user-FeedCreateResponse)
-    - [FeedDeleteRequest](#user-FeedDeleteRequest)
-    - [FeedDeleteResponse](#user-FeedDeleteResponse)
-    - [FeedEditRequest](#user-FeedEditRequest)
-    - [FeedEditResponse](#user-FeedEditResponse)
-    - [FeedFollowRequest](#user-FeedFollowRequest)
-    - [FeedFollowResponse](#user-FeedFollowResponse)
-    - [FeedGetRequest](#user-FeedGetRequest)
-    - [FeedGetResponse](#user-FeedGetResponse)
-    - [FeedImage](#user-FeedImage)
-    - [FeedLike](#user-FeedLike)
-    - [FeedLikeRequest](#user-FeedLikeRequest)
-    - [FeedLikeResponse](#user-FeedLikeResponse)
-    - [FeedOwnRequest](#user-FeedOwnRequest)
-    - [FeedOwnResponse](#user-FeedOwnResponse)
-    - [FeedQueryRequest](#user-FeedQueryRequest)
-    - [FeedQueryResponse](#user-FeedQueryResponse)
-    - [FeedRecommendRequest](#user-FeedRecommendRequest)
-    - [FeedRecommendResponse](#user-FeedRecommendResponse)
-    - [FeedUnLikeRequest](#user-FeedUnLikeRequest)
-    - [FeedUnLikeResponse](#user-FeedUnLikeResponse)
-    - [FeedVideo](#user-FeedVideo)
+    - [Feed](#feed-Feed)
+    - [FeedCreateRequest](#feed-FeedCreateRequest)
+    - [FeedCreateResponse](#feed-FeedCreateResponse)
+    - [FeedDeleteRequest](#feed-FeedDeleteRequest)
+    - [FeedDeleteResponse](#feed-FeedDeleteResponse)
+    - [FeedEditRequest](#feed-FeedEditRequest)
+    - [FeedEditResponse](#feed-FeedEditResponse)
+    - [FeedFollowRequest](#feed-FeedFollowRequest)
+    - [FeedFollowResponse](#feed-FeedFollowResponse)
+    - [FeedGetRequest](#feed-FeedGetRequest)
+    - [FeedGetResponse](#feed-FeedGetResponse)
+    - [FeedImage](#feed-FeedImage)
+    - [FeedLike](#feed-FeedLike)
+    - [FeedLikeRequest](#feed-FeedLikeRequest)
+    - [FeedLikeResponse](#feed-FeedLikeResponse)
+    - [FeedOwnRequest](#feed-FeedOwnRequest)
+    - [FeedOwnResponse](#feed-FeedOwnResponse)
+    - [FeedQueryRequest](#feed-FeedQueryRequest)
+    - [FeedQueryResponse](#feed-FeedQueryResponse)
+    - [FeedRecommendRequest](#feed-FeedRecommendRequest)
+    - [FeedRecommendResponse](#feed-FeedRecommendResponse)
+    - [FeedUnLikeRequest](#feed-FeedUnLikeRequest)
+    - [FeedUnLikeResponse](#feed-FeedUnLikeResponse)
+    - [FeedVideo](#feed-FeedVideo)
   
-    - [FeedType](#user-FeedType)
+    - [FeedType](#feed-FeedType)
   
-    - [FeedService](#user-FeedService)
+    - [FeedService](#feed-FeedService)
   
 - [gateway.proto](#gateway-proto)
     - [RegisterRequest](#gateway-RegisterRequest)
@@ -130,12 +132,6 @@
   
     - [MessageService](#message-MessageService)
   
-- [ping.proto](#ping-proto)
-    - [PingRequest](#ping-PingRequest)
-    - [PingResponse](#ping-PingResponse)
-  
-    - [PingService](#ping-PingService)
-  
 - [user.proto](#user-proto)
     - [UpdateAvatarRequest](#user-UpdateAvatarRequest)
     - [UpdateAvatarResponse](#user-UpdateAvatarResponse)
@@ -212,6 +208,31 @@
 | page_zie | [uint64](#uint64) |  |  |
 | total_rows | [uint64](#uint64) |  |  |
 | total_pages | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="common-PingRequest"></a>
+
+### PingRequest
+
+
+
+
+
+
+
+<a name="common-PingResponse"></a>
+
+### PingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| content | [string](#string) |  |  |
 
 
 
@@ -362,6 +383,7 @@
 | ----------- | ------------ | ------------- | ------------|
 | UploadImage | [UploadImageRequest](#common-UploadImageRequest) stream | [UploadImageResponse](#common-UploadImageResponse) |  |
 | SendEmail | [SendEmailRequest](#common-SendEmailRequest) | [SendEmailResponse](#common-SendEmailResponse) |  |
+| Ping | [PingRequest](#common-PingRequest) | [PingResponse](#common-PingResponse) |  |
 
  
 
@@ -374,7 +396,7 @@
 
 
 
-<a name="user-Feed"></a>
+<a name="feed-Feed"></a>
 
 ### Feed
 
@@ -385,7 +407,7 @@
 | id | [uint64](#uint64) |  |  |
 | user_id | [uint64](#uint64) |  |  |
 | content | [string](#string) |  |  |
-| type | [FeedType](#user-FeedType) |  |  |
+| type | [FeedType](#feed-FeedType) |  |  |
 | like_count | [uint64](#uint64) |  |  |
 | view_count | [uint64](#uint64) |  |  |
 | comment_count | [uint64](#uint64) |  |  |
@@ -403,7 +425,7 @@
 
 
 
-<a name="user-FeedCreateRequest"></a>
+<a name="feed-FeedCreateRequest"></a>
 
 ### FeedCreateRequest
 
@@ -411,7 +433,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| type | [FeedType](#user-FeedType) |  |  |
+| type | [FeedType](#feed-FeedType) |  |  |
 | content | [string](#string) |  |  |
 | resource | [string](#string) | repeated |  |
 
@@ -420,7 +442,7 @@
 
 
 
-<a name="user-FeedCreateResponse"></a>
+<a name="feed-FeedCreateResponse"></a>
 
 ### FeedCreateResponse
 
@@ -428,14 +450,14 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| feed | [Feed](#user-Feed) |  |  |
+| feed | [Feed](#feed-Feed) |  |  |
 
 
 
 
 
 
-<a name="user-FeedDeleteRequest"></a>
+<a name="feed-FeedDeleteRequest"></a>
 
 ### FeedDeleteRequest
 
@@ -450,7 +472,7 @@
 
 
 
-<a name="user-FeedDeleteResponse"></a>
+<a name="feed-FeedDeleteResponse"></a>
 
 ### FeedDeleteResponse
 
@@ -460,7 +482,7 @@
 
 
 
-<a name="user-FeedEditRequest"></a>
+<a name="feed-FeedEditRequest"></a>
 
 ### FeedEditRequest
 
@@ -469,7 +491,7 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | id | [uint64](#uint64) |  |  |
-| type | [FeedType](#user-FeedType) |  |  |
+| type | [FeedType](#feed-FeedType) |  |  |
 | content | [string](#string) |  |  |
 | resource | [string](#string) | repeated |  |
 
@@ -478,7 +500,7 @@
 
 
 
-<a name="user-FeedEditResponse"></a>
+<a name="feed-FeedEditResponse"></a>
 
 ### FeedEditResponse
 
@@ -493,7 +515,7 @@
 
 
 
-<a name="user-FeedFollowRequest"></a>
+<a name="feed-FeedFollowRequest"></a>
 
 ### FeedFollowRequest
 
@@ -508,7 +530,7 @@
 
 
 
-<a name="user-FeedFollowResponse"></a>
+<a name="feed-FeedFollowResponse"></a>
 
 ### FeedFollowResponse
 
@@ -517,14 +539,14 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | pager | [common.Pager](#common-Pager) |  |  |
-| feed | [Feed](#user-Feed) | repeated |  |
+| feed | [Feed](#feed-Feed) | repeated |  |
 
 
 
 
 
 
-<a name="user-FeedGetRequest"></a>
+<a name="feed-FeedGetRequest"></a>
 
 ### FeedGetRequest
 
@@ -539,7 +561,7 @@
 
 
 
-<a name="user-FeedGetResponse"></a>
+<a name="feed-FeedGetResponse"></a>
 
 ### FeedGetResponse
 
@@ -547,14 +569,14 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| feed | [Feed](#user-Feed) |  |  |
+| feed | [Feed](#feed-Feed) |  |  |
 
 
 
 
 
 
-<a name="user-FeedImage"></a>
+<a name="feed-FeedImage"></a>
 
 ### FeedImage
 
@@ -574,7 +596,7 @@
 
 
 
-<a name="user-FeedLike"></a>
+<a name="feed-FeedLike"></a>
 
 ### FeedLike
 
@@ -594,7 +616,7 @@
 
 
 
-<a name="user-FeedLikeRequest"></a>
+<a name="feed-FeedLikeRequest"></a>
 
 ### FeedLikeRequest
 
@@ -609,7 +631,7 @@
 
 
 
-<a name="user-FeedLikeResponse"></a>
+<a name="feed-FeedLikeResponse"></a>
 
 ### FeedLikeResponse
 
@@ -619,7 +641,7 @@
 
 
 
-<a name="user-FeedOwnRequest"></a>
+<a name="feed-FeedOwnRequest"></a>
 
 ### FeedOwnRequest
 
@@ -637,7 +659,7 @@
 
 
 
-<a name="user-FeedOwnResponse"></a>
+<a name="feed-FeedOwnResponse"></a>
 
 ### FeedOwnResponse
 
@@ -646,14 +668,14 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | pager | [common.Pager](#common-Pager) |  |  |
-| feed | [Feed](#user-Feed) | repeated |  |
+| feed | [Feed](#feed-Feed) | repeated |  |
 
 
 
 
 
 
-<a name="user-FeedQueryRequest"></a>
+<a name="feed-FeedQueryRequest"></a>
 
 ### FeedQueryRequest
 
@@ -670,7 +692,7 @@
 
 
 
-<a name="user-FeedQueryResponse"></a>
+<a name="feed-FeedQueryResponse"></a>
 
 ### FeedQueryResponse
 
@@ -679,14 +701,14 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | pager | [common.Pager](#common-Pager) |  |  |
-| feed | [Feed](#user-Feed) | repeated |  |
+| feed | [Feed](#feed-Feed) | repeated |  |
 
 
 
 
 
 
-<a name="user-FeedRecommendRequest"></a>
+<a name="feed-FeedRecommendRequest"></a>
 
 ### FeedRecommendRequest
 
@@ -701,7 +723,7 @@
 
 
 
-<a name="user-FeedRecommendResponse"></a>
+<a name="feed-FeedRecommendResponse"></a>
 
 ### FeedRecommendResponse
 
@@ -710,14 +732,14 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | pager | [common.Pager](#common-Pager) |  |  |
-| feed | [Feed](#user-Feed) | repeated |  |
+| feed | [Feed](#feed-Feed) | repeated |  |
 
 
 
 
 
 
-<a name="user-FeedUnLikeRequest"></a>
+<a name="feed-FeedUnLikeRequest"></a>
 
 ### FeedUnLikeRequest
 
@@ -732,7 +754,7 @@
 
 
 
-<a name="user-FeedUnLikeResponse"></a>
+<a name="feed-FeedUnLikeResponse"></a>
 
 ### FeedUnLikeResponse
 
@@ -742,7 +764,7 @@
 
 
 
-<a name="user-FeedVideo"></a>
+<a name="feed-FeedVideo"></a>
 
 ### FeedVideo
 
@@ -768,7 +790,7 @@
  
 
 
-<a name="user-FeedType"></a>
+<a name="feed-FeedType"></a>
 
 ### FeedType
 
@@ -785,22 +807,23 @@
  
 
 
-<a name="user-FeedService"></a>
+<a name="feed-FeedService"></a>
 
 ### FeedService
 
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| FeedCreate | [FeedCreateRequest](#user-FeedCreateRequest) | [FeedCreateResponse](#user-FeedCreateResponse) |  |
-| FeedEdit | [FeedEditRequest](#user-FeedEditRequest) | [FeedEditResponse](#user-FeedEditResponse) |  |
-| FeedLike | [FeedLikeRequest](#user-FeedLikeRequest) | [FeedLikeResponse](#user-FeedLikeResponse) |  |
-| FeedUnLike | [FeedUnLikeRequest](#user-FeedUnLikeRequest) | [FeedUnLikeResponse](#user-FeedUnLikeResponse) |  |
-| FeedGet | [FeedGetRequest](#user-FeedGetRequest) | [FeedGetResponse](#user-FeedGetResponse) |  |
-| FeedDelete | [FeedDeleteRequest](#user-FeedDeleteRequest) | [FeedDeleteResponse](#user-FeedDeleteResponse) |  |
-| FeedOwn | [FeedOwnRequest](#user-FeedOwnRequest) | [FeedOwnResponse](#user-FeedOwnResponse) |  |
-| FeedQuery | [FeedQueryRequest](#user-FeedQueryRequest) | [FeedQueryResponse](#user-FeedQueryResponse) |  |
-| FeedFollow | [FeedFollowRequest](#user-FeedFollowRequest) | [FeedFollowResponse](#user-FeedFollowResponse) |  |
+| FeedCreate | [FeedCreateRequest](#feed-FeedCreateRequest) | [FeedCreateResponse](#feed-FeedCreateResponse) |  |
+| FeedEdit | [FeedEditRequest](#feed-FeedEditRequest) | [FeedEditResponse](#feed-FeedEditResponse) |  |
+| FeedLike | [FeedLikeRequest](#feed-FeedLikeRequest) | [FeedLikeResponse](#feed-FeedLikeResponse) |  |
+| FeedUnLike | [FeedUnLikeRequest](#feed-FeedUnLikeRequest) | [FeedUnLikeResponse](#feed-FeedUnLikeResponse) |  |
+| FeedGet | [FeedGetRequest](#feed-FeedGetRequest) | [FeedGetResponse](#feed-FeedGetResponse) |  |
+| FeedDelete | [FeedDeleteRequest](#feed-FeedDeleteRequest) | [FeedDeleteResponse](#feed-FeedDeleteResponse) |  |
+| FeedOwn | [FeedOwnRequest](#feed-FeedOwnRequest) | [FeedOwnResponse](#feed-FeedOwnResponse) |  |
+| FeedQuery | [FeedQueryRequest](#feed-FeedQueryRequest) | [FeedQueryResponse](#feed-FeedQueryResponse) |  |
+| FeedFollow | [FeedFollowRequest](#feed-FeedFollowRequest) | [FeedFollowResponse](#feed-FeedFollowResponse) |  |
+| Ping | [.common.PingRequest](#common-PingRequest) | [.common.PingResponse](#common-PingResponse) |  |
 
  
 
@@ -946,6 +969,7 @@
 | UnRegister | [UnRegisterRequest](#gateway-UnRegisterRequest) | [UnRegisterResponse](#gateway-UnRegisterResponse) |  |
 | SendMessage | [SendMessageRequest](#gateway-SendMessageRequest) stream | [SendMessageResponse](#gateway-SendMessageResponse) stream |  |
 | SendToAll | [SendToAllRequest](#gateway-SendToAllRequest) | [SendToAllResponse](#gateway-SendToAllResponse) |  |
+| Ping | [.common.PingRequest](#common-PingRequest) | [.common.PingResponse](#common-PingResponse) |  |
 
  
 
@@ -1234,6 +1258,7 @@
 | DeleteGroup | [DeleteGroupRequest](#group-DeleteGroupRequest) | [DeleteGroupResponse](#group-DeleteGroupResponse) |  |
 | JoinGroup | [JoinGroupRequest](#group-JoinGroupRequest) | [JoinGroupResponse](#group-JoinGroupResponse) |  |
 | QuitGroup | [QuitGroupRequest](#group-QuitGroupRequest) | [QuitGroupResponse](#group-QuitGroupResponse) |  |
+| Ping | [.common.PingRequest](#common-PingRequest) | [.common.PingResponse](#common-PingResponse) |  |
 
  
 
@@ -1949,57 +1974,7 @@
 | SendGroupVideoMessage | [SendGroupVideoMessageRequest](#message-SendGroupVideoMessageRequest) | [SendGroupVideoMessageResponse](#message-SendGroupVideoMessageResponse) |  |
 | SendGroupImageMessage | [SendGroupImageMessageRequest](#message-SendGroupImageMessageRequest) | [SendGroupImageMessageResponse](#message-SendGroupImageMessageResponse) |  |
 | SendGroupFileMessage | [SendGroupFileMessageRequest](#message-SendGroupFileMessageRequest) | [SendGroupFileMessageResponse](#message-SendGroupFileMessageResponse) |  |
-
- 
-
-
-
-<a name="ping-proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ping.proto
-
-
-
-<a name="ping-PingRequest"></a>
-
-### PingRequest
-
-
-
-
-
-
-
-<a name="ping-PingResponse"></a>
-
-### PingResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| message | [string](#string) |  |  |
-
-
-
-
-
- 
-
- 
-
- 
-
-
-<a name="ping-PingService"></a>
-
-### PingService
-
-
-| Method Name | Request Type | Response Type | Description |
-| ----------- | ------------ | ------------- | ------------|
-| Ping | [PingRequest](#ping-PingRequest) | [PingResponse](#ping-PingResponse) |  |
+| Ping | [.common.PingRequest](#common-PingRequest) | [.common.PingResponse](#common-PingResponse) |  |
 
  
 
@@ -2232,6 +2207,7 @@
 | QueryUser | [UserQueryRequest](#user-UserQueryRequest) | [UserQueryResponse](#user-UserQueryResponse) |  |
 | UpdatePassword | [UpdatePasswordRequest](#user-UpdatePasswordRequest) | [UpdatePasswordResponse](#user-UpdatePasswordResponse) |  |
 | UpdateAvatar | [UpdateAvatarRequest](#user-UpdateAvatarRequest) | [UpdateAvatarResponse](#user-UpdateAvatarResponse) |  |
+| Ping | [.common.PingRequest](#common-PingRequest) | [.common.PingResponse](#common-PingResponse) |  |
 
  
 

@@ -29,6 +29,7 @@ type GroupServiceClient interface {
 	DeleteGroup(ctx context.Context, in *DeleteGroupRequest, opts ...grpc.CallOption) (*DeleteGroupResponse, error)
 	JoinGroup(ctx context.Context, in *JoinGroupRequest, opts ...grpc.CallOption) (*JoinGroupResponse, error)
 	QuitGroup(ctx context.Context, in *QuitGroupRequest, opts ...grpc.CallOption) (*QuitGroupResponse, error)
+	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
 }
 
 type groupServiceClient struct {
@@ -102,6 +103,15 @@ func (c *groupServiceClient) QuitGroup(ctx context.Context, in *QuitGroupRequest
 	return out, nil
 }
 
+func (c *groupServiceClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
+	out := new(PingResponse)
+	err := c.cc.Invoke(ctx, "/group.GroupService/Ping", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GroupServiceServer is the server API for GroupService service.
 // All implementations must embed UnimplementedGroupServiceServer
 // for forward compatibility
@@ -113,6 +123,7 @@ type GroupServiceServer interface {
 	DeleteGroup(context.Context, *DeleteGroupRequest) (*DeleteGroupResponse, error)
 	JoinGroup(context.Context, *JoinGroupRequest) (*JoinGroupResponse, error)
 	QuitGroup(context.Context, *QuitGroupRequest) (*QuitGroupResponse, error)
+	Ping(context.Context, *PingRequest) (*PingResponse, error)
 	mustEmbedUnimplementedGroupServiceServer()
 }
 
@@ -140,6 +151,9 @@ func (UnimplementedGroupServiceServer) JoinGroup(context.Context, *JoinGroupRequ
 }
 func (UnimplementedGroupServiceServer) QuitGroup(context.Context, *QuitGroupRequest) (*QuitGroupResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QuitGroup not implemented")
+}
+func (UnimplementedGroupServiceServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
 func (UnimplementedGroupServiceServer) mustEmbedUnimplementedGroupServiceServer() {}
 
@@ -280,6 +294,24 @@ func _GroupService_QuitGroup_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GroupService_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupServiceServer).Ping(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/group.GroupService/Ping",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupServiceServer).Ping(ctx, req.(*PingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GroupService_ServiceDesc is the grpc.ServiceDesc for GroupService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -314,6 +346,10 @@ var GroupService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "QuitGroup",
 			Handler:    _GroupService_QuitGroup_Handler,
+		},
+		{
+			MethodName: "Ping",
+			Handler:    _GroupService_Ping_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

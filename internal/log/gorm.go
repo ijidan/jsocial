@@ -2,10 +2,9 @@ package log
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/golang-module/carbon/v2"
-	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
-	"os"
 )
 
 type LoggerPlugin struct {
@@ -16,28 +15,20 @@ func (lp *LoggerPlugin) Name() string {
 }
 
 func (lp *LoggerPlugin) Initialize(db *gorm.DB) error {
-	beforeMap := map[string]func(*gorm.DB){
-		"gorm:create": writeLogBefore,
-		"gorm:delete": writeLogBefore,
-		"gorm:update": writeLogBefore,
-		"gorm:query":  writeLogBefore,
-		"gorm:row":    writeLogBefore,
-		"gorm:raw":    writeLogBefore,
-	}
-	for k, v := range beforeMap {
-		_ = db.Callback().Create().Before(k).Register(lp.Name()+k+"_before", v)
-	}
-	afterMap := map[string]func(db *gorm.DB){
-		"gorm:create": writeLogAfter,
-		"gorm:delete": writeLogAfter,
-		"gorm:update": writeLogAfter,
-		"gorm:query":  writeLogAfter,
-		"gorm:row":    writeLogAfter,
-		"gorm:raw":    writeLogAfter,
-	}
-	for k, v := range afterMap {
-		_ = db.Callback().Create().After(k).Register(lp.Name()+k+"_after", v)
-	}
+
+	_ = db.Callback().Create().Before("gorm:create").Register(lp.Name()+":gorm:create:before", writeLogBefore)
+	_ = db.Callback().Delete().Before("gorm:delete").Register(lp.Name()+":gorm:delete:before", writeLogBefore)
+	_ = db.Callback().Update().Before("gorm:update").Register(lp.Name()+":gorm:update:before", writeLogBefore)
+	_ = db.Callback().Query().Before("gorm:query").Register(lp.Name()+":gorm:query:before", writeLogBefore)
+	_ = db.Callback().Row().Before("gorm:row").Register(lp.Name()+":gorm:row:before", writeLogBefore)
+	_ = db.Callback().Raw().Before("gorm:raw").Register(lp.Name()+":gorm:raw:before", writeLogBefore)
+
+	_ = db.Callback().Create().After("gorm:create").Register(lp.Name()+":gorm:create:after", writeLogAfter)
+	_ = db.Callback().Delete().After("gorm:delete").Register(lp.Name()+":gorm:delete:after", writeLogAfter)
+	_ = db.Callback().Update().After("gorm:update").Register(lp.Name()+":gorm:update:after", writeLogAfter)
+	_ = db.Callback().Query().After("gorm:query").Register(lp.Name()+":gorm:query:after", writeLogAfter)
+	_ = db.Callback().Row().After("gorm:row").Register(lp.Name()+":gorm:row:after", writeLogAfter)
+	_ = db.Callback().Raw().After("gorm:raw").Register(lp.Name()+":gorm:raw:after", writeLogAfter)
 
 	return nil
 }
@@ -51,7 +42,5 @@ func writeLogAfter(db *gorm.DB) {
 	sql := db.Dialector.Explain(db.Statement.SQL.String(), db.Statement.Vars...)
 	startTime, _ := db.InstanceGet("start_time")
 	log := fmt.Sprintf("start time:%d,end time:%d,sql:%s", startTime, endTime, sql)
-	logrus.SetOutput(os.Stdout)
-	logrus.SetLevel(logrus.InfoLevel)
-	logrus.Error(log)
+	color.Green(log)
 }

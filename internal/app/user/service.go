@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"github.com/ijidan/jsocial/api/proto_build"
+	"github.com/ijidan/jsocial/internal/constant"
 	"github.com/ijidan/jsocial/internal/global"
 	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/ijidan/jsocial/internal/pkg/funct"
@@ -97,9 +98,16 @@ func (s *Service) UpdateAvatar(c context.Context, req *proto_build.UpdateAvatarR
 	return rsp, nil
 }
 
+func (s *Service) Ping(c context.Context, req *proto_build.PingRequest) (*proto_build.PingResponse, error) {
+	rsp := &proto_build.PingResponse{
+		Content: constant.ServiceUser + ":pong",
+	}
+	return rsp, nil
+}
+
 func NewService(cf config.Rpc) *Service {
 	instance := &Service{BasicService: service.BasicService{
-		Name: "service_ping",
+		Name: constant.ServiceUser,
 		Host: cf.Host,
 		Port: cf.Port,
 		Ttl:  cf.Ttl,

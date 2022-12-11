@@ -481,6 +481,24 @@ func local_request_FeedService_FeedFollow_0(ctx context.Context, marshaler runti
 
 }
 
+func request_FeedService_Ping_0(ctx context.Context, marshaler runtime.Marshaler, client FeedServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq PingRequest
+	var metadata runtime.ServerMetadata
+
+	msg, err := client.Ping(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_FeedService_Ping_0(ctx context.Context, marshaler runtime.Marshaler, server FeedServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq PingRequest
+	var metadata runtime.ServerMetadata
+
+	msg, err := server.Ping(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 // RegisterFeedServiceHandlerServer registers the http handlers for service FeedService to "mux".
 // UnaryRPC     :call FeedServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -495,7 +513,7 @@ func RegisterFeedServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/user.FeedService/FeedCreate", runtime.WithHTTPPathPattern("/v1/api/feed"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/feed.FeedService/FeedCreate", runtime.WithHTTPPathPattern("/v1/api/feed"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -520,7 +538,7 @@ func RegisterFeedServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/user.FeedService/FeedEdit", runtime.WithHTTPPathPattern("/v1/api/feed/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/feed.FeedService/FeedEdit", runtime.WithHTTPPathPattern("/v1/api/feed/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -545,7 +563,7 @@ func RegisterFeedServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/user.FeedService/FeedLike", runtime.WithHTTPPathPattern("/v1/api/feed/{id}/like"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/feed.FeedService/FeedLike", runtime.WithHTTPPathPattern("/v1/api/feed/{id}/like"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -570,7 +588,7 @@ func RegisterFeedServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/user.FeedService/FeedUnLike", runtime.WithHTTPPathPattern("/v1/api/feed/{id}/unlike"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/feed.FeedService/FeedUnLike", runtime.WithHTTPPathPattern("/v1/api/feed/{id}/unlike"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -595,7 +613,7 @@ func RegisterFeedServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/user.FeedService/FeedGet", runtime.WithHTTPPathPattern("/v1/api/feed/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/feed.FeedService/FeedGet", runtime.WithHTTPPathPattern("/v1/api/feed/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -620,7 +638,7 @@ func RegisterFeedServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/user.FeedService/FeedDelete", runtime.WithHTTPPathPattern("/v1/api/feed/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/feed.FeedService/FeedDelete", runtime.WithHTTPPathPattern("/v1/api/feed/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -645,7 +663,7 @@ func RegisterFeedServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/user.FeedService/FeedOwn", runtime.WithHTTPPathPattern("/v1/api/feed/own"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/feed.FeedService/FeedOwn", runtime.WithHTTPPathPattern("/v1/api/feed/own"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -670,7 +688,7 @@ func RegisterFeedServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/user.FeedService/FeedQuery", runtime.WithHTTPPathPattern("/v1/api/feed/query"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/feed.FeedService/FeedQuery", runtime.WithHTTPPathPattern("/v1/api/feed/query"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -695,7 +713,7 @@ func RegisterFeedServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/user.FeedService/FeedFollow", runtime.WithHTTPPathPattern("/v1/api/feed/follow"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/feed.FeedService/FeedFollow", runtime.WithHTTPPathPattern("/v1/api/feed/follow"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -709,6 +727,31 @@ func RegisterFeedServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		}
 
 		forward_FeedService_FeedFollow_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_FeedService_Ping_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/feed.FeedService/Ping", runtime.WithHTTPPathPattern("/v1/api/feed/ping"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_FeedService_Ping_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_FeedService_Ping_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -759,7 +802,7 @@ func RegisterFeedServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/user.FeedService/FeedCreate", runtime.WithHTTPPathPattern("/v1/api/feed"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/feed.FeedService/FeedCreate", runtime.WithHTTPPathPattern("/v1/api/feed"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -781,7 +824,7 @@ func RegisterFeedServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/user.FeedService/FeedEdit", runtime.WithHTTPPathPattern("/v1/api/feed/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/feed.FeedService/FeedEdit", runtime.WithHTTPPathPattern("/v1/api/feed/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -803,7 +846,7 @@ func RegisterFeedServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/user.FeedService/FeedLike", runtime.WithHTTPPathPattern("/v1/api/feed/{id}/like"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/feed.FeedService/FeedLike", runtime.WithHTTPPathPattern("/v1/api/feed/{id}/like"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -825,7 +868,7 @@ func RegisterFeedServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/user.FeedService/FeedUnLike", runtime.WithHTTPPathPattern("/v1/api/feed/{id}/unlike"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/feed.FeedService/FeedUnLike", runtime.WithHTTPPathPattern("/v1/api/feed/{id}/unlike"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -847,7 +890,7 @@ func RegisterFeedServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/user.FeedService/FeedGet", runtime.WithHTTPPathPattern("/v1/api/feed/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/feed.FeedService/FeedGet", runtime.WithHTTPPathPattern("/v1/api/feed/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -869,7 +912,7 @@ func RegisterFeedServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/user.FeedService/FeedDelete", runtime.WithHTTPPathPattern("/v1/api/feed/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/feed.FeedService/FeedDelete", runtime.WithHTTPPathPattern("/v1/api/feed/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -891,7 +934,7 @@ func RegisterFeedServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/user.FeedService/FeedOwn", runtime.WithHTTPPathPattern("/v1/api/feed/own"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/feed.FeedService/FeedOwn", runtime.WithHTTPPathPattern("/v1/api/feed/own"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -913,7 +956,7 @@ func RegisterFeedServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/user.FeedService/FeedQuery", runtime.WithHTTPPathPattern("/v1/api/feed/query"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/feed.FeedService/FeedQuery", runtime.WithHTTPPathPattern("/v1/api/feed/query"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -935,7 +978,7 @@ func RegisterFeedServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/user.FeedService/FeedFollow", runtime.WithHTTPPathPattern("/v1/api/feed/follow"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/feed.FeedService/FeedFollow", runtime.WithHTTPPathPattern("/v1/api/feed/follow"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -948,6 +991,28 @@ func RegisterFeedServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		}
 
 		forward_FeedService_FeedFollow_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_FeedService_Ping_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/feed.FeedService/Ping", runtime.WithHTTPPathPattern("/v1/api/feed/ping"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_FeedService_Ping_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_FeedService_Ping_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -972,6 +1037,8 @@ var (
 	pattern_FeedService_FeedQuery_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "api", "feed", "query"}, ""))
 
 	pattern_FeedService_FeedFollow_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "api", "feed", "follow"}, ""))
+
+	pattern_FeedService_Ping_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "api", "feed", "ping"}, ""))
 )
 
 var (
@@ -992,4 +1059,6 @@ var (
 	forward_FeedService_FeedQuery_0 = runtime.ForwardResponseMessage
 
 	forward_FeedService_FeedFollow_0 = runtime.ForwardResponseMessage
+
+	forward_FeedService_Ping_0 = runtime.ForwardResponseMessage
 )

@@ -3,6 +3,7 @@ package group
 import (
 	"context"
 	"github.com/ijidan/jsocial/api/proto_build"
+	"github.com/ijidan/jsocial/internal/constant"
 	"github.com/ijidan/jsocial/internal/global"
 	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/ijidan/jsocial/internal/pkg/funct"
@@ -87,9 +88,16 @@ func (s *Service) QuitGroup(c context.Context, req *proto_build.QuitGroupRequest
 	return rsp, nil
 }
 
+func (s *Service) Ping(c context.Context, req *proto_build.PingRequest) (*proto_build.PingResponse, error) {
+	rsp := &proto_build.PingResponse{
+		Content: constant.ServiceGroup + ":pong",
+	}
+	return rsp, nil
+}
+
 func NewService(cf config.Rpc) *Service {
 	instance := &Service{BasicService: service.BasicService{
-		Name: "service_group",
+		Name: constant.ServiceGroup,
 		Host: cf.Host,
 		Port: cf.Port,
 		Ttl:  cf.Ttl,

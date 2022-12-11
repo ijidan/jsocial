@@ -99,6 +99,7 @@ message GetGroupUserResponse{
   repeated user.User user = 2;
 }
 
+
 service GroupService{
 
   rpc CreateGroup(CreateGroupRequest) returns(CreateGroupResponse){
@@ -142,6 +143,12 @@ service GroupService{
   rpc QuitGroup(QuitGroupRequest) returns (QuitGroupResponse){
     option(google.api.http)={
       post:"/v1/api/group/quit"
+    };
+  }
+
+  rpc Ping(common.PingRequest) returns(common.PingResponse){
+    option(google.api.http)={
+      get:"/v1/api/group/ping",
     };
   }
 

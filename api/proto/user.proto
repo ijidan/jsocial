@@ -115,6 +115,11 @@ service UserService{
       body:"*"
     };
   }
+  rpc Ping(common.PingRequest) returns(common.PingResponse){
+    option(google.api.http)={
+      get:"/v1/api/user/ping",
+    };
+  }
 
 }
 

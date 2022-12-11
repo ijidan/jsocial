@@ -60,6 +60,12 @@ message SendEmailRequest{
 message SendEmailResponse{
 
 }
+message PingRequest{
+
+}
+message PingResponse{
+  string content=1;
+}
 
 service CommonService{
 
@@ -73,6 +79,12 @@ service CommonService{
     option(google.api.http) = {
       post:"/v1/api/common/email",
       body:"*"
+    };
+  }
+
+  rpc Ping(PingRequest) returns(PingResponse){
+    option(google.api.http)={
+      get:"/v1/api/common/ping",
     };
   }
 }

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/ijidan/jsocial/api/proto_build"
+	"github.com/ijidan/jsocial/internal/constant"
 	dispatch2 "github.com/ijidan/jsocial/internal/dispatch"
 	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/ijidan/jsocial/internal/service"
@@ -39,6 +40,13 @@ func (s *Service) SendToAll(c context.Context, req *proto_build.SendToAllRequest
 	requestId := uint32(time.Now().Second())
 	go SendToAll(dispatch2.BusinessCmdS2C, requestId, req.Data)
 	rsp := &proto_build.SendToAllResponse{}
+	return rsp, nil
+}
+
+func (s *Service) Ping(c context.Context, req *proto_build.PingRequest) (*proto_build.PingResponse, error) {
+	rsp := &proto_build.PingResponse{
+		Content: constant.ServiceGateway + ":pong",
+	}
 	return rsp, nil
 }
 
@@ -184,7 +192,7 @@ func SendToAll(cmd string, requestId uint32, data []byte) {
 
 func NewService(cf config.Rpc) *Service {
 	instance := &Service{BasicService: service.BasicService{
-		Name: "service_gateway",
+		Name: constant.ServiceGateway,
 		Host: cf.Host,
 		Port: cf.Port,
 		Ttl:  cf.Ttl,

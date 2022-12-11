@@ -1,5 +1,5 @@
 syntax = "proto3";
-package user;
+package feed;
 option go_package = "proto_build/;proto_build";
 
 import "google/protobuf/timestamp.proto";
@@ -212,6 +212,12 @@ service FeedService{
   rpc FeedFollow(FeedFollowRequest)returns(FeedFollowResponse){
     option(google.api.http) = {
       get:"/v1/api/feed/follow"
+    };
+  }
+
+  rpc Ping(common.PingRequest) returns(common.PingResponse){
+    option(google.api.http)={
+      get:"/v1/api/feed/ping",
     };
   }
 }

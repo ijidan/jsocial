@@ -15,10 +15,13 @@ import (
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/ijidan/jsocial/api/proto_build"
+	"github.com/ijidan/jsocial/internal/app/common"
+	"github.com/ijidan/jsocial/internal/app/feed"
 	"github.com/ijidan/jsocial/internal/app/gateway"
 	"github.com/ijidan/jsocial/internal/app/group"
-	"github.com/ijidan/jsocial/internal/app/ping"
+	"github.com/ijidan/jsocial/internal/app/message"
 	"github.com/ijidan/jsocial/internal/app/user"
+	"github.com/ijidan/jsocial/internal/constant"
 	"github.com/ijidan/jsocial/internal/global"
 	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/ijidan/jsocial/internal/pkg/interceptor"
@@ -37,12 +40,12 @@ import (
 	"time"
 )
 
-var commonService *service.CommonService
+var commonService *common.Service
+var feedService *feed.Service
 var gatewayService *gateway.Service
 var groupService *group.Service
 
-//var messageService *service.MessageService
-var pingService *ping.Service
+var messageService *message.Service
 var userService *user.Service
 
 func runHttpServerMux(gatewayServer *gwruntime.ServeMux) *http.ServeMux {
@@ -55,7 +58,7 @@ func runHttpServerMux(gatewayServer *gwruntime.ServeMux) *http.ServeMux {
 	return serveMux
 }
 
-func runGrpcServer() *grpc.Server {
+func runGrpcServer(serviceName string) *grpc.Server {
 	var kaep = keepalive.EnforcementPolicy{
 		MinTime:             5 * time.Second, // If a client pings more than once every 5 seconds, terminate the connection
 		PermitWithoutStream: true,            // Allow pings even when there are no active streams
@@ -94,28 +97,59 @@ func runGrpcServer() *grpc.Server {
 	}
 	server := grpc.NewServer(opts...)
 
-	proto_build.RegisterCommonServiceServer(server, commonService)
-	proto_build.RegisterGatewayServiceServer(server, gatewayService)
-	proto_build.RegisterGroupServiceServer(server, groupService)
-	//proto_build.RegisterMessageServiceServer(server, messageService)
-	proto_build.RegisterPingServiceServer(server, pingService)
-	proto_build.RegisterUserServiceServer(server, userService)
+	switch serviceName {
+	case constant.ServiceCommon:
+		proto_build.RegisterCommonServiceServer(server, commonService)
+	case constant.ServiceGateway:
+		proto_build.RegisterGatewayServiceServer(server, gatewayService)
+	case constant.ServiceFeed:
+		proto_build.RegisterFeedServiceServer(server, feedService)
+	case constant.ServiceGroup:
+		proto_build.RegisterGroupServiceServer(server, groupService)
+	case constant.ServiceMessage:
+		proto_build.RegisterMessageServiceServer(server, messageService)
+	case constant.ServiceUser:
+		proto_build.RegisterUserServiceServer(server, userService)
+	}
 	reflection.Register(server)
-
 	ServiceRegister()
 	return server
 }
 
-func runGrpcGatewayServer(cf config.Rpc) *gwruntime.ServeMux {
+func runGrpcGatewayServer(cf config.Rpc, serviceName string) *gwruntime.ServeMux {
 	endpoint := fmt.Sprintf("%s:%d", cf.Host, cf.Port)
 	gwMux := gwruntime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	ctx := context.Background()
 	errs := make(chan error)
 	go func() {
-		if err := proto_build.RegisterPingServiceHandlerFromEndpoint(ctx, gwMux, endpoint, opts); err != nil {
-			errs <- err
+		switch serviceName {
+		case constant.ServiceCommon:
+			if err := proto_build.RegisterCommonServiceHandlerFromEndpoint(ctx, gwMux, endpoint, opts); err != nil {
+				errs <- err
+			}
+		case constant.ServiceGateway:
+			if err := proto_build.RegisterGatewayServiceHandlerFromEndpoint(ctx, gwMux, endpoint, opts); err != nil {
+				errs <- err
+			}
+		case constant.ServiceFeed:
+			if err := proto_build.RegisterFeedServiceHandlerFromEndpoint(ctx, gwMux, endpoint, opts); err != nil {
+				errs <- err
+			}
+		case constant.ServiceGroup:
+			if err := proto_build.RegisterGroupServiceHandlerFromEndpoint(ctx, gwMux, endpoint, opts); err != nil {
+				errs <- err
+			}
+		case constant.ServiceMessage:
+			if err := proto_build.RegisterMessageServiceHandlerFromEndpoint(ctx, gwMux, endpoint, opts); err != nil {
+				errs <- err
+			}
+		case constant.ServiceUser:
+			if err := proto_build.RegisterUserServiceHandlerFromEndpoint(ctx, gwMux, endpoint, opts); err != nil {
+				errs <- err
+			}
 		}
+
 	}()
 	go func() {
 		select {
@@ -129,7 +163,7 @@ func runGrpcGatewayServer(cf config.Rpc) *gwruntime.ServeMux {
 func ServiceRegister() {
 	clientV3 := service.NewClientV3(global.GR.Conf.Etcd.Host, global.GR.Conf.Etcd.Timeout)
 	serviceRegister := service.NewServiceRegister(clientV3, global.GR.Conf.App.Name)
-	serviceRegister.RegisterService(userService.BasicService, pingService.BasicService)
+	serviceRegister.RegisterService(userService.BasicService)
 }
 
 func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Handler {
@@ -142,11 +176,10 @@ func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Ha
 	}), &http2.Server{})
 }
 
-func RunHttp(config config.Config, ctx context.Context) error {
+func RunHttp(config config.Config, ctx context.Context, serviceName string) error {
 
 	userService = user.NewService(config.Rpc)
-	pingService = ping.NewService(config.Rpc)
-	gatewayServer := runGrpcGatewayServer(config.Rpc)
+	gatewayServer := runGrpcGatewayServer(config.Rpc, serviceName)
 	httpMutex := runHttpServerMux(gatewayServer)
 
 	address := fmt.Sprintf("%s:%d", config.Http.Host, config.Http.Port)
@@ -187,9 +220,9 @@ func RunPprof(config config.Config, ctx context.Context) error {
 	return httpServer.ListenAndServe()
 }
 
-func RunGrpc(config config.Config, ctx context.Context) error {
+func RunGrpc(config config.Config, ctx context.Context, serviceName string) error {
 	//clientV3 := service.NewClientV3(global.Conf.Etcd.Host, global.Conf.Etcd.Timeout)
-	grpcServer := runGrpcServer()
+	grpcServer := runGrpcServer(serviceName)
 	grpcHttpHandler := grpcHandlerFunc(grpcServer, http.DefaultServeMux)
 
 	address := fmt.Sprintf(":%d", config.Rpc.Port)

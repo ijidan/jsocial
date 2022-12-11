@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"github.com/fatih/color"
+	"github.com/ijidan/jsocial/internal/constant"
 	"github.com/ijidan/jsocial/internal/global"
 	"github.com/ijidan/jsocial/internal/injector"
 	"github.com/ijidan/jsocial/internal/pkg/config"
@@ -25,7 +26,7 @@ func main() {
 	table := info.BuildRpcTable(*global.GR.Conf)
 	table.Render()
 	ctx, cancel := context.WithCancel(context.Background())
-	server.StartRpc(ctx, cancel)
+	server.StartRpc(ctx, cancel, constant.ServiceGroup)
 
 	ch := make(chan os.Signal)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)

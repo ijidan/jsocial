@@ -3,7 +3,9 @@ package feed
 import (
 	"context"
 	"github.com/ijidan/jsocial/api/proto_build"
+	"github.com/ijidan/jsocial/internal/constant"
 	"github.com/ijidan/jsocial/internal/global"
+	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/ijidan/jsocial/internal/service"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -76,4 +78,21 @@ func (s *Service) FeedQuery(c context.Context, req *proto_build.FeedQueryRequest
 
 func (s *Service) FeedFollow(c context.Context, req *proto_build.FeedFollowRequest) (*proto_build.FeedFollowResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FeedFollow not implemented")
+}
+
+func (s *Service) Ping(c context.Context, req *proto_build.PingRequest) (*proto_build.PingResponse, error) {
+	rsp := &proto_build.PingResponse{
+		Content: constant.ServiceFeed + ":pong",
+	}
+	return rsp, nil
+}
+
+func NewService(cf config.Rpc) *Service {
+	instance := &Service{BasicService: service.BasicService{
+		Name: constant.ServiceFeed,
+		Host: cf.Host,
+		Port: cf.Port,
+		Ttl:  cf.Ttl,
+	}}
+	return instance
 }

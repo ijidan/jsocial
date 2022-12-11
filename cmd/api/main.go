@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/fvbock/endless"
 	"github.com/ijidan/jsocial/internal/app/api/router"
 	"github.com/ijidan/jsocial/internal/global"
 	"github.com/ijidan/jsocial/internal/injector"
@@ -30,6 +31,10 @@ func main() {
 	addr := info.BuildApiAddr(global.GH.Conf.Http)
 	if sysType == "windows" {
 		if err := r.Run(addr); err != nil {
+			log.Fatalf("listen: %s\n", err)
+		}
+	} else {
+		if err := endless.ListenAndServe(addr, r); err != nil {
 			log.Fatalf("listen: %s\n", err)
 		}
 	}

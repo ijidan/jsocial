@@ -7,9 +7,16 @@ import (
 	_ "net/http/pprof"
 )
 
-func StartRpc(ctx context.Context, cancel context.CancelFunc) {
+func StartRpc(ctx context.Context, cancel context.CancelFunc, serviceName string) {
 	go func() {
-		err := RunHttp(*global.GR.Conf, ctx)
+		err := RunGrpc(*global.GR.Conf, ctx, serviceName)
+		if err != nil {
+			cancel()
+			global.GR.Logger.Fatalf("run grpc server:%s", err.Error())
+		}
+	}()
+	go func() {
+		err := RunHttp(*global.GR.Conf, ctx, serviceName)
 		if err != nil {
 			cancel()
 			global.GR.Logger.Fatalf("run http server:%s", err.Error())
@@ -22,14 +29,6 @@ func StartRpc(ctx context.Context, cancel context.CancelFunc) {
 			global.GR.Logger.Fatalf("run pprof server:%s", err.Error())
 		}
 	}()
-	go func() {
-		err := RunGrpc(*global.GR.Conf, ctx)
-		if err != nil {
-			cancel()
-			global.GR.Logger.Fatalf("run grpc server:%s", err.Error())
-		}
-	}()
-
 	go func() {
 		err := RunGoPs(*global.GR.Conf, ctx)
 		if err != nil {

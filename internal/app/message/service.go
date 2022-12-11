@@ -3,6 +3,7 @@ package message
 import (
 	"context"
 	"github.com/ijidan/jsocial/api/proto_build"
+	"github.com/ijidan/jsocial/internal/constant"
 	"github.com/ijidan/jsocial/internal/global"
 	"github.com/ijidan/jsocial/internal/pkg/config"
 	"github.com/ijidan/jsocial/internal/service"
@@ -156,9 +157,16 @@ func (s *Service) SendGroupFileMessage(c context.Context, req *proto_build.SendG
 	return rsp, nil
 }
 
+func (s *Service) Ping(c context.Context, req *proto_build.PingRequest) (*proto_build.PingResponse, error) {
+	rsp := &proto_build.PingResponse{
+		Content: constant.ServiceMessage + ":pong",
+	}
+	return rsp, nil
+}
+
 func NewService(cf config.Rpc) *Service {
 	instance := &Service{BasicService: service.BasicService{
-		Name: "service_message",
+		Name: constant.ServiceMessage,
 		Host: cf.Host,
 		Port: cf.Port,
 		Ttl:  cf.Ttl,
